@@ -1,216 +1,167 @@
 #include <string>
 /* Subroutine */ 
 int
-dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, std::string& task, double* stpmin, double* stpmax, int* isave, double* dsave)
+dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, std::string& task, double* stpmin, double* stpmax)
 {
-/*     ********** */
+/*  Subroutine dcsrch
+    This subroutine finds a step that satisfies a sufficient 
+    decrease condition and a curvature condition. 
+    Each call of the subroutine updates an interval with
+    endpoints stx and sty. The interval is initially chosen
+    so that it contains a minimizer of the modified function
 
-/*     Subroutine dcsrch */
+        psi(stp) = f(stp) - f(0) - ftol*stp*f'(0).
 
-/*     This subroutine finds a step that satisfies a sufficient */
-/*     decrease condition and a curvature condition. */
+    If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the 
+    interval is chosen so that it contains a minimizer of f.
 
-/*     Each call of the subroutine updates an interval with */
-/*     endpoints stx and sty. The interval is initially chosen */
-/*     so that it contains a minimizer of the modified function */
+    The algorithm is designed to find a step that satisfies 
+    the sufficient decrease condition 
 
-/*           psi(stp) = f(stp) - f(0) - ftol*stp*f'(0). */
+        f(stp) <= f(0) + ftol*stp*f'(0), 
 
-/*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
-/*     interval is chosen so that it contains a minimizer of f. */
+    and the curvature condition 
 
-/*     The algorithm is designed to find a step that satisfies */
-/*     the sufficient decrease condition */
+        abs(f'(stp)) <= gtol*abs(f'(0)). 
 
-/*           f(stp) <= f(0) + ftol*stp*f'(0), */
+    If ftol is less than gtol and if, for example, the function
+    is bounded below, then there is always a step which satisfies
+    both conditions.
+    If no step can be found that satisfies both conditions, then 
+    the algorithm stops with a warning. In this case stp only 
+    satisfies the sufficient decrease condition. 
 
-/*     and the curvature condition */
+    A typical invocation of dcsrch has the following outline:
 
-/*           abs(f'(stp)) <= gtol*abs(f'(0)). */
+        - Evaluate the function at stp = 0.0d0; store in f. 
+        - Evaluate the gradient at stp = 0.0d0; store in g.
+        - Choose a starting step stp.
 
-/*     If ftol is less than gtol and if, for example, the function */
-/*     is bounded below, then there is always a step which satisfies */
-/*     both conditions. */
+        task = 'START'
+        10 continue 
+            call dcsrch(stp,f,g,ftol,gtol,xtol,task,stpmin,stpmax, isave, dsave)
+            if (task .eq. 'FG') then 
+                - Evaluate the function and the gradient at stp 
+                - go to 10 
+            end if 
 
-/*     If no step can be found that satisfies both conditions, then */
-/*     the algorithm stops with a warning. In this case stp only */
-/*     satisfies the sufficient decrease condition. */
+        NOTE: The user must not alter work arrays between calls.
 
-/*     A typical invocation of dcsrch has the following outline: */
+    The subroutine statement is
 
-/*     Evaluate the function at stp = 0.0d0; store in f. */
-/*     Evaluate the gradient at stp = 0.0d0; store in g. */
-/*     Choose a starting step stp. */
+    subroutine dcsrch(f,g,stp,ftol,gtol,xtol,stpmin,stpmax,task,isave,dsave)
 
-/*     task = 'START' */
-/*  10 continue */
-/*        call dcsrch(stp,f,g,ftol,gtol,xtol,task,stpmin,stpmax, */
-/*    +               isave,dsave) */
-/*        if (task .eq. 'FG') then */
-/*           Evaluate the function and the gradient at stp */
-/*           go to 10 */
-/*           end if */
+    where
 
-/*     NOTE: The user must not alter work arrays between calls. */
+        stp is a double precision variable.
+            On entry stp is the current estimate of a satisfactory
+                step. On initial entry, a positive initial estimate
+                must be provided.
+            On exit stp is the current estimate of a satisfactory step
+                if task = 'FG'. If task = 'CONV' then stp satisfies
+                the sufficient decrease and curvature condition.
 
-/*     The subroutine statement is */
+        f is a double precision variable.
+            On initial entry f is the value of the function at 0.
+            On subsequent entries f is the value of the function at stp.
+            On exit f is the value of the function at stp.
 
-/*       subroutine dcsrch(f,g,stp,ftol,gtol,xtol,stpmin,stpmax, */
-/*                         task,isave,dsave) */
-/*     where */
+        g is a double precision variable.
+            On initial entry g is the derivative of the function at 0.
+            On subsequent entries g is the derivative of the function at stp.
+            On exit g is the derivative of the function at stp.
 
-/*       stp is a double precision variable. */
-/*         On entry stp is the current estimate of a satisfactory */
-/*            step. On initial entry, a positive initial estimate */
-/*            must be provided. */
-/*         On exit stp is the current estimate of a satisfactory step */
-/*            if task = 'FG'. If task = 'CONV' then stp satisfies */
-/*            the sufficient decrease and curvature condition. */
+        ftol is a double precision variable.
+            On entry ftol specifies a nonnegative tolerance for the
+                sufficient decrease condition.
+            On exit ftol is unchanged.
 
-/*       f is a double precision variable. */
-/*         On initial entry f is the value of the function at 0. */
-/*            On subsequent entries f is the value of the */
-/*            function at stp. */
-/*         On exit f is the value of the function at stp. */
+        gtol is a double precision variable.
+            On entry gtol specifies a nonnegative tolerance for the
+                curvature condition.
+            On exit gtol is unchanged.
 
-/*       g is a double precision variable. */
-/*         On initial entry g is the derivative of the function at 0. */
-/*            On subsequent entries g is the derivative of the */
-/*            function at stp. */
-/*         On exit g is the derivative of the function at stp. */
+        xtol is a double precision variable.
+            On entry xtol specifies a nonnegative relative tolerance
+                for an acceptable step. The subroutine exits with a
+                warning if the relative difference between sty and stx
+                is less than xtol.
+            On exit xtol is unchanged.
 
-/*       ftol is a double precision variable. */
-/*         On entry ftol specifies a nonnegative tolerance for the */
-/*            sufficient decrease condition. */
-/*         On exit ftol is unchanged. */
+        task is a character variable of length at least 60.
+            On initial entry task must be set to 'START'.
+            On exit task indicates the required action:
 
-/*       gtol is a double precision variable. */
-/*         On entry gtol specifies a nonnegative tolerance for the */
-/*            curvature condition. */
-/*         On exit gtol is unchanged. */
+            If task(1:2) = 'FG' then evaluate the function and
+                derivative at stp and call dcsrch again.
 
-/*       xtol is a double precision variable. */
-/*         On entry xtol specifies a nonnegative relative tolerance */
-/*            for an acceptable step. The subroutine exits with a */
-/*            warning if the relative difference between sty and stx */
-/*            is less than xtol. */
-/*         On exit xtol is unchanged. */
+            If task(1:4) = 'CONV' then the search is successful.
 
-/*       task is a character variable of length at least 60. */
-/*         On initial entry task must be set to 'START'. */
-/*         On exit task indicates the required action: */
+            If task(1:4) = 'WARN' then the subroutine is not able
+                to satisfy the convergence conditions. The exit value of
+                stp contains the best point found during the search.
 
-/*            If task(1:2) = 'FG' then evaluate the function and */
-/*            derivative at stp and call dcsrch again. */
+            If task(1:5) = 'ERROR' then there is an error in the 
+                input arguments.
 
-/*            If task(1:4) = 'CONV' then the search is successful. */
+            On exit with convergence, a warning or an error, the
+                variable task contains additional information.
 
-/*            If task(1:4) = 'WARN' then the subroutine is not able */
-/*            to satisfy the convergence conditions. The exit value of */
-/*            stp contains the best point found during the search. */
+        stpmin is a double precision variable.
+            On entry stpmin is a nonnegative lower bound for the step.
+            On exit stpmin is unchanged.
 
-/*            If task(1:5) = 'ERROR' then there is an error in the */
-/*            input arguments. */
+        stpmax is a double precision variable.
+            On entry stpmax is a nonnegative upper bound for the step.
+            On exit stpmax is unchanged.
 
-/*         On exit with convergence, a warning or an error, the */
-/*            variable task contains additional information. */
+        isave is an int work array of dimension 2.
 
-/*       stpmin is a double precision variable. */
-/*         On entry stpmin is a nonnegative lower bound for the step. */
-/*         On exit stpmin is unchanged. */
+        dsave is a double precision work array of dimension 13.
 
-/*       stpmax is a double precision variable. */
-/*         On entry stpmax is a nonnegative upper bound for the step. */
-/*         On exit stpmax is unchanged. */
+    Subprograms called
 
-/*       isave is an int work array of dimension 2. */
+    MINPACK-2 ... dcstep
 
-/*       dsave is a double precision work array of dimension 13. */
+    MINPACK-1 Project. June 1983.
+    Argonne National Laboratory.
+    Jorge J. More' and David J. Thuente.
 
-/*     Subprograms called */
+    MINPACK-2 Project. November 1993.
+    Argonne National Laboratory and University of Minnesota.
+    Brett M. Averick, Richard G. Carter, and Jorge J. More'.
 
-/*       MINPACK-2 ... dcstep */
+    **********
+    Initialization block. */
+    static double fm, gm;
+    static double fxm, fym, gxm, gym;
 
-/*     MINPACK-1 Project. June 1983. */
-/*     Argonne National Laboratory. */
-/*     Jorge J. More' and David J. Thuente. */
+    bool brackt = false;
+    int stage = 1;
+    double finit = *f;
+    double ginit = *g;
+    double gtest = *ftol * ginit;
+    double width = *stpmax - *stpmin;
+    double width1 = 2.0 * width;
+    /*  The variables stx, fx, gx contain the values of the step,
+        function, and derivative at the best step. 
+        The variables sty, fy, gy contain the value of the step,
+        function, and derivative at sty. 
+        The variables stp, f, g contain the values of the step, 
+        function, and derivative at stp. */
+    double stx = 0.;
+    double fx = finit;
+    double gx = ginit;
+    double sty = 0.;
+    double fy = finit;
+    double gy = ginit;
+    const double stmin = 0.;
+    const double stmax = *stp + *stp * 4.;
+    std::string task = "FG";
 
-/*     MINPACK-2 Project. November 1993. */
-/*     Argonne National Laboratory and University of Minnesota. */
-/*     Brett M. Averick, Richard G. Carter, and Jorge J. More'. */
-
-/*     ********** */
-/*     Initialization block. */
-
-    /* Local variables */
-    static int stage;
-    static double finit, ginit, width, ftest, gtest, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
-    static bool brackt;
-    static double fxm, fym, gxm, gym, stx, sty;
-
-    /* Parameter adjustments */
-    --dsave;
-    --isave;
-
-    /* Function Body */
-    if (task == "START") {
-        /*        Check the input arguments for errors. */
-        if (*stp < *stpmin) task = "ERROR: STP .LT. STPMIN";
-        if (*stp > *stpmax) task = "ERROR: STP .GT. STPMAX";
-        if (*g >= 0.) task = "ERROR: INITIAL G .GE. ZERO";
-        if (*ftol < 0.) task = "ERROR: FTOL .LT. ZERO";
-        if (*gtol < 0.) task = "ERROR: GTOL .LT. ZERO";
-        if (*xtol < 0.) task = "ERROR: XTOL .LT. ZERO";
-        if (*stpmin < 0.) task = "ERROR: STPMIN .LT. ZERO";
-        if (*stpmax < *stpmin) task = "ERROR: STPMAX .LT. STPMIN";
-        if (task.substr(0, 5) == "ERROR") return 0;
-
-        /*        Initialize local variables. */
-        brackt = false;
-        stage = 1;
-        finit = *f;
-        ginit = *g;
-        gtest = *ftol * ginit;
-        width = *stpmax - *stpmin;
-        width1 = width / .5;
-       /*        The variables stx, fx, gx contain the values of the step,
-                 function, and derivative at the best step. 
-                 The variables sty, fy, gy contain the value of the step,
-                 function, and derivative at sty. 
-                 The variables stp, f, g contain the values of the step, 
-                 function, and derivative at stp. */
-        stx = 0.;
-        fx = finit;
-        gx = ginit;
-        sty = 0.;
-        fy = finit;
-        gy = ginit;
-        stmin = 0.;
-        stmax = *stp + *stp * 4.;
-        task = "FG";
-        goto L10;
-
-    } else {
-        /*  Restore local variables. */
-        brackt = (isave[1] == 1);
-        stage = isave[2];
-        ginit = dsave[1];
-        gtest = dsave[2];
-        gx = dsave[3];
-        gy = dsave[4];
-        finit = dsave[5];
-        fx = dsave[6];
-        fy = dsave[7];
-        stx = dsave[8];
-        sty = dsave[9];
-        stmin = dsave[10];
-        stmax = dsave[11];
-        width = dsave[12];
-        width1 = dsave[13];
-    }
-    /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
-    /*     algorithm enters the second stage. */
-    ftest = finit + *stp * gtest;
+    /*  If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the 
+        algorithm enters the second stage. */
+    const double ftest = finit + *stp * gtest;
     if (stage == 1 && *f <= ftest && *g >= 0.) {
         stage = 2;
     }
@@ -219,13 +170,13 @@ dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* x
     if (brackt && stmax - stmin <= *xtol * stmax) task = "WARNING: XTOL TEST SATISFIED";
     if (*stp == *stpmax && *f <= ftest && *g <= gtest) task = "WARNING: STP = STPMAX";
     if (*stp == *stpmin && (*f > ftest || *g >= gtest)) task = "WARNING: STP = STPMIN";
-/*     Test for convergence. */
+    /*     Test for convergence. */
     if (*f <= ftest && abs(*g) <= *gtol * (-ginit)) {
         task = "CONVERGENCE";
     }
-/*     Test for termination. */
+    /*     Test for termination. */
     if (task.substr(0, 4) == "WARN" || task.substr(0, 4) == "CONV"){
-        goto L10;
+        return 0;
     }
     /*     A modified function is used to predict the step during the */
     /*     first stage if a lower function value has been obtained but */
@@ -259,15 +210,15 @@ dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* x
     }
     /*     Set the minimum and maximum steps allowed for stp. */
     if (brackt) {
-        stmin = min(stx,sty);
-        stmax = max(stx,sty);
+        stmin = min(stx, sty);
+        stmax = max(stx, sty);
     } else {
         stmin = *stp + (*stp - stx) * 1.1;
         stmax = *stp + (*stp - stx) * 4.;
     }
     /*     Force the step to be within the bounds stpmax and stpmin. */
-    *stp = max(*stp,*stpmin);
-    *stp = min(*stp,*stpmax);
+    *stp = max(*stp, *stpmin);
+    *stp = min(*stp, *stpmax);
     /*     If further progress is not possible, let stp be the best */
     /*     point obtained during the search. */
     if (brackt && (*stp <= stmin || *stp >= stmax) || brackt && stmax - stmin <= *xtol * stmax){
@@ -275,22 +226,5 @@ dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* x
     }
     /*     Obtain another function and derivative. */
     task = "FG";
-L10:
-/*     Save local variables. */
-    isave[1] = (int)brackt;
-    isave[2] = stage;
-    dsave[1] = ginit;
-    dsave[2] = gtest;
-    dsave[3] = gx;
-    dsave[4] = gy;
-    dsave[5] = finit;
-    dsave[6] = fx;
-    dsave[7] = fy;
-    dsave[8] = stx;
-    dsave[9] = sty;
-    dsave[10] = stmin;
-    dsave[11] = stmax;
-    dsave[12] = width;
-    dsave[13] = width1;
 }
 
