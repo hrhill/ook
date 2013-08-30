@@ -1,15 +1,12 @@
-int 
-dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, const char* task, 
-    double* stpmin, double* stpmax, int* isave, double* dsave)
-/*double *stp, *f, *g, *ftol, *gtol, *xtol;
-char *task;
-double *stpmin, *stpmax;
-int *isave;
-double *dsave;
-ftnlen task_len;
-*/
+#include <string>
+/* Subroutine */ 
+int
+dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, std::string& task, double* stpmin, double* stpmax, int* isave, double* dsave)
 {
+/*     ********** */
+
 /*     Subroutine dcsrch */
+
 /*     This subroutine finds a step that satisfies a sufficient */
 /*     decrease condition and a curvature condition. */
 
@@ -143,184 +140,144 @@ ftnlen task_len;
 /*     Brett M. Averick, Richard G. Carter, and Jorge J. More'. */
 
 /*     ********** */
-    double d__1;
+/*     Initialization block. */
 
     /* Local variables */
     static int stage;
-    static double finit, ginit, width, ftest, gtest, stmin, stmax, width1,
-         fm, gm, fx, fy, gx, gy;
+    static double finit, ginit, width, ftest, gtest, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
     static bool brackt;
     static double fxm, fym, gxm, gym, stx, sty;
-    
-/*     Initialization block. */
+
     /* Parameter adjustments */
     --dsave;
     --isave;
 
     /* Function Body */
-    if (s_cmp(task, "START", (ftnlen)5, (ftnlen)5) == 0) {
-/*        Check the input arguments for errors. */
-	if (*stp < *stpmin) {
-	    s_copy(task, "ERROR: STP .LT. STPMIN", task_len, (ftnlen)22);
-	}
-	if (*stp > *stpmax) {
-	    s_copy(task, "ERROR: STP .GT. STPMAX", task_len, (ftnlen)22);
-	}
-	if (*g >= 0.) {
-	    s_copy(task, "ERROR: INITIAL G .GE. ZERO", task_len, (ftnlen)26);
-	}
-	if (*ftol < 0.) {
-	    s_copy(task, "ERROR: FTOL .LT. ZERO", task_len, (ftnlen)21);
-	}
-	if (*gtol < 0.) {
-	    s_copy(task, "ERROR: GTOL .LT. ZERO", task_len, (ftnlen)21);
-	}
-	if (*xtol < 0.) {
-	    s_copy(task, "ERROR: XTOL .LT. ZERO", task_len, (ftnlen)21);
-	}
-	if (*stpmin < 0.) {
-	    s_copy(task, "ERROR: STPMIN .LT. ZERO", task_len, (ftnlen)23);
-	}
-	if (*stpmax < *stpmin) {
-	    s_copy(task, "ERROR: STPMAX .LT. STPMIN", task_len, (ftnlen)25);
-	}
-/*        Exit if there are errors on input. */
-	if (s_cmp(task, "ERROR", (ftnlen)5, (ftnlen)5) == 0) {
-	    return 0;
-	}
-/*        Initialize local variables. */
-	brackt = FALSE_;
-	stage = 1;
-	finit = *f;
-	ginit = *g;
-	gtest = *ftol * ginit;
-	width = *stpmax - *stpmin;
-	width1 = width / .5;
-/*        The variables stx, fx, gx contain the values of the step, */
-/*        function, and derivative at the best step. */
-/*        The variables sty, fy, gy contain the value of the step, */
-/*        function, and derivative at sty. */
-/*        The variables stp, f, g contain the values of the step, */
-/*        function, and derivative at stp. */
-	stx = 0.;
-	fx = finit;
-	gx = ginit;
-	sty = 0.;
-	fy = finit;
-	gy = ginit;
-	stmin = 0.;
-	stmax = *stp + *stp * 4.;
-	s_copy(task, "FG", task_len, (ftnlen)2);
-	goto L10;
+    if (task == "START") {
+        /*        Check the input arguments for errors. */
+        if (*stp < *stpmin) task = "ERROR: STP .LT. STPMIN";
+        if (*stp > *stpmax) task = "ERROR: STP .GT. STPMAX";
+        if (*g >= 0.) task = "ERROR: INITIAL G .GE. ZERO";
+        if (*ftol < 0.) task = "ERROR: FTOL .LT. ZERO";
+        if (*gtol < 0.) task = "ERROR: GTOL .LT. ZERO";
+        if (*xtol < 0.) task = "ERROR: XTOL .LT. ZERO";
+        if (*stpmin < 0.) task = "ERROR: STPMIN .LT. ZERO";
+        if (*stpmax < *stpmin) task = "ERROR: STPMAX .LT. STPMIN";
+        if (task.substr(0, 5) == "ERROR") return 0;
+
+        /*        Initialize local variables. */
+        brackt = false;
+        stage = 1;
+        finit = *f;
+        ginit = *g;
+        gtest = *ftol * ginit;
+        width = *stpmax - *stpmin;
+        width1 = width / .5;
+       /*        The variables stx, fx, gx contain the values of the step,
+                 function, and derivative at the best step. 
+                 The variables sty, fy, gy contain the value of the step,
+                 function, and derivative at sty. 
+                 The variables stp, f, g contain the values of the step, 
+                 function, and derivative at stp. */
+        stx = 0.;
+        fx = finit;
+        gx = ginit;
+        sty = 0.;
+        fy = finit;
+        gy = ginit;
+        stmin = 0.;
+        stmax = *stp + *stp * 4.;
+        task = "FG";
+        goto L10;
+
     } else {
-/*        Restore local variables. */
-	if (isave[1] == 1) {
-	    brackt = TRUE_;
-	} else {
-	    brackt = FALSE_;
-	}
-	stage = isave[2];
-	ginit = dsave[1];
-	gtest = dsave[2];
-	gx = dsave[3];
-	gy = dsave[4];
-	finit = dsave[5];
-	fx = dsave[6];
-	fy = dsave[7];
-	stx = dsave[8];
-	sty = dsave[9];
-	stmin = dsave[10];
-	stmax = dsave[11];
-	width = dsave[12];
-	width1 = dsave[13];
+        /*  Restore local variables. */
+        brackt = (isave[1] == 1);
+        stage = isave[2];
+        ginit = dsave[1];
+        gtest = dsave[2];
+        gx = dsave[3];
+        gy = dsave[4];
+        finit = dsave[5];
+        fx = dsave[6];
+        fy = dsave[7];
+        stx = dsave[8];
+        sty = dsave[9];
+        stmin = dsave[10];
+        stmax = dsave[11];
+        width = dsave[12];
+        width1 = dsave[13];
     }
-/*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
-/*     algorithm enters the second stage. */
+    /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
+    /*     algorithm enters the second stage. */
     ftest = finit + *stp * gtest;
     if (stage == 1 && *f <= ftest && *g >= 0.) {
-	stage = 2;
+        stage = 2;
     }
-/*     Test for warnings. */
-    if (brackt && (*stp <= stmin || *stp >= stmax)) {
-	s_copy(task, "WARNING: ROUNDING ERRORS PREVENT PROGRESS", task_len, (
-		ftnlen)41);
-    }
-    if (brackt && stmax - stmin <= *xtol * stmax) {
-	s_copy(task, "WARNING: XTOL TEST SATISFIED", task_len, (ftnlen)28);
-    }
-    if (*stp == *stpmax && *f <= ftest && *g <= gtest) {
-	s_copy(task, "WARNING: STP = STPMAX", task_len, (ftnlen)21);
-    }
-    if (*stp == *stpmin && (*f > ftest || *g >= gtest)) {
-	s_copy(task, "WARNING: STP = STPMIN", task_len, (ftnlen)21);
-    }
+    /*     Test for warnings. */
+    if (brackt && (*stp <= stmin || *stp >= stmax)) task = "WARNING: ROUNDING ERRORS PREVENT PROGRESS";
+    if (brackt && stmax - stmin <= *xtol * stmax) task = "WARNING: XTOL TEST SATISFIED";
+    if (*stp == *stpmax && *f <= ftest && *g <= gtest) task = "WARNING: STP = STPMAX";
+    if (*stp == *stpmin && (*f > ftest || *g >= gtest)) task = "WARNING: STP = STPMIN";
 /*     Test for convergence. */
     if (*f <= ftest && abs(*g) <= *gtol * (-ginit)) {
-	s_copy(task, "CONVERGENCE", task_len, (ftnlen)11);
+        task = "CONVERGENCE";
     }
 /*     Test for termination. */
-    if (s_cmp(task, "WARN", (ftnlen)4, (ftnlen)4) == 0 || s_cmp(task, "CONV", 
-	    (ftnlen)4, (ftnlen)4) == 0) {
-	goto L10;
+    if (task.substr(0, 4) == "WARN" || task.substr(0, 4) == "CONV"){
+        goto L10;
     }
-/*     A modified function is used to predict the step during the */
-/*     first stage if a lower function value has been obtained but */
-/*     the decrease is not sufficient. */
+    /*     A modified function is used to predict the step during the */
+    /*     first stage if a lower function value has been obtained but */
+    /*     the decrease is not sufficient. */
     if (stage == 1 && *f <= fx && *f > ftest) {
-/*        Define the modified function and derivative values. */
-	fm = *f - *stp * gtest;
-	fxm = fx - stx * gtest;
-	fym = fy - sty * gtest;
-	gm = *g - gtest;
-	gxm = gx - gtest;
-	gym = gy - gtest;
-/*        Call dcstep to update stx, sty, and to compute the new step. */
-	dcstep_(&stx, &fxm, &gxm, &sty, &fym, &gym, stp, &fm, &gm, &brackt, &
-		stmin, &stmax);
-/*        Reset the function and derivative values for f. */
-	fx = fxm + stx * gtest;
-	fy = fym + sty * gtest;
-	gx = gxm + gtest;
-	gy = gym + gtest;
+        /*        Define the modified function and derivative values. */
+        fm = *f - *stp * gtest;
+        fxm = fx - stx * gtest;
+        fym = fy - sty * gtest;
+        gm = *g - gtest;
+        gxm = gx - gtest;
+        gym = gy - gtest;
+        /*        Call dcstep to update stx, sty, and to compute the new step. */
+        dcstep_(&stx, &fxm, &gxm, &sty, &fym, &gym, stp, &fm, &gm, &brackt, &stmin, &stmax);
+        /*        Reset the function and derivative values for f. */
+        fx = fxm + stx * gtest;
+        fy = fym + sty * gtest;
+        gx = gxm + gtest;
+        gy = gym + gtest;
     } else {
-/*       Call dcstep to update stx, sty, and to compute the new step. */
-	dcstep_(&stx, &fx, &gx, &sty, &fy, &gy, stp, f, g, &brackt, &stmin, &
-		stmax);
+        /*       Call dcstep to update stx, sty, and to compute the new step. */
+        dcstep_(&stx, &fx, &gx, &sty, &fy, &gy, stp, f, g, &brackt, &stmin, &stmax);
     }
-/*     Decide if a bisection step is needed. */
+    /*     Decide if a bisection step is needed. */
     if (brackt) {
-	if ((d__1 = sty - stx, abs(d__1)) >= width1 * .66) {
-	    *stp = stx + (sty - stx) * .5;
-	}
-	width1 = width;
-	width = (d__1 = sty - stx, abs(d__1));
+        if (abs(sty - stx) >= width1 * .66) {
+            *stp = stx + (sty - stx) * .5;
+        }
+        width1 = width;
+        width = abs(sty - stx);
     }
-/*     Set the minimum and maximum steps allowed for stp. */
+    /*     Set the minimum and maximum steps allowed for stp. */
     if (brackt) {
-	stmin = min(stx,sty);
-	stmax = max(stx,sty);
+        stmin = min(stx,sty);
+        stmax = max(stx,sty);
     } else {
-	stmin = *stp + (*stp - stx) * 1.1;
-	stmax = *stp + (*stp - stx) * 4.;
+        stmin = *stp + (*stp - stx) * 1.1;
+        stmax = *stp + (*stp - stx) * 4.;
     }
-/*     Force the step to be within the bounds stpmax and stpmin. */
+    /*     Force the step to be within the bounds stpmax and stpmin. */
     *stp = max(*stp,*stpmin);
     *stp = min(*stp,*stpmax);
-/*     If further progress is not possible, let stp be the best */
-/*     point obtained during the search. */
-    if (brackt && (*stp <= stmin || *stp >= stmax) || brackt && stmax - stmin 
-	    <= *xtol * stmax) {
-	*stp = stx;
+    /*     If further progress is not possible, let stp be the best */
+    /*     point obtained during the search. */
+    if (brackt && (*stp <= stmin || *stp >= stmax) || brackt && stmax - stmin <= *xtol * stmax){
+        *stp = stx;
     }
-/*     Obtain another function and derivative. */
-    s_copy(task, "FG", task_len, (ftnlen)2);
+    /*     Obtain another function and derivative. */
+    task = "FG";
 L10:
 /*     Save local variables. */
-    if (brackt) {
-	isave[1] = 1;
-    } else {
-	isave[1] = 0;
-    }
+    isave[1] = (int)brackt;
     isave[2] = stage;
     dsave[1] = ginit;
     dsave[2] = gtest;
@@ -335,5 +292,5 @@ L10:
     dsave[11] = stmax;
     dsave[12] = width;
     dsave[13] = width1;
-} /* dcsrch_ */
+}
 
