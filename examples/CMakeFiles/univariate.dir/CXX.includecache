@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/harry/projects/maths/ook/examples/univariate.cpp
+iostream
+-
+iomanip
+-
+tuple
+-
+cmath
+-
+limits
+-
+

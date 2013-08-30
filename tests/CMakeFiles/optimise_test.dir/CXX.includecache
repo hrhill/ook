@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/harry/projects/maths/ook/tests/optimise_test.cpp
+iostream
+-
+string
+-
+limits
+-
+random
+-
+boost/numeric/ublas/vector.hpp
+-
+boost/numeric/ublas/io.hpp
+-
+boost/timer.hpp
+-
+boost/mpl/list.hpp
+-
+boost/test/unit_test.hpp
+-
+boost/test/floating_point_comparison.hpp
+-
+boost/test/test_tools.hpp
+-
+optimise.h
+/home/harry/projects/maths/ook/tests/optimise.h
+schemes/newton.h
+/home/harry/projects/maths/ook/tests/schemes/newton.h
+function_traits.h
+/home/harry/projects/maths/ook/tests/function_traits.h
+

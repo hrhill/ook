@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -pedantic -std=gnu++0x    CMakeFiles/univariate.dir/univariate.cpp.o  -o ../bin/univariate -rdynamic /usr/local/lib/libboost_program_options.so -Wl,-rpath,/usr/local/lib 
