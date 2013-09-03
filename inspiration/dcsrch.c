@@ -1,5 +1,8 @@
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
+
+#include "line_search.h"
 
 #define max(x, y) ((x) > (y) ? (x) : (y))
 #define min(x, y) ((x) < (y) ? (x) : (y))
@@ -40,7 +43,7 @@ int s_cmp(char *a0, char *b0, ftnlen la, ftnlen lb)
     return(0);
 }
 
-int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, char* task, double* stpmin, double* stpmax, ftnlen task_len)
+int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, std::string& task,  double* stpmin, double* stpmax, ftnlen task_len)
 {
 /*  Subroutine dcsrch
 
@@ -81,7 +84,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
 
     task = 'START'
     10 continue
-        call dcsrch(stp,f,g,ftol,gtol,xtol,task,stpmin,stpmax,isave,dsave)
+        call dcsrch(stp,f,g,ftol,gtol,xtol,task = stpmin,stpmax,isave,dsave)
         if (task .eq. 'FG') then
             Evaluate the function and the gradient at stp
             go to 10
@@ -91,7 +94,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
 
     The subroutine statement is
 
-    subroutine dcsrch(f,g,stp,ftol,gtol,xtol,stpmin,stpmax,task,isave,dsave)
+    subroutine dcsrch(f,g,stp,ftol,gtol,xtol,stpmin,stpmax,task = isave,dsave)
     where
 
         stp is a double precision variable.
@@ -168,34 +171,34 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     static double fxm, fym, gxm, gym, stx, sty;
 
     /* Function Body */
-    if (s_cmp(task, "START", (ftnlen)5, (ftnlen)5) == 0) {
+    if (task == "START") {
         /*        Check the input arguments for errors. */
         if (*stp < *stpmin) {
-            strcpy(task, "ERROR: STP .LT. STPMIN");
+            task = "ERROR: STP .LT. STPMIN";
         }
         if (*stp > *stpmax) {
-            strcpy(task, "ERROR: STP .GT. STPMAX");
+            task = "ERROR: STP .GT. STPMAX";
         }
         if (*g >= 0.) {
-            strcpy(task, "ERROR: INITIAL G .GE. ZERO");
+            task = "ERROR: INITIAL G .GE. ZERO";
         }
         if (*ftol < 0.) {
-            strcpy(task, "ERROR: FTOL .LT. ZERO");
+            task = "ERROR: FTOL .LT. ZERO";
         }
         if (*gtol < 0.) {
-            strcpy(task, "ERROR: GTOL .LT. ZERO");
+            task = "ERROR: GTOL .LT. ZERO";
         }
         if (*xtol < 0.) {
-            strcpy(task, "ERROR: XTOL .LT. ZERO");
+            task = "ERROR: XTOL .LT. ZERO";
         }
         if (*stpmin < 0.) {
-            strcpy(task, "ERROR: STPMIN .LT. ZERO");
+            task = "ERROR: STPMIN .LT. ZERO";
         }
         if (*stpmax < *stpmin) {
-            strcpy(task, "ERROR: STPMAX .LT. STPMIN");
+            task = "ERROR: STPMAX .LT. STPMIN";
         }
         /* Exit if there are errors on input. */
-        if (s_cmp(task, "ERROR", (ftnlen)5, (ftnlen)5) == 0) {
+        if (task.find("ERROR") != std::string::npos) {
             return 0;
         }
         /*        Initialize local variables. */
@@ -221,8 +224,8 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         stmin = 0.;
         stmax = *stp + *stp * 4.;
 
-        strcpy(task, "FG");
-        return;
+        task =  "FG";
+        return 0;
     }
     /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
     /*     algorithm enters the second stage. */
@@ -232,24 +235,24 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     }
     /*     Test for warnings. */
     if (brackt && (*stp <= stmin || *stp >= stmax)) {
-        strcpy(task, "WARNING: ROUNDING ERRORS PREVENT PROGRESS");
+        task = "WARNING: ROUNDING ERRORS PREVENT PROGRESS";
     }
     if (brackt && stmax - stmin <= *xtol * stmax) {
-        strcpy(task, "WARNING: XTOL TEST SATISFIED");
+        task = "WARNING: XTOL TEST SATISFIED";
     }
     if (*stp == *stpmax && *f <= ftest && *g <= gtest) {
-        strcpy(task, "WARNING: STP = STPMAX");
+        task = "WARNING: STP = STPMAX";
     }
     if (*stp == *stpmin && (*f > ftest || *g >= gtest)) {
-        strcpy(task, "WARNING: STP = STPMIN");
+        task = "WARNING: STP = STPMIN";
     }
     /*     Test for convergence. */
-    if (*f <= ftest && abs(*g) <= *gtol * (-ginit)) {
-        strcpy(task, "CONVERGENCE");
+    if (*f <= ftest && fabs(*g) <= *gtol * (-ginit)) {
+        task = "CONVERGENCE";
     }
     /*     Test for termination. */
-    if (s_cmp(task, "WARN", (ftnlen)4, (ftnlen)4) == 0 || s_cmp(task, "CONV", (ftnlen)4, (ftnlen)4) == 0) {
-        return;
+    if (task.find("WARN") != std::string::npos || task.find("CONV") != std::string::npos) {
+        return 0;
     }
     /*     A modified function is used to predict the step during the */
     /*     first stage if a lower function value has been obtained but */
@@ -275,11 +278,11 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     }
     /*     Decide if a bisection step is needed. */
     if (brackt) {
-        if (abs(sty - stx) >= width1 * .66) {
+        if (fabs(sty - stx) >= width1 * .66) {
             *stp = stx + (sty - stx) * .5;
         }
         width1 = width;
-        width = abs(sty - stx);
+        width = fabs(sty - stx);
     }
     /*     Set the minimum and maximum steps allowed for stp. */
     if (brackt) {
@@ -298,5 +301,5 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         *stp = stx;
     }
     /*     Obtain another function and derivative. */
-    strcpy(task, "FG");
+    task = "FG";
 } 

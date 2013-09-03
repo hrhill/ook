@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdbool.h>
-#include <string.h>
+#include <string>
 
 #include "line_search.h"
 
@@ -40,18 +40,17 @@ int main(int argc, char** argv){
 
     stp = factor * stp0;
     int nfev = 0;
-    char task[255];
-    strcpy(task, "START");
+    std::string task("START");
     int isave[2];
     double dsave[13];
     int i;
     for (i = 0; i < ntries; ++i){
         dcsrch_(&stp, &f, &g, &ftol, &gtol, &xtol, task, &stpmin, &stpmax, 255);
-        if (s_cmp(task, "FG", 2, 2) == 0){
+        if (task.find("FG") != std::string::npos) {
             nfev = nfev + 1;
             f = phi51(stp, b, &g);
         }
-        printf("%d, %f, %f, %f, %s\n", nfev, stp, f, g, task);
+        std::cout << nfev << ", " <<  stp  << ", " << f  << ", " << g  << ", " <<  task << std::endl;
     };
 
     return 0;
