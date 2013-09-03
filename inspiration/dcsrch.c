@@ -79,13 +79,6 @@ void s_copy(char *a, char *b, ftnlen la, ftnlen lb)
 
 int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, char* task, double* stpmin, double* stpmax, ftnlen task_len)
 {
-    /* Local variables */
-    static int stage;
-    static double finit, ginit, width, ftest, gtest, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
-    static bool brackt;
-    extern /* Subroutine */ int dcstep_();
-    static double fxm, fym, gxm, gym, stx, sty;
-
 /*  Subroutine dcsrch
 
     This subroutine finds a step that satisfies a sufficient
@@ -146,80 +139,70 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
                 if task = 'FG'. If task = 'CONV' then stp satisfies
                 the sufficient decrease and curvature condition.
 
-/*       f is a double precision variable. */
-/*         On initial entry f is the value of the function at 0. */
-/*            On subsequent entries f is the value of the */
-/*            function at stp. */
-/*         On exit f is the value of the function at stp. */
+        f is a double precision variable.
+            On initial entry f is the value of the function at 0.
+                On subsequent entries f is the value of the function at stp.
+            On exit f is the value of the function at stp.
 
-/*       g is a double precision variable. */
-/*         On initial entry g is the derivative of the function at 0. */
-/*            On subsequent entries g is the derivative of the */
-/*            function at stp. */
-/*         On exit g is the derivative of the function at stp. */
+        g is a double precision variable.
+            On initial entry g is the derivative of the function at 0.
+            On subsequent entries g is the derivative of the function at stp.
+            On exit g is the derivative of the function at stp.
 
-/*       ftol is a double precision variable. */
-/*         On entry ftol specifies a nonnegative tolerance for the */
-/*            sufficient decrease condition. */
-/*         On exit ftol is unchanged. */
+        ftol is a double precision variable.
+            On entry ftol specifies a nonnegative tolerance for the sufficient decrease condition.
+            On exit ftol is unchanged.
 
-/*       gtol is a double precision variable. */
-/*         On entry gtol specifies a nonnegative tolerance for the */
-/*            curvature condition. */
-/*         On exit gtol is unchanged. */
+        gtol is a double precision variable.
+            On entry gtol specifies a nonnegative tolerance for the curvature condition.
+            On exit gtol is unchanged.
 
-/*       xtol is a double precision variable. */
-/*         On entry xtol specifies a nonnegative relative tolerance */
-/*            for an acceptable step. The subroutine exits with a */
-/*            warning if the relative difference between sty and stx */
-/*            is less than xtol. */
-/*         On exit xtol is unchanged. */
+        xtol is a double precision variable.
+            On entry xtol specifies a nonnegative relative tolerance
+                for an acceptable step. The subroutine exits with a
+                warning if the relative difference between sty and stx
+                is less than xtol.
+            On exit xtol is unchanged.
 
-/*       task is a character variable of length at least 60. */
-/*         On initial entry task must be set to 'START'. */
-/*         On exit task indicates the required action: */
+        task is a character variable of length at least 60.
+            On initial entry task must be set to 'START'.
+            On exit task indicates the required action:
 
-/*            If task(1:2) = 'FG' then evaluate the function and */
-/*            derivative at stp and call dcsrch again. */
+            If task(1:2) = 'FG' then evaluate the function and
+                derivative at stp and call dcsrch again.
 
-/*            If task(1:4) = 'CONV' then the search is successful. */
+            If task(1:4) = 'CONV' then the search is successful.
 
-/*            If task(1:4) = 'WARN' then the subroutine is not able */
-/*            to satisfy the convergence conditions. The exit value of */
-/*            stp contains the best point found during the search. */
+            If task(1:4) = 'WARN' then the subroutine is not able
+                to satisfy the convergence conditions. The exit value of
+                stp contains the best point found during the search.
 
-/*            If task(1:5) = 'ERROR' then there is an error in the */
-/*            input arguments. */
+            If task(1:5) = 'ERROR' then there is an error in the
+                input arguments.
 
-/*         On exit with convergence, a warning or an error, the */
-/*            variable task contains additional information. */
+            On exit with convergence, a warning or an error, the
+                variable task contains additional information.
 
-/*       stpmin is a double precision variable. */
-/*         On entry stpmin is a nonnegative lower bound for the step. */
-/*         On exit stpmin is unchanged. */
+        stpmin is a double precision variable.
+            On entry stpmin is a nonnegative lower bound for the step.
+            On exit stpmin is unchanged. 
 
-/*       stpmax is a double precision variable. */
-/*         On entry stpmax is a nonnegative upper bound for the step. */
-/*         On exit stpmax is unchanged. */
+        stpmax is a double precision variable.
+            On entry stpmax is a nonnegative upper bound for the step. 
+            On exit stpmax is unchanged.
 
-/*       isave is an int work array of dimension 2. */
+        MINPACK-1 Project. June 1983.
+        Argonne National Laboratory.
+        Jorge J. More' and David J. Thuente.
 
-/*       dsave is a double precision work array of dimension 13. */
+        MINPACK-2 Project. November 1993.
+        Argonne National Laboratory and University of Minnesota. 
+        Brett M. Averick, Richard G. Carter, and Jorge J. More'. */
 
-/*     Subprograms called */
-
-/*       MINPACK-2 ... dcstep */
-
-/*     MINPACK-1 Project. June 1983. */
-/*     Argonne National Laboratory. */
-/*     Jorge J. More' and David J. Thuente. */
-
-/*     MINPACK-2 Project. November 1993. */
-/*     Argonne National Laboratory and University of Minnesota. */
-/*     Brett M. Averick, Richard G. Carter, and Jorge J. More'. */
-
-/*     ********** */
-/*     Initialization block. */
+    static int stage;
+    static double finit, ginit, width, ftest, gtest, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
+    static bool brackt;
+    static double fxm, fym, gxm, gym, stx, sty;
 
     /* Function Body */
     if (s_cmp(task, "START", (ftnlen)5, (ftnlen)5) == 0) {
@@ -353,4 +336,4 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     }
     /*     Obtain another function and derivative. */
     s_copy(task, "FG", task_len, (ftnlen)2);
-} /* dcsrch_ */
+} 
