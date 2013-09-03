@@ -42,63 +42,62 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		On entry fx is the function at stx.
 		On exit fx is the function at stx.
 
-/*       dx is a double precision variable.
-/*         On entry dx is the derivative of the function at
-/*            stx. The derivative must be negative in the direction of
-/*            the step, that is, dx and stp - stx must have opposite
-/*            signs.
-/*         On exit dx is the derivative of the function at stx.
+	dx is a double precision variable.
+		On entry dx is the derivative of the function at
+			stx. The derivative must be negative in the direction of
+			the step, that is, dx and stp - stx must have opposite signs.
+		On exit dx is the derivative of the function at stx.
 
-/*       sty is a double precision variable.
-/*         On entry sty is the second endpoint of the interval that
-/*            contains the minimizer.
-/*         On exit sty is the updated endpoint of the interval that
-/*            contains the minimizer.
+	sty is a double precision variable.
+		On entry sty is the second endpoint of the interval that contains 
+			the minimizer.
+		On exit sty is the updated endpoint of the interval that contains 
+			the minimizer.
 
-/*       fy is a double precision variable. */
-/*         On entry fy is the function at sty. */
-/*         On exit fy is the function at sty. */
+	fy is a double precision variable.
+		On entry fy is the function at sty.
+		On exit fy is the function at sty.
 
-/*       dy is a double precision variable. */
-/*         On entry dy is the derivative of the function at sty. */
-/*         On exit dy is the derivative of the function at the exit sty. */
+	dy is a double precision variable.
+		On entry dy is the derivative of the function at sty.
+		On exit dy is the derivative of the function at the exit sty.
 
-/*       stp is a double precision variable. */
-/*         On entry stp is the current step. If brackt is set to .true. */
-/*            then on input stp must be between stx and sty. */
-/*         On exit stp is a new trial step. */
+	stp is a double precision variable.
+		On entry stp is the current step. If brackt is set to .true.
+			then on input stp must be between stx and sty.
+		On exit stp is a new trial step.
 
-/*       fp is a double precision variable. */
-/*         On entry fp is the function at stp */
-/*         On exit fp is unchanged. */
+	fp is a double precision variable.
+		On entry fp is the function at stp
+		On exit fp is unchanged.
 
-/*       dp is a double precision variable. */
-/*         On entry dp is the the derivative of the function at stp. */
-/*         On exit dp is unchanged. */
+	dp is a double precision variable.
+		On entry dp is the the derivative of the function at stp.
+		On exit dp is unchanged.
 
-/*       brackt is an bool variable. */
-/*         On entry brackt specifies if a minimizer has been bracketed. */
-/*            Initially brackt must be set to .false. */
-/*         On exit brackt specifies if a minimizer has been bracketed. */
-/*            When a minimizer is bracketed brackt is set to .true. */
+	brackt is an bool variable.
+		On entry brackt specifies if a minimizer has been bracketed.
+			Initially brackt must be set to .false.
+		On exit brackt specifies if a minimizer has been bracketed.
+			When a minimizer is bracketed brackt is set to .true.
 
-/*       stpmin is a double precision variable. */
-/*         On entry stpmin is a lower bound for the step. */
-/*         On exit stpmin is unchanged. */
+	stpmin is a double precision variable.
+		On entry stpmin is a lower bound for the step.
+		On exit stpmin is unchanged.
 
-/*       stpmax is a double precision variable. */
-/*         On entry stpmax is an upper bound for the step. */
-/*         On exit stpmax is unchanged. */
+	stpmax is a double precision variable.
+		On entry stpmax is an upper bound for the step.
+		On exit stpmax is unchanged.
 
-/*     MINPACK-1 Project. June 1983 */
-/*     Argonne National Laboratory. */
-/*     Jorge J. More' and David J. Thuente. */
+	MINPACK-1 Project. June 1983 
+	Argonne National Laboratory.
+	Jorge J. More' and David J. Thuente.
 
-/*     MINPACK-2 Project. November 1993. */
-/*     Argonne National Laboratory and University of Minnesota. */
-/*     Brett M. Averick and Jorge J. More'. */
+	MINPACK-2 Project. November 1993. 
+	Argonne National Laboratory and University of Minnesota.
+	Brett M. Averick and Jorge J. More'.
+	*/
 
-/*     ********** */
     sgnd = *dp * (*dx / abs(*dx));
 /*     First case: A higher function value. The minimum is bracketed. */
 /*     If the cubic step is closer to stx than the quadratic step, the */

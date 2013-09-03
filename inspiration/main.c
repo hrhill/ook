@@ -24,7 +24,7 @@ int main(int argc, char** argv){
 
     const double b = 2.0;
     const double factor = 1.0;
-    const int ntries = 30;
+    const int ntries = 100;
 
     double stp = 0.0;
     double g = 0;
