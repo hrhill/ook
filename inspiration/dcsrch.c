@@ -77,7 +77,7 @@ void s_copy(char *a, char *b, ftnlen la, ftnlen lb)
     }
 }
 
-int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, char* task, double* stpmin, double* stpmax, int* isave, double* dsave, ftnlen task_len)
+int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, char* task, double* stpmin, double* stpmax, ftnlen task_len)
 {
     /* Local variables */
     static int stage;
@@ -220,9 +220,6 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
 
 /*     ********** */
 /*     Initialization block. */
-    /* Parameter adjustments */
-    --dsave;
-    --isave;
 
     /* Function Body */
     if (s_cmp(task, "START", (ftnlen)5, (ftnlen)5) == 0) {
@@ -279,24 +276,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         stmax = *stp + *stp * 4.;
 
         s_copy(task, "FG", task_len, (ftnlen)2);
-        goto L10;
-    } else {
-        /*        Restore local variables. */
-        brackt = isave[1] == 1;
-        stage = isave[2];
-        ginit = dsave[1];
-        gtest = dsave[2];
-        gx = dsave[3];
-        gy = dsave[4];
-        finit = dsave[5];
-        fx = dsave[6];
-        fy = dsave[7];
-        stx = dsave[8];
-        sty = dsave[9];
-        stmin = dsave[10];
-        stmax = dsave[11];
-        width = dsave[12];
-        width1 = dsave[13];
+        return;
     }
     /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
     /*     algorithm enters the second stage. */
@@ -323,7 +303,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     }
     /*     Test for termination. */
     if (s_cmp(task, "WARN", (ftnlen)4, (ftnlen)4) == 0 || s_cmp(task, "CONV", (ftnlen)4, (ftnlen)4) == 0) {
-        goto L10;
+        return;
     }
     /*     A modified function is used to predict the step during the */
     /*     first stage if a lower function value has been obtained but */
@@ -373,21 +353,4 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     }
     /*     Obtain another function and derivative. */
     s_copy(task, "FG", task_len, (ftnlen)2);
-L10:
-/*     Save local variables. */
-    isave[1] = (int)brackt;
-    isave[2] = stage;
-    dsave[1] = ginit;
-    dsave[2] = gtest;
-    dsave[3] = gx;
-    dsave[4] = gy;
-    dsave[5] = finit;
-    dsave[6] = fx;
-    dsave[7] = fy;
-    dsave[8] = stx;
-    dsave[9] = sty;
-    dsave[10] = stmin;
-    dsave[11] = stmax;
-    dsave[12] = width;
-    dsave[13] = width1;
 } /* dcsrch_ */
