@@ -8,7 +8,7 @@ more_thuente(Phi phi, double phi0, double dphi0, double a, double a_min, double 
     const double c1 = 1e-04;
     const double c2 = 9e-01;
 
-    return alpha;
+    return a;
 }
 
 #endif
