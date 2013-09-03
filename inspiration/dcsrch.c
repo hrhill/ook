@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <string.h>
 
 #define max(x, y) ((x) > (y) ? (x) : (y))
 #define min(x, y) ((x) < (y) ? (x) : (y))
@@ -37,44 +38,6 @@ int s_cmp(char *a0, char *b0, ftnlen la, ftnlen lb)
             else    ++a;
     }
     return(0);
-}
-
-void s_copy(char *a, char *b, ftnlen la, ftnlen lb)
-{
-    char *aend, *bend;
-
-    aend = a + la;
-
-    if(la <= lb)
-#ifndef NO_OVERWRITE
-        if (a <= b || a >= b + la)
-#endif
-            while(a < aend)
-                *a++ = *b++;
-#ifndef NO_OVERWRITE
-        else
-            for(b += la; a < aend; )
-                *--aend = *--b;
-#endif
-
-    else {
-        bend = b + lb;
-#ifndef NO_OVERWRITE
-        if (a <= b || a >= bend)
-#endif
-            while(b < bend)
-                *a++ = *b++;
-#ifndef NO_OVERWRITE
-        else {
-            a += lb;
-            while(b < bend)
-                *--a = *--bend;
-            a += lb;
-        }
-#endif
-    while(a < aend)
-        *a++ = ' ';
-    }
 }
 
 int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, char* task, double* stpmin, double* stpmax, ftnlen task_len)
@@ -208,28 +171,28 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     if (s_cmp(task, "START", (ftnlen)5, (ftnlen)5) == 0) {
         /*        Check the input arguments for errors. */
         if (*stp < *stpmin) {
-            s_copy(task, "ERROR: STP .LT. STPMIN", task_len, (ftnlen)22);
+            strcpy(task, "ERROR: STP .LT. STPMIN");
         }
         if (*stp > *stpmax) {
-            s_copy(task, "ERROR: STP .GT. STPMAX", task_len, (ftnlen)22);
+            strcpy(task, "ERROR: STP .GT. STPMAX");
         }
         if (*g >= 0.) {
-            s_copy(task, "ERROR: INITIAL G .GE. ZERO", task_len, (ftnlen)26);
+            strcpy(task, "ERROR: INITIAL G .GE. ZERO");
         }
         if (*ftol < 0.) {
-            s_copy(task, "ERROR: FTOL .LT. ZERO", task_len, (ftnlen)21);
+            strcpy(task, "ERROR: FTOL .LT. ZERO");
         }
         if (*gtol < 0.) {
-            s_copy(task, "ERROR: GTOL .LT. ZERO", task_len, (ftnlen)21);
+            strcpy(task, "ERROR: GTOL .LT. ZERO");
         }
         if (*xtol < 0.) {
-            s_copy(task, "ERROR: XTOL .LT. ZERO", task_len, (ftnlen)21);
+            strcpy(task, "ERROR: XTOL .LT. ZERO");
         }
         if (*stpmin < 0.) {
-            s_copy(task, "ERROR: STPMIN .LT. ZERO", task_len, (ftnlen)23);
+            strcpy(task, "ERROR: STPMIN .LT. ZERO");
         }
         if (*stpmax < *stpmin) {
-            s_copy(task, "ERROR: STPMAX .LT. STPMIN", task_len, (ftnlen)25);
+            strcpy(task, "ERROR: STPMAX .LT. STPMIN");
         }
         /* Exit if there are errors on input. */
         if (s_cmp(task, "ERROR", (ftnlen)5, (ftnlen)5) == 0) {
@@ -258,7 +221,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         stmin = 0.;
         stmax = *stp + *stp * 4.;
 
-        s_copy(task, "FG", task_len, (ftnlen)2);
+        strcpy(task, "FG");
         return;
     }
     /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
@@ -269,20 +232,20 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     }
     /*     Test for warnings. */
     if (brackt && (*stp <= stmin || *stp >= stmax)) {
-        s_copy(task, "WARNING: ROUNDING ERRORS PREVENT PROGRESS", task_len, (ftnlen)41);
+        strcpy(task, "WARNING: ROUNDING ERRORS PREVENT PROGRESS");
     }
     if (brackt && stmax - stmin <= *xtol * stmax) {
-        s_copy(task, "WARNING: XTOL TEST SATISFIED", task_len, (ftnlen)28);
+        strcpy(task, "WARNING: XTOL TEST SATISFIED");
     }
     if (*stp == *stpmax && *f <= ftest && *g <= gtest) {
-        s_copy(task, "WARNING: STP = STPMAX", task_len, (ftnlen)21);
+        strcpy(task, "WARNING: STP = STPMAX");
     }
     if (*stp == *stpmin && (*f > ftest || *g >= gtest)) {
-        s_copy(task, "WARNING: STP = STPMIN", task_len, (ftnlen)21);
+        strcpy(task, "WARNING: STP = STPMIN");
     }
     /*     Test for convergence. */
     if (*f <= ftest && abs(*g) <= *gtol * (-ginit)) {
-        s_copy(task, "CONVERGENCE", task_len, (ftnlen)11);
+        strcpy(task, "CONVERGENCE");
     }
     /*     Test for termination. */
     if (s_cmp(task, "WARN", (ftnlen)4, (ftnlen)4) == 0 || s_cmp(task, "CONV", (ftnlen)4, (ftnlen)4) == 0) {
@@ -335,5 +298,5 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         *stp = stx;
     }
     /*     Obtain another function and derivative. */
-    s_copy(task, "FG", task_len, (ftnlen)2);
+    strcpy(task, "FG");
 } 
