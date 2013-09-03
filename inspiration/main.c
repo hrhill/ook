@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "line_search.h"
 
@@ -40,7 +41,7 @@ int main(int argc, char** argv){
     stp = factor * stp0;
     int nfev = 0;
     char task[255];
-    s_copy(task, "START", 5, 5);
+    strcpy(task, "START");
     int isave[2];
     double dsave[13];
     int i;
