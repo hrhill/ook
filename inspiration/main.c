@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     double dsave[13];
     int i;
     for (i = 0; i < ntries; ++i){
-        dcsrch_(&stp, &f, &g, &ftol, &gtol, &xtol, task, &stpmin, &stpmax, isave, dsave, 255);
+        dcsrch_(&stp, &f, &g, &ftol, &gtol, &xtol, task, &stpmin, &stpmax, 255);
         if (s_cmp(task, "FG", 2, 2) == 0){
             nfev = nfev + 1;
             f = phi51(stp, b, &g);
