@@ -98,15 +98,15 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 	Brett M. Averick and Jorge J. More'.
 	*/
 
-    sgnd = *dp * (*dx / abs(*dx));
-/*	First case: A higher function value. The minimum is bracketed.
+    sgnd = *dp * (*dx / fabs(*dx));
+	/*	First case: A higher function value. The minimum is bracketed.
 	If the cubic step is closer to stx than the quadratic step, the
 	cubic step is taken, otherwise the average of the cubic and 
 	quadratic steps is taken. */
     if (*fp > *fx) {
 		theta = (*fx - *fp) * 3. / (*stp - *stx) + *dx + *dp;
 		/* Computing MAX */
-		d__1 = abs(theta), d__2 = abs(*dx), d__1 = max(d__1,d__2), d__2 = abs(*dp);
+		d__1 = fabs(theta), d__2 = fabs(*dx), d__1 = max(d__1,d__2), d__2 = fabs(*dp);
 		s = max(d__1,d__2);
 		/* Computing 2nd power */
 		d__1 = theta / s;
@@ -119,7 +119,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		r__ = p / q;
 		stpc = *stx + r__ * (*stp - *stx);
 		stpq = *stx + *dx / ((*fx - *fp) / (*stp - *stx) + *dx) / 2. * (*stp - *stx);
-		if ((d__1 = stpc - *stx, abs(d__1)) < (d__2 = stpq - *stx, abs(d__2))){
+		if ((d__1 = stpc - *stx, fabs(d__1)) < (d__2 = stpq - *stx, fabs(d__2))){
 	    	stpf = stpc;
 		} else {
 	    	stpf = stpc + (stpq - stpc) / 2.;
@@ -132,7 +132,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
     } else if (sgnd < 0.) {
     	theta = (*fx - *fp) * 3. / (*stp - *stx) + *dx + *dp;
 		/* Computing MAX */
-		d__1 = abs(theta), d__2 = abs(*dx), d__1 = max(d__1,d__2), d__2 = abs(*dp);
+		d__1 = fabs(theta), d__2 = fabs(*dx), d__1 = max(d__1,d__2), d__2 = fabs(*dp);
 		s = max(d__1,d__2);
 		/* Computing 2nd power */
 		d__1 = theta / s;
@@ -145,7 +145,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		r__ = p / q;
 		stpc = *stp + r__ * (*stx - *stp);
 		stpq = *stp + *dp / (*dp - *dx) * (*stx - *stp);
-		if ((d__1 = stpc - *stp, abs(d__1)) > (d__2 = stpq - *stp, abs(d__2))){
+		if ((d__1 = stpc - *stp, fabs(d__1)) > (d__2 = stpq - *stp, fabs(d__2))){
 			stpf = stpc;
 		} else {
 			stpf = stpq;
@@ -153,14 +153,14 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		*brackt = true;
 	/* Third case: A lower function value, derivatives of the same sign,
 	and the magnitude of the derivative decreases. */
-    } else if (abs(*dp) < abs(*dx)) {
+    } else if (fabs(*dp) < fabs(*dx)) {
 	/* 	The cubic step is computed only if the cubic tends to infinity
 		in the direction of the step or if the minimum of the cubic
 		is beyond stp. Otherwise the cubic step is defined to be the
 		secant step. */
 		theta = (*fx - *fp) * 3. / (*stp - *stx) + *dx + *dp;
 		/* Computing MAX */
-		d__1 = abs(theta), d__2 = abs(*dx), d__1 = max(d__1,d__2), d__2 = abs(*dp);
+		d__1 = fabs(theta), d__2 = fabs(*dx), d__1 = max(d__1,d__2), d__2 = fabs(*dp);
 		s = max(d__1,d__2);
 		/* The case gamma = 0 only arises if the cubic does not tend
 		to infinity in the direction of the step.*/
@@ -185,7 +185,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		/* A minimizer has been bracketed. If the cubic step is
 		closer to stp than the secant step, the cubic step is
 		taken, otherwise the secant step is taken. */
-	    if ((d__1 = stpc - *stp, abs(d__1)) < (d__2 = stpq - *stp, abs(d__2))) {
+	    if ((d__1 = stpc - *stp, fabs(d__1)) < (d__2 = stpq - *stp, fabs(d__2))) {
 			stpf = stpc;
 	    } else {
 			stpf = stpq;
@@ -202,7 +202,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		/* A minimizer has not been bracketed. If the cubic step is
 		farther from stp than the secant step, the cubic step is
 		taken, otherwise the secant step is taken. */
-	    if ((d__1 = stpc - *stp, abs(d__1)) > (d__2 = stpq - *stp, abs(d__2))) {
+	    if ((d__1 = stpc - *stp, fabs(d__1)) > (d__2 = stpq - *stp, fabs(d__2))) {
 	    	stpf = stpc;
 	    } else {
 	    	stpf = stpq;
@@ -218,7 +218,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 		if (*brackt) {
 	    	theta = (*fp - *fy) * 3. / (*sty - *stp) + *dy + *dp;
 
-	    	d__1 = abs(theta), d__2 = abs(*dy), d__1 = max(d__1,d__2), d__2 = abs(*dp);
+	    	d__1 = fabs(theta), d__2 = fabs(*dy), d__1 = max(d__1,d__2), d__2 = fabs(*dp);
 	    	s = max(d__1,d__2);
 
 	    	d__1 = theta / s;
@@ -237,7 +237,7 @@ int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double
 	    	stpf = *stpmin;
 		}
     }
-/*     Update the interval which contains a minimizer. */
+	/* Update the interval which contains a minimizer. */
     if (*fp > *fx) {
 		*sty = *stp;
 		*fy = *fp;
