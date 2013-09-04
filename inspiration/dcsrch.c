@@ -21,7 +21,7 @@ validate_arguments(const double stp, const double g, const options& opts)
     return task;
 }
 
-int dcsrch_(double& stp, double& f, double& g, std::string& task, const options& opts)
+int dcsrch(double& stp, double& f, double& g, std::string& task, const options& opts)
 {
 /*  Subroutine dcsrch
 
@@ -173,7 +173,7 @@ int dcsrch_(double& stp, double& f, double& g, std::string& task, const options&
         fy = finit;
         gy = ginit;
         stmin = 0.;
-        stmax = stp + stp * 4.;
+        stmax = stp + 4.0 * stp;
 
         task =  "FG";
         return 0;
@@ -217,7 +217,7 @@ int dcsrch_(double& stp, double& f, double& g, std::string& task, const options&
         gxm = gx - gtest;
         gym = gy - gtest;
         /*        Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep_(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
+        dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
         /*        Reset the function and derivative values for f. */
         fx = fxm + stx * gtest;
         fy = fym + sty * gtest;
@@ -225,11 +225,11 @@ int dcsrch_(double& stp, double& f, double& g, std::string& task, const options&
         gy = gym + gtest;
     } else {
         /*       Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep_(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
+        dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
     }
     /*     Decide if a bisection step is needed. */
     if (brackt) {
-        if (fabs(sty - stx) >= 2.0/3.0 * width1) {
+        if (fabs(sty - stx) >= 0.66 * width1) {
             stp = stx + 0.5 * (sty - stx);
         }
         width1 = width;
