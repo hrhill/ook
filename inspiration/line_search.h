@@ -34,7 +34,8 @@ struct options{
 
 #undef ASSERT_CHECK_AND_THROW
 
-int dcsrch(double& stp, double& f, double& g, std::string& task, const options& opts);
-int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax);
+int dcsrch(const double finit, const double ginit, double& stp, double f, double g, std::string& task, const options& opts);
+int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, 
+            double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax);
 
 #endif

@@ -58,13 +58,9 @@ int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double&
 			then on input stp must be between stx and sty.
 		On exit stp is a new trial step.
 
-	fp is a double precision variable.
-		On entry fp is the function at stp
-		On exit fp is unchanged.
+	fp is the function at stp
 
-	dp is a double precision variable.
-		On entry dp is the the derivative of the function at stp.
-		On exit dp is unchanged.
+	dp is the derivative of the function at stp.
 
 	brackt is an bool variable.
 		On entry brackt specifies if a minimizer has been bracketed.
@@ -73,7 +69,7 @@ int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double&
 			When a minimizer is bracketed brackt is set to .true.
 
 	stpmin is a lower bound for the step.
-	
+
 	stpmax is an upper bound for the step.
 */
 
