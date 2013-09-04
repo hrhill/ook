@@ -21,7 +21,7 @@ validate_arguments(const double stp, const double g, const options& opts)
     return task;
 }
 
-int dcsrch(double& stp, double& f, double& g, std::string& task, const options& opts)
+int dcsrch(const double finit, const double ginit, double& stp, double f, double g, std::string& task, const options& opts)
 {
 /*  Subroutine dcsrch
 
@@ -60,19 +60,14 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
     Evaluate the gradient at stp = 0.0d0; store in g.
     Choose a starting step stp.
 
-    task = 'START'
-    10 continue
-        call dcsrch(stp, f, g, task, opts)
-        if (task .eq. 'FG') then
+    task = "START"
+    do{
+        dcsrch(stp, f, g, task, opts);
+        if (task.contains("FG")n
             Evaluate the function and the gradient at stp
-            go to 10
-        end if
+    }
 
-    The subroutine statement is
-
-    subroutine dcsrch(stp, f, g ,task, opts)
-    where
-
+    Arguments:
         stp is a double precision variable.
             On entry stp is the current estimate of a satisfactory
                 step. On initial entry, a positive initial estimate
@@ -124,7 +119,7 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
 */
 
     static int stage;
-    static double finit, ginit, width, ftest, gtest, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
+    static double width, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
     static bool brackt;
     static double stx, sty;
 
@@ -135,9 +130,6 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
         /*  Initialize local variables. */
         brackt = false;
         stage = 1;
-        finit = f;
-        ginit = g;
-        gtest = opts.ftol * ginit;
         width = opts.stpmax - opts.stpmin;
         width1 = 2.0 * width;
         /* The variables stx, fx, gx contain the values of the step,
@@ -160,7 +152,9 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
     }
     /* If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
     algorithm enters the second stage. */
-    ftest = finit + stp * gtest;
+    const double gtest = opts.ftol * ginit;        
+    const double ftest = finit + stp * gtest;
+
     if (stage == 1 && f <= ftest && g >= 0.) {
         stage = 2;
     }
@@ -215,9 +209,8 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
         }
         width1 = width;
         width = fabs(sty - stx);
-    }
-    /* Set the minimum and maximum steps allowed for stp. */
-    if (brackt) {
+
+        /* Set the minimum and maximum steps allowed for stp. */
         stmin = std::min(stx, sty);
         stmax = std::max(stx, sty);
     } else {

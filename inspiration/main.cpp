@@ -66,15 +66,18 @@ more_thuente_line_search(F phi, const double stp0, const double& mu, const doubl
                  4.0 * std::max(1.0, stp0)};
 
     double stp = 0.0;
-    double f, g;
-    std::tie(f, g) = phi(stp);
+    double f0, g0;
+    std::tie(f0, g0) = phi(stp);
 
     stp = stp0;
     int nfev = 0;
     std::string task("START");
 
+    double f, g;
+    std::tie(f, g) = phi(stp);
+
     do{
-        dcsrch(stp, f, g, task, opts);
+        dcsrch(f0, g0, stp, f, g, task, opts);
         if (task.find("FG") != std::string::npos) {
             nfev = nfev + 1;
             std::tie(f, g) = phi(stp);
