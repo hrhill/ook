@@ -1,7 +1,7 @@
 #include <cmath>
 #include <algorithm>
 
-int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax)
+int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax)
 {
 /*	This subroutine computes a safeguarded step for a search
 	procedure and updates an interval that contains a step that
