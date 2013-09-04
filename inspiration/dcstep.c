@@ -3,9 +3,6 @@
 
 int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, double& fp, double& dp, bool& brackt, double& stpmin, double& stpmax)
 {
-    /* System generated locals */
-    double d__1, d__2, d__3;
-
     /* Local variables */
     static double sgnd, stpc, stpf, stpq, p, q, gamma, r__, s, theta;
 
@@ -102,12 +99,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	quadratic steps is taken. */
     if (fp > fx) {
 		theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
-		/* Computing MAX */
-		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
-		s = std::max(d__1,d__2);
-		/* Computing 2nd power */
-		d__1 = theta / s;
-		gamma = s * sqrt(d__1 * d__1 - dx / s * (dp / s));
+		s = std::max({fabs(theta), fabs(dx), fabs(dp)});
+		gamma = s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s));
 		if (stp < stx) {
 	    	gamma = -gamma;
 		}
@@ -116,7 +109,7 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		r__ = p / q;
 		stpc = stx + r__ * (stp - stx);
 		stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / 2. * (stp - stx);
-		if ((d__1 = stpc - stx, fabs(d__1)) < (d__2 = stpq - stx, fabs(d__2))){
+		if (fabs(stpc - stx) < fabs(stpq - stx)){
 	    	stpf = stpc;
 		} else {
 	    	stpf = stpc + (stpq - stpc) / 2.;
@@ -128,12 +121,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	secant step is taken. */
     } else if (sgnd < 0.) {
     	theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
-		/* Computing MAX */
-		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
-		s = std::max(d__1,d__2);
-		/* Computing 2nd power */
-		d__1 = theta / s;
-		gamma = s * sqrt(d__1 * d__1 - dx / s * (dp / s));
+		s = std::max({fabs(theta), fabs(dx), fabs(dp)});
+		gamma = s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s));
 		if (stp > stx) {
 	    	gamma = -gamma;
 		}
@@ -142,7 +131,7 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		r__ = p / q;
 		stpc = stp + r__ * (stx - stp);
 		stpq = stp + dp / (dp - dx) * (stx - stp);
-		if ((d__1 = stpc - stp, fabs(d__1)) > (d__2 = stpq - stp, fabs(d__2))){
+		if (fabs(stpc - stp) > fabs(stpq - stp)){
 			stpf = stpc;
 		} else {
 			stpf = stpq;
@@ -156,14 +145,10 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		is beyond stp. Otherwise the cubic step is defined to be the
 		secant step. */
 		theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
-		/* Computing MAX */
-		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
-		s = std::max(d__1,d__2);
+		s = std::max({fabs(theta), fabs(dx), fabs(dp)});
 		/* The case gamma = 0 only arises if the cubic does not tend
 		to infinity in the direction of the step.*/
-		d__3 = theta / s;
-		d__1 = 0., d__2 = d__3 * d__3 - dx / s * (dp / s);
-		gamma = s * sqrt((std::max(d__1,d__2)));
+		gamma = s * sqrt(std::max(0.0, std::pow(theta / s, 2) - dx / s * (dp / s)));
 		if (stp > stx) {
 	    	gamma = -gamma;
 		}
@@ -182,24 +167,21 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		/* A minimizer has been bracketed. If the cubic step is
 		closer to stp than the secant step, the cubic step is
 		taken, otherwise the secant step is taken. */
-	    if ((d__1 = stpc - stp, fabs(d__1)) < (d__2 = stpq - stp, fabs(d__2))) {
+	    if (fabs(stpc - stp) < fabs(stpq - stp)) {
 			stpf = stpc;
 	    } else {
 			stpf = stpq;
 	    }
 	    if (stp > stx) {
-	    	d__1 = stp + (sty - stp) * .66;
-	    	stpf = std::min(d__1,stpf);
+	    	stpf = std::min(stp + 0.66 * (sty - stp), stpf);
 	    } else {
-	    	/* Computing MAX */
-			d__1 = stp + (sty - stp) * .66;
-			stpf = std::max(d__1,stpf);
+			stpf = std::max(stp + 0.66 * (sty - stp), stpf);
 	    }
 	} else {
 		/* A minimizer has not been bracketed. If the cubic step is
 		farther from stp than the secant step, the cubic step is
 		taken, otherwise the secant step is taken. */
-	    if ((d__1 = stpc - stp, fabs(d__1)) > (d__2 = stpq - stp, fabs(d__2))) {
+	    if (fabs(stpc - stp) > fabs(stpq - stp)) {
 	    	stpf = stpc;
 	    } else {
 	    	stpf = stpq;
@@ -214,12 +196,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
     } else {
 		if (brackt) {
 	    	theta = (fp - fy) * 3. / (sty - stp) + dy + dp;
-
-	    	d__1 = fabs(theta), d__2 = fabs(dy), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
-	    	s = std::max(d__1,d__2);
-
-	    	d__1 = theta / s;
-	    	gamma = s * sqrt(d__1 * d__1 - dy / s * (dp / s));
+	    	s = std::max({fabs(theta), fabs(dy), fabs(dp)});
+	    	gamma = s * sqrt(std::pow(theta / s, 2) - dy / s * (dp / s));
 	    	if (stp > sty) {
 	    		gamma = -gamma;
 	    	}
@@ -240,7 +218,7 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		fy = fp;
 		dy = dp;
     } else {
-		if (sgnd < 0.) {
+		if (sgnd < 0.0) {
 	    	sty = stx;
 	    	fy = fx;
 	    	dy = dx;
