@@ -1,8 +1,8 @@
-#include <stdbool.h>
-#include <math.h>
+#include <cmath>
+#include <algorithm>
 
-#define max(x, y) ((x) > (y) ? (x) : (y))
-#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) std::max(x, y)
+#define min(x, y) std::min(x, y)
 
 int dcstep_(double* stx, double* fx, double* dx, double* sty, double* fy, double* dy, double* stp, double* fp, double* dp, bool* brackt, double* stpmin, double* stpmax)
 {
