@@ -95,6 +95,7 @@ line_search_test(F phi, const double stp0, const double& mu, const double eta){
 
 int main(int argc, char** argv){
 
+    // line_search(function, a0, mu, eta)
     std::cout << std::endl << "Table 5.1" << std::endl;
     line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), 1e-03, 1e-03, 1e-01);
     line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), 1e-01, 1e-03, 1e-01);    
