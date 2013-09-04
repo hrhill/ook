@@ -5,21 +5,19 @@
 
 #include "line_search.h"
 
-std::string
+#define ASSERT_CHECK_AND_THROW(predicate) assert((predicate));\
+    if (!(predicate))\
+        throw std::invalid_argument(std::string(#predicate) + std::string(" must hold."));
+
+void
 validate_arguments(const double stp, const double g, const options& opts)
 {
-    std::string task;
-    if (stp < opts.stpmin) {
-        task = "ERROR: STP .LT. opts.stpmin";
-    }
-    if (stp > opts.stpmax) {
-        task = "ERROR: STP .GT. opts.stpmax";
-    }
-    if (g >= 0.) {
-        task = "ERROR: INITIAL G .GE. ZERO";
-    }
-    return task;
+    ASSERT_CHECK_AND_THROW(!(stp < opts.stpmin));
+    ASSERT_CHECK_AND_THROW(!(stp > opts.stpmax));
+    ASSERT_CHECK_AND_THROW(!(g > 0.0));
 }
+
+#undef ASSERT_CHECK_AND_THROW
 
 int dcsrch(const double finit, const double ginit, double& stp, double f, double g, std::string& task, const options& opts)
 {
@@ -123,10 +121,9 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     static bool brackt;
     static double stx, sty;
 
+    validate_arguments(stp, ginit, opts);
     /* Function Body */
     if (task == "START") {
-        /*  Check the input arguments for errors. */
-        task = validate_arguments(f, g, opts);
         /*  Initialize local variables. */
         brackt = false;
         stage = 1;
@@ -155,7 +152,7 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     const double gtest = opts.ftol * ginit;        
     const double ftest = finit + stp * gtest;
 
-    if (stage == 1 && f <= ftest && g >= 0.) {
+    if (stage == 1 && f <= ftest && g >= 0.){
         stage = 2;
     }
     /*     Test for warnings. */
