@@ -57,7 +57,7 @@ phi54(double a, double b1, double b2){
 
 template <typename F>
 void
-line_search_test(F phi, const double stp0, const double& mu, const double eta){
+more_thuente_line_search(F phi, const double stp0, const double& mu, const double eta){
 
     options opts{mu, 
                  eta,
@@ -96,32 +96,32 @@ int main(int argc, char** argv){
     // line_search(function, a0, mu, eta)
     std::cout << std::endl << "Table 5.1" << std::endl;
     for (int i = 0; i < n; ++i){
-        line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), std::pow(factor, i) * a0, 1e-03, 1e-01);        
+        more_thuente_line_search(std::bind(phi51, std::placeholders::_1, 2.0), std::pow(factor, i) * a0, 1e-03, 1e-01);        
     }
 
     std::cout << std::endl << "Table 5.2" << std::endl;
     for (int i = 0; i < n; ++i){
-        line_search_test(std::bind(phi52, std::placeholders::_1, 0.004), std::pow(factor, i) * a0, 1e-01, 1e-01);
+        more_thuente_line_search(std::bind(phi52, std::placeholders::_1, 0.004), std::pow(factor, i) * a0, 1e-01, 1e-01);
     }
 
     std::cout << std::endl << "Table 5.3" << std::endl;
     for (int i = 0; i < n; ++i){
-        line_search_test(std::bind(phi53, std::placeholders::_1, 0.01, 39), std::pow(factor, i) * a0, 1e-01, 1e-01);
+        more_thuente_line_search(std::bind(phi53, std::placeholders::_1, 0.01, 39), std::pow(factor, i) * a0, 1e-01, 1e-01);
     }
 
     std::cout << std::endl << "Table 5.4" << std::endl;
     for (int i = 0; i < n; ++i){
-        line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), std::pow(factor, i) * a0, 1e-03, 1e-03);
+        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), std::pow(factor, i) * a0, 1e-03, 1e-03);
     }
 
     std::cout << std::endl << "Table 5.5" << std::endl;
     for (int i = 0; i < n; ++i){
-        line_search_test(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), std::pow(factor, i) * a0, 1e-03, 1e-03);
+        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), std::pow(factor, i) * a0, 1e-03, 1e-03);
     }
 
     std::cout << std::endl << "Table 5.6" << std::endl;
     for (int i = 0; i < n; ++i){
-        line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), std::pow(factor, i) * a0, 1e-03, 1e-03);
+        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), std::pow(factor, i) * a0, 1e-03, 1e-03);
     }
     return 0;
 }

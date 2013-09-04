@@ -62,17 +62,15 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
 
     task = 'START'
     10 continue
-        call dcsrch(stp,f,g,opts.ftol,opts.gtol,opts.xtol,task = opts.stpmin,opts.stpmax,isave,dsave)
+        call dcsrch(stp, f, g, task, opts)
         if (task .eq. 'FG') then
             Evaluate the function and the gradient at stp
             go to 10
         end if
 
-    NOTE: The user must not alter work arrays between calls.
-
     The subroutine statement is
 
-    subroutine dcsrch(f,g,stp,opts.ftol,opts.gtol,opts.xtol,opts.stpmin,opts.stpmax,task = isave,dsave)
+    subroutine dcsrch(stp, f, g ,task, opts)
     where
 
         stp is a double precision variable.
@@ -113,11 +111,15 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
                 variable task contains additional information.
 
         opts.ftol specifies a nonnegative tolerance for the sufficient decrease condition.
+
         opts.gtol specifies a nonnegative tolerance for the curvature condition.
+
         opts.xtol specifies a nonnegative relative tolerance for an acceptable step. The 
                 subroutine exits with a warning if the relative difference between sty and stx
                 is less than opts.xtol.
+
         opts.stpmin is a nonnegative lower bound for the step.
+
         opts.stpmax is a nonnegative upper bound for the step. 
 */
 
@@ -128,22 +130,22 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
 
     /* Function Body */
     if (task == "START") {
-        /*        Check the input arguments for errors. */
+        /*  Check the input arguments for errors. */
         task = validate_arguments(f, g, opts);
-        /*        Initialize local variables. */
+        /*  Initialize local variables. */
         brackt = false;
         stage = 1;
         finit = f;
         ginit = g;
         gtest = opts.ftol * ginit;
         width = opts.stpmax - opts.stpmin;
-        width1 = width / .5;
-        /*        The variables stx, fx, gx contain the values of the step, */
-        /*        function, and derivative at the best step. */
-        /*        The variables sty, fy, gy contain the value of the step, */
-        /*        function, and derivative at sty. */
-        /*        The variables stp, f, g contain the values of the step, */
-        /*        function, and derivative at stp. */
+        width1 = 2.0 * width;
+        /* The variables stx, fx, gx contain the values of the step,
+        function, and derivative at the best step.
+        The variables sty, fy, gy contain the value of the step,
+        function, and derivative at sty.
+        The variables stp, f, g contain the values of the step,
+        function, and derivative at stp. */
         stx = 0.;
         fx = finit;
         gx = ginit;
@@ -156,8 +158,8 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
         task =  "FG";
         return 0;
     }
-    /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
-    /*     algorithm enters the second stage. */
+    /* If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
+    algorithm enters the second stage. */
     ftest = finit + stp * gtest;
     if (stage == 1 && f <= ftest && g >= 0.) {
         stage = 2;
@@ -165,47 +167,48 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
     /*     Test for warnings. */
     if (brackt && (stp <= stmin || stp >= stmax)) {
         task = "WARNING: ROUNDING ERRORS PREVENT PROGRESS";
+        return 0;        
     }
     if (brackt && stmax - stmin <= opts.xtol * stmax) {
         task = "WARNING: opts.xtol TEST SATISFIED";
+        return 0;        
     }
     if (stp == opts.stpmax && f <= ftest && g <= gtest) {
         task = "WARNING: STP = opts.stpmax";
+        return 0;        
     }
     if (stp == opts.stpmin && (f > ftest || g >= gtest)) {
         task = "WARNING: STP = opts.stpmin";
+        return 0;
     }
     /*     Test for convergence. */
     if (f <= ftest && fabs(g) <= opts.gtol * (-ginit)) {
         task = "CONVERGENCE";
-    }
-    /*     Test for termination. */
-    if (task.find("WARN") != std::string::npos || task.find("CONV") != std::string::npos) {
         return 0;
     }
-    /*     A modified function is used to predict the step during the */
-    /*     first stage if a lower function value has been obtained but */
-    /*     the decrease is not sufficient. */
+    /* A modified function is used to predict the step during the
+    first stage if a lower function value has been obtained but
+    the decrease is not sufficient. */
     if (stage == 1 && f <= fx && f > ftest) {
-        /*        Define the modified function and derivative values. */
+        /* Define the modified function and derivative values. */
         double fm = f - stp * gtest;
         double fxm = fx - stx * gtest;
         double fym = fy - sty * gtest;
         double gm = g - gtest;
         double gxm = gx - gtest;
         double gym = gy - gtest;
-        /*        Call dcstep to update stx, sty, and to compute the new step. */
+        /* Call dcstep to update stx, sty, and to compute the new step. */
         dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
-        /*        Reset the function and derivative values for f. */
+        /* Reset the function and derivative values for f. */
         fx = fxm + stx * gtest;
         fy = fym + sty * gtest;
         gx = gxm + gtest;
         gy = gym + gtest;
     } else {
-        /*       Call dcstep to update stx, sty, and to compute the new step. */
+        /* Call dcstep to update stx, sty, and to compute the new step. */
         dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
     }
-    /*     Decide if a bisection step is needed. */
+    /* Decide if a bisection step is needed. */
     if (brackt) {
         if (fabs(sty - stx) >= 0.66 * width1) {
             stp = stx + 0.5 * (sty - stx);
@@ -213,7 +216,7 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
         width1 = width;
         width = fabs(sty - stx);
     }
-    /*     Set the minimum and maximum steps allowed for stp. */
+    /* Set the minimum and maximum steps allowed for stp. */
     if (brackt) {
         stmin = std::min(stx, sty);
         stmax = std::max(stx, sty);
@@ -221,12 +224,14 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
         stmin = stp + 1.1 * (stp - stx);
         stmax = stp + 4.0 * (stp - stx);
     }
-    /*     Force the step to be within the bounds opts.stpmax and opts.stpmin. */
+    /* Force the step to be within the bounds opts.stpmax and opts.stpmin. */
     stp = std::max(stp, opts.stpmin);
     stp = std::min(stp, opts.stpmax);
-    /*     If further progress is not possible, let stp be the best */
-    /*     point obtained during the search. */
-    if (brackt && (stp <= stmin || stp >= stmax) || brackt && stmax - stmin <= opts.xtol * stmax){
+    /* If further progress is not possible, let stp be the best point obtained
+    during the search. */
+    if (brackt && (stp <= stmin || stp >= stmax) 
+        || brackt && stmax - stmin <= opts.xtol * stmax)
+    {
         stp = stx;
     }
     /*     Obtain another function and derivative. */

@@ -13,7 +13,7 @@ int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double&
 	The parameter stp contains the current step.
 	The subroutine assumes that if brackt is set to .true. then 
 
-		std::min(stx,sty) < stp < std::max(stx,sty),
+		min(stx,sty) < stp < max(stx,sty),
 
 	and that the derivative at stx is negative in the direction
 	of the step.
@@ -72,22 +72,10 @@ int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double&
 		On exit brackt specifies if a minimizer has been bracketed.
 			When a minimizer is bracketed brackt is set to .true.
 
-	stpmin is a double precision variable.
-		On entry stpmin is a lower bound for the step.
-		On exit stpmin is unchanged.
-
-	stpmax is a double precision variable.
-		On entry stpmax is an upper bound for the step.
-		On exit stpmax is unchanged.
-
-	MINPACK-1 Project. June 1983 
-	Argonne National Laboratory.
-	Jorge J. More' and David J. Thuente.
-
-	MINPACK-2 Project. November 1993. 
-	Argonne National Laboratory and University of Minnesota.
-	Brett M. Averick and Jorge J. More'.
-	*/
+	stpmin is a lower bound for the step.
+	
+	stpmax is an upper bound for the step.
+*/
 
     /* Local variables */
     double stpf;
