@@ -4,8 +4,39 @@
 
 #include "line_search.h"
 
-#define max(x, y) std::max(x, y)
-#define min(x, y) std::min(x, y)
+void
+validate_options(const double stpmin, const double stpmax, const double stp, const double ftol, const double gtol, const double xtol, const double g, std::string& task)
+{
+    /* Check the input arguments for errors. */
+    if (stp < stpmin) {
+        task = "ERROR: STP .LT. STPMIN";
+    }
+    if (stp > stpmax) {
+        task = "ERROR: STP .GT. STPMAX";
+    }
+    if (g >= 0.) {
+        task = "ERROR: INITIAL G .GE. ZERO";
+    }
+    if (ftol < 0.) {
+        task = "ERROR: FTOL .LT. ZERO";
+    }
+    if (gtol < 0.) {
+        task = "ERROR: GTOL .LT. ZERO";
+    }
+    if (xtol < 0.) {
+        task = "ERROR: XTOL .LT. ZERO";
+    }
+    if (stpmin < 0.) {
+        task = "ERROR: STPMIN .LT. ZERO";
+    }
+    if (stpmax < stpmin) {
+        task = "ERROR: STPMAX .LT. STPMIN";
+    }
+    /* Exit if there are errors on input. */
+    if (task.find("ERROR") != std::string::npos) {
+        throw std::runtime_error("Problem with option parameters\n" + task);
+    }    
+}
 
 int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double& gtol, const double& xtol, std::string& task, const double& stpmin, const double& stpmax)
 {
@@ -137,34 +168,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     /* Function Body */
     if (task == "START") {
         /*        Check the input arguments for errors. */
-        if (stp < stpmin) {
-            task = "ERROR: STP .LT. STPMIN";
-        }
-        if (stp > stpmax) {
-            task = "ERROR: STP .GT. STPMAX";
-        }
-        if (g >= 0.) {
-            task = "ERROR: INITIAL G .GE. ZERO";
-        }
-        if (ftol < 0.) {
-            task = "ERROR: FTOL .LT. ZERO";
-        }
-        if (gtol < 0.) {
-            task = "ERROR: GTOL .LT. ZERO";
-        }
-        if (xtol < 0.) {
-            task = "ERROR: XTOL .LT. ZERO";
-        }
-        if (stpmin < 0.) {
-            task = "ERROR: STPMIN .LT. ZERO";
-        }
-        if (stpmax < stpmin) {
-            task = "ERROR: STPMAX .LT. STPMIN";
-        }
-        /* Exit if there are errors on input. */
-        if (task.find("ERROR") != std::string::npos) {
-            return 0;
-        }
+        validate_options(stpmin, stpmax, stp, ftol, gtol, xtol, g, task);
         /*        Initialize local variables. */
         brackt = false;
         stage = 1;
@@ -250,15 +254,15 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     }
     /*     Set the minimum and maximum steps allowed for stp. */
     if (brackt) {
-        stmin = min(stx,sty);
-        stmax = max(stx,sty);
+        stmin = std::min(stx, sty);
+        stmax = std::max(stx, sty);
     } else {
         stmin = stp + (stp - stx) * 1.1;
         stmax = stp + (stp - stx) * 4.;
     }
     /*     Force the step to be within the bounds stpmax and stpmin. */
-    stp = max(stp, stpmin);
-    stp = min(stp, stpmax);
+    stp = std::max(stp, stpmin);
+    stp = std::min(stp, stpmax);
     /*     If further progress is not possible, let stp be the best */
     /*     point obtained during the search. */
     if (brackt && (stp <= stmin || stp >= stmax) || brackt && stmax - stmin <= xtol * stmax){

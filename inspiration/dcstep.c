@@ -1,9 +1,6 @@
 #include <cmath>
 #include <algorithm>
 
-#define max(x, y) std::max(x, y)
-#define min(x, y) std::min(x, y)
-
 int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, double& fp, double& dp, bool& brackt, double& stpmin, double& stpmax)
 {
     /* System generated locals */
@@ -22,7 +19,7 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	The parameter stp contains the current step.
 	The subroutine assumes that if brackt is set to .true. then 
 
-		min(stx,sty) < stp < max(stx,sty),
+		std::min(stx,sty) < stp < std::max(stx,sty),
 
 	and that the derivative at stx is negative in the direction
 	of the step.
@@ -106,8 +103,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
     if (fp > fx) {
 		theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
 		/* Computing MAX */
-		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = max(d__1,d__2), d__2 = fabs(dp);
-		s = max(d__1,d__2);
+		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
+		s = std::max(d__1,d__2);
 		/* Computing 2nd power */
 		d__1 = theta / s;
 		gamma = s * sqrt(d__1 * d__1 - dx / s * (dp / s));
@@ -132,8 +129,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
     } else if (sgnd < 0.) {
     	theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
 		/* Computing MAX */
-		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = max(d__1,d__2), d__2 = fabs(dp);
-		s = max(d__1,d__2);
+		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
+		s = std::max(d__1,d__2);
 		/* Computing 2nd power */
 		d__1 = theta / s;
 		gamma = s * sqrt(d__1 * d__1 - dx / s * (dp / s));
@@ -160,13 +157,13 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		secant step. */
 		theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
 		/* Computing MAX */
-		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = max(d__1,d__2), d__2 = fabs(dp);
-		s = max(d__1,d__2);
+		d__1 = fabs(theta), d__2 = fabs(dx), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
+		s = std::max(d__1,d__2);
 		/* The case gamma = 0 only arises if the cubic does not tend
 		to infinity in the direction of the step.*/
 		d__3 = theta / s;
 		d__1 = 0., d__2 = d__3 * d__3 - dx / s * (dp / s);
-		gamma = s * sqrt((max(d__1,d__2)));
+		gamma = s * sqrt((std::max(d__1,d__2)));
 		if (stp > stx) {
 	    	gamma = -gamma;
 		}
@@ -192,11 +189,11 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	    }
 	    if (stp > stx) {
 	    	d__1 = stp + (sty - stp) * .66;
-	    	stpf = min(d__1,stpf);
+	    	stpf = std::min(d__1,stpf);
 	    } else {
 	    	/* Computing MAX */
 			d__1 = stp + (sty - stp) * .66;
-			stpf = max(d__1,stpf);
+			stpf = std::max(d__1,stpf);
 	    }
 	} else {
 		/* A minimizer has not been bracketed. If the cubic step is
@@ -207,8 +204,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	    } else {
 	    	stpf = stpq;
 	    }
-	    stpf = min(stpmax, stpf);
-	    stpf = max(stpmin, stpf);
+	    stpf = std::min(stpmax, stpf);
+	    stpf = std::max(stpmin, stpf);
 	}
 	/* Fourth case: A lower function value, derivatives of the same sign,
 	and the magnitude of the derivative does not decrease. If the
@@ -218,8 +215,8 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		if (brackt) {
 	    	theta = (fp - fy) * 3. / (sty - stp) + dy + dp;
 
-	    	d__1 = fabs(theta), d__2 = fabs(dy), d__1 = max(d__1,d__2), d__2 = fabs(dp);
-	    	s = max(d__1,d__2);
+	    	d__1 = fabs(theta), d__2 = fabs(dy), d__1 = std::max(d__1,d__2), d__2 = fabs(dp);
+	    	s = std::max(d__1,d__2);
 
 	    	d__1 = theta / s;
 	    	gamma = s * sqrt(d__1 * d__1 - dy / s * (dp / s));
