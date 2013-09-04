@@ -59,22 +59,18 @@ template <typename F>
 void
 line_search_test(F phi, const double stp0, const double& mu, const double eta){
 
-    const double factor = 1.0;
-    const int ntries = 100;
+    const double ftol = mu;
+    const double gtol = eta;
+    const double xtol = std::numeric_limits<double>::epsilon();
+
+    const double stpmin = 0.0;
+    const double stpmax = 4.0 * std::max(1.0, stp0);
 
     double stp = 0.0;
     double f, g;
-
     std::tie(f, g) = phi(stp);
 
-    double ftol = mu;
-    double gtol = eta;
-    double xtol = std::numeric_limits<double>::epsilon();
-
-    double stpmin = 0.0;
-    double stpmax = 4.0 * std::max(1.0, stp0);
-
-    stp = factor * stp0;
+    stp = stp0;
     int nfev = 0;
     std::string task("START");
 
@@ -95,41 +91,38 @@ line_search_test(F phi, const double stp0, const double& mu, const double eta){
 
 int main(int argc, char** argv){
 
+    const double a0 = 1e-03;
+    const double factor = 100;
+    const int n = 4;
     // line_search(function, a0, mu, eta)
     std::cout << std::endl << "Table 5.1" << std::endl;
-    line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), 1e-03, 1e-03, 1e-01);
-    line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), 1e-01, 1e-03, 1e-01);    
-    line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), 1e01, 1e-03, 1e-01);    
-    line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), 1e03, 1e-03, 1e-01);    
+    for (int i = 0; i < n; ++i){
+        line_search_test(std::bind(phi51, std::placeholders::_1, 2.0), std::pow(factor, i) * a0, 1e-03, 1e-01);        
+    }
 
     std::cout << std::endl << "Table 5.2" << std::endl;
-    line_search_test(std::bind(phi52, std::placeholders::_1, 0.004), 1e-03, 1e-01, 1e-01);
-    line_search_test(std::bind(phi52, std::placeholders::_1, 0.004), 1e-01, 1e-01, 1e-01);    
-    line_search_test(std::bind(phi52, std::placeholders::_1, 0.004), 1e01, 1e-01, 1e-01);
-    line_search_test(std::bind(phi52, std::placeholders::_1, 0.004), 1e03, 1e-01, 1e-01);    
+    for (int i = 0; i < n; ++i){
+        line_search_test(std::bind(phi52, std::placeholders::_1, 0.004), std::pow(factor, i) * a0, 1e-01, 1e-01);
+    }
 
-    std::cout << "Table 5.3" << std::endl;
-    line_search_test(std::bind(phi53, std::placeholders::_1, 0.01, 39), 1e-03, 1e-01, 1e-01);
-    line_search_test(std::bind(phi53, std::placeholders::_1, 0.01, 39), 1e-01, 1e-01, 1e-01);    
-    line_search_test(std::bind(phi53, std::placeholders::_1, 0.01, 39), 1e01, 1e-01, 1e-01);
-    line_search_test(std::bind(phi53, std::placeholders::_1, 0.01, 39), 1e03, 1e-01, 1e-01);    
+    std::cout << std::endl << "Table 5.3" << std::endl;
+    for (int i = 0; i < n; ++i){
+        line_search_test(std::bind(phi53, std::placeholders::_1, 0.01, 39), std::pow(factor, i) * a0, 1e-01, 1e-01);
+    }
 
     std::cout << std::endl << "Table 5.4" << std::endl;
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), 1e-03, 1e-01, 1e-01);
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), 1e-01, 1e-01, 1e-01);    
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), 1e01, 1e-01, 1e-01);
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), 1e03, 1e-01, 1e-01);    
+    for (int i = 0; i < n; ++i){
+        line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), std::pow(factor, i) * a0, 1e-03, 1e-03);
+    }
 
     std::cout << std::endl << "Table 5.5" << std::endl;
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), 1e-03, 1e-03, 1e-03);
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), 1e-01, 1e-03, 1e-03);    
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), 1e01, 1e-03, 1e-03);
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), 1e03, 1e-03, 1e-03);    
+    for (int i = 0; i < n; ++i){
+        line_search_test(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), std::pow(factor, i) * a0, 1e-03, 1e-03);
+    }
 
     std::cout << std::endl << "Table 5.6" << std::endl;
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), 1e-03, 1e-03, 1e-03);
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), 1e-01, 1e-03, 1e-03);    
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), 1e01, 1e-03, 1e-03);
-    line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), 1e03, 1e-03, 1e-03);   
+    for (int i = 0; i < n; ++i){
+        line_search_test(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), std::pow(factor, i) * a0, 1e-03, 1e-03);
+    }
     return 0;
 }
