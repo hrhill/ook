@@ -222,7 +222,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     /*     first stage if a lower function value has been obtained but */
     /*     the decrease is not sufficient. */
     if (stage == 1 && f <= fx && f > ftest) {
-    /*        Define the modified function and derivative values. */
+        /*        Define the modified function and derivative values. */
         fm = f - stp * gtest;
         fxm = fx - stx * gtest;
         fym = fy - sty * gtest;
@@ -230,7 +230,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
         gxm = gx - gtest;
         gym = gy - gtest;
         /*        Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep_(&stx, &fxm, &gxm, &sty, &fym, &gym, &stp, &fm, &gm, &brackt, &stmin, &stmax);
+        dcstep_(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
         /*        Reset the function and derivative values for f. */
         fx = fxm + stx * gtest;
         fy = fym + sty * gtest;
@@ -238,7 +238,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
         gy = gym + gtest;
     } else {
         /*       Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep_(&stx, &fx, &gx, &sty, &fy, &gy, &stp, &f, &g, &brackt, &stmin, &stmax);
+        dcstep_(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
     }
     /*     Decide if a bisection step is needed. */
     if (brackt) {
