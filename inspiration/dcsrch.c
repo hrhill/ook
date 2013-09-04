@@ -1,44 +1,27 @@
 #include <string>
 #include <cmath>
 #include <algorithm>
+#include <stdexcept>
 
 #include "line_search.h"
 
-void
-validate_options(const double stpmin, const double stpmax, const double stp, const double ftol, const double gtol, const double xtol, const double g, std::string& task)
+std::string
+validate_arguments(const double stp, const double g, const options& opts)
 {
-    /* Check the input arguments for errors. */
-    if (stp < stpmin) {
-        task = "ERROR: STP .LT. STPMIN";
+    std::string task;
+    if (stp < opts.stpmin) {
+        task = "ERROR: STP .LT. opts.stpmin";
     }
-    if (stp > stpmax) {
-        task = "ERROR: STP .GT. STPMAX";
+    if (stp > opts.stpmax) {
+        task = "ERROR: STP .GT. opts.stpmax";
     }
     if (g >= 0.) {
         task = "ERROR: INITIAL G .GE. ZERO";
     }
-    if (ftol < 0.) {
-        task = "ERROR: FTOL .LT. ZERO";
-    }
-    if (gtol < 0.) {
-        task = "ERROR: GTOL .LT. ZERO";
-    }
-    if (xtol < 0.) {
-        task = "ERROR: XTOL .LT. ZERO";
-    }
-    if (stpmin < 0.) {
-        task = "ERROR: STPMIN .LT. ZERO";
-    }
-    if (stpmax < stpmin) {
-        task = "ERROR: STPMAX .LT. STPMIN";
-    }
-    /* Exit if there are errors on input. */
-    if (task.find("ERROR") != std::string::npos) {
-        throw std::runtime_error("Problem with option parameters\n" + task);
-    }    
+    return task;
 }
 
-int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double& gtol, const double& xtol, std::string& task, const double& stpmin, const double& stpmax)
+int dcsrch_(double& stp, double& f, double& g, std::string& task, const options& opts)
 {
 /*  Subroutine dcsrch
 
@@ -49,7 +32,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     endpoints stx and sty. The interval is initially chosen
     so that it contains a minimizer of the modified function
 
-        psi(stp) = f(stp) - f(0) - ftolstpf'(0).
+        psi(stp) = f(stp) - f(0) - opts.ftolstpf'(0).
 
     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
     interval is chosen so that it contains a minimizer of f.
@@ -57,13 +40,13 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     The algorithm is designed to find a step that satisfies
     the sufficient decrease condition
 
-        f(stp) <= f(0) + ftolstpf'(0),
+        f(stp) <= f(0) + opts.ftolstpf'(0),
 
     and the curvature condition
 
-        abs(f'(stp)) <= gtol*abs(f'(0)).
+        abs(f'(stp)) <= opts.gtol*abs(f'(0)).
 
-    If ftol is less than gtol and if, for example, the function
+    If opts.ftol is less than opts.gtol and if, for example, the function
     is bounded below, then there is always a step which satisfies
     both conditions.
 
@@ -79,7 +62,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
 
     task = 'START'
     10 continue
-        call dcsrch(stp,f,g,ftol,gtol,xtol,task = stpmin,stpmax,isave,dsave)
+        call dcsrch(stp,f,g,opts.ftol,opts.gtol,opts.xtol,task = opts.stpmin,opts.stpmax,isave,dsave)
         if (task .eq. 'FG') then
             Evaluate the function and the gradient at stp
             go to 10
@@ -89,7 +72,7 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
 
     The subroutine statement is
 
-    subroutine dcsrch(f,g,stp,ftol,gtol,xtol,stpmin,stpmax,task = isave,dsave)
+    subroutine dcsrch(f,g,stp,opts.ftol,opts.gtol,opts.xtol,opts.stpmin,opts.stpmax,task = isave,dsave)
     where
 
         stp is a double precision variable.
@@ -110,20 +93,20 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
             On subsequent entries g is the derivative of the function at stp.
             On exit g is the derivative of the function at stp.
 
-        ftol is a double precision variable.
-            On entry ftol specifies a nonnegative tolerance for the sufficient decrease condition.
-            On exit ftol is unchanged.
+        opts.ftol is a double precision variable.
+            On entry opts.ftol specifies a nonnegative tolerance for the sufficient decrease condition.
+            On exit opts.ftol is unchanged.
 
-        gtol is a double precision variable.
-            On entry gtol specifies a nonnegative tolerance for the curvature condition.
-            On exit gtol is unchanged.
+        opts.gtol is a double precision variable.
+            On entry opts.gtol specifies a nonnegative tolerance for the curvature condition.
+            On exit opts.gtol is unchanged.
 
-        xtol is a double precision variable.
-            On entry xtol specifies a nonnegative relative tolerance
+        opts.xtol is a double precision variable.
+            On entry opts.xtol specifies a nonnegative relative tolerance
                 for an acceptable step. The subroutine exits with a
                 warning if the relative difference between sty and stx
-                is less than xtol.
-            On exit xtol is unchanged.
+                is less than opts.xtol.
+            On exit opts.xtol is unchanged.
 
         task is a character variable of length at least 60.
             On initial entry task must be set to 'START'.
@@ -144,13 +127,13 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
             On exit with convergence, a warning or an error, the
                 variable task contains additional information.
 
-        stpmin is a double precision variable.
-            On entry stpmin is a nonnegative lower bound for the step.
-            On exit stpmin is unchanged. 
+        opts.stpmin is a double precision variable.
+            On entry opts.stpmin is a nonnegative lower bound for the step.
+            On exit opts.stpmin is unchanged. 
 
-        stpmax is a double precision variable.
-            On entry stpmax is a nonnegative upper bound for the step. 
-            On exit stpmax is unchanged.
+        opts.stpmax is a double precision variable.
+            On entry opts.stpmax is a nonnegative upper bound for the step. 
+            On exit opts.stpmax is unchanged.
 
         MINPACK-1 Project. June 1983.
         Argonne National Laboratory.
@@ -168,14 +151,14 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     /* Function Body */
     if (task == "START") {
         /*        Check the input arguments for errors. */
-        validate_options(stpmin, stpmax, stp, ftol, gtol, xtol, g, task);
+        task = validate_arguments(f, g, opts);
         /*        Initialize local variables. */
         brackt = false;
         stage = 1;
         finit = f;
         ginit = g;
-        gtest = ftol * ginit;
-        width = stpmax - stpmin;
+        gtest = opts.ftol * ginit;
+        width = opts.stpmax - opts.stpmin;
         width1 = width / .5;
         /*        The variables stx, fx, gx contain the values of the step, */
         /*        function, and derivative at the best step. */
@@ -205,17 +188,17 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     if (brackt && (stp <= stmin || stp >= stmax)) {
         task = "WARNING: ROUNDING ERRORS PREVENT PROGRESS";
     }
-    if (brackt && stmax - stmin <= xtol * stmax) {
-        task = "WARNING: XTOL TEST SATISFIED";
+    if (brackt && stmax - stmin <= opts.xtol * stmax) {
+        task = "WARNING: opts.xtol TEST SATISFIED";
     }
-    if (stp == stpmax && f <= ftest && g <= gtest) {
-        task = "WARNING: STP = STPMAX";
+    if (stp == opts.stpmax && f <= ftest && g <= gtest) {
+        task = "WARNING: STP = opts.stpmax";
     }
-    if (stp == stpmin && (f > ftest || g >= gtest)) {
-        task = "WARNING: STP = STPMIN";
+    if (stp == opts.stpmin && (f > ftest || g >= gtest)) {
+        task = "WARNING: STP = opts.stpmin";
     }
     /*     Test for convergence. */
-    if (f <= ftest && fabs(g) <= gtol * (-ginit)) {
+    if (f <= ftest && fabs(g) <= opts.gtol * (-ginit)) {
         task = "CONVERGENCE";
     }
     /*     Test for termination. */
@@ -246,8 +229,8 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
     }
     /*     Decide if a bisection step is needed. */
     if (brackt) {
-        if (fabs(sty - stx) >= width1 * .66) {
-            stp = stx + (sty - stx) * .5;
+        if (fabs(sty - stx) >= 2.0/3.0 * width1) {
+            stp = stx + 0.5 * (sty - stx);
         }
         width1 = width;
         width = fabs(sty - stx);
@@ -257,15 +240,15 @@ int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double&
         stmin = std::min(stx, sty);
         stmax = std::max(stx, sty);
     } else {
-        stmin = stp + (stp - stx) * 1.1;
-        stmax = stp + (stp - stx) * 4.;
+        stmin = stp + 1.1 * (stp - stx);
+        stmax = stp + 4.0 * (stp - stx);
     }
-    /*     Force the step to be within the bounds stpmax and stpmin. */
-    stp = std::max(stp, stpmin);
-    stp = std::min(stp, stpmax);
+    /*     Force the step to be within the bounds opts.stpmax and opts.stpmin. */
+    stp = std::max(stp, opts.stpmin);
+    stp = std::min(stp, opts.stpmax);
     /*     If further progress is not possible, let stp be the best */
     /*     point obtained during the search. */
-    if (brackt && (stp <= stmin || stp >= stmax) || brackt && stmax - stmin <= xtol * stmax){
+    if (brackt && (stp <= stmin || stp >= stmax) || brackt && stmax - stmin <= opts.xtol * stmax){
         stp = stx;
     }
     /*     Obtain another function and derivative. */

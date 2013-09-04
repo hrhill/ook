@@ -59,12 +59,15 @@ template <typename F>
 void
 line_search_test(F phi, const double stp0, const double& mu, const double eta){
 
+/*
     const double ftol = mu;
     const double gtol = eta;
     const double xtol = std::numeric_limits<double>::epsilon();
 
     const double stpmin = 0.0;
     const double stpmax = 4.0 * std::max(1.0, stp0);
+*/
+    options opts{mu, eta,std::numeric_limits<double>::epsilon(), 0.0, 4.0 * std::max(1.0, stp0)};
 
     double stp = 0.0;
     double f, g;
@@ -75,7 +78,7 @@ line_search_test(F phi, const double stp0, const double& mu, const double eta){
     std::string task("START");
 
     do{
-        dcsrch_(stp, f, g, ftol, gtol, xtol, task, stpmin, stpmax);
+        dcsrch_(stp, f, g, task, opts);
         if (task.find("FG") != std::string::npos) {
             nfev = nfev + 1;
             std::tie(f, g) = phi(stp);
