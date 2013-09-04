@@ -3,9 +3,6 @@
 
 int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax)
 {
-    /* Local variables */
-    static double sgnd, stpc, stpf, stpq, p, q, gamma, r__, s, theta;
-
 /*	This subroutine computes a safeguarded step for a search
 	procedure and updates an interval that contains a step that
 	satisfies a sufficient decrease and a curvature condition.
@@ -92,23 +89,23 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	Brett M. Averick and Jorge J. More'.
 	*/
 
-    sgnd = dp * (dx / fabs(dx));
+    /* Local variables */
+    double stpf;
+
+    const double sgnd = dp * (dx / fabs(dx));
 	/*	First case: A higher function value. The minimum is bracketed.
 	If the cubic step is closer to stx than the quadratic step, the
 	cubic step is taken, otherwise the average of the cubic and 
 	quadratic steps is taken. */
     if (fp > fx) {
-		theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
-		s = std::max({fabs(theta), fabs(dx), fabs(dp)});
-		gamma = s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s));
-		if (stp < stx) {
-	    	gamma = -gamma;
-		}
-		p = gamma - dx + theta;
-		q = gamma - dx + gamma + dp;
-		r__ = p / q;
-		stpc = stx + r__ * (stp - stx);
-		stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / 2. * (stp - stx);
+		const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
+		const double s = std::max({fabs(theta), fabs(dx), fabs(dp)});
+		const double gamma = copysign(s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s)), stp - stx);
+		const double p = gamma - dx + theta;
+		const double q = gamma - dx + gamma + dp;
+		const double r = p / q;
+		const double stpc = stx + r * (stp - stx);
+		const double stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / 2. * (stp - stx);
 		if (fabs(stpc - stx) < fabs(stpq - stx)){
 	    	stpf = stpc;
 		} else {
@@ -120,17 +117,14 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 	stp than the secant step, the cubic step is taken, otherwise the
 	secant step is taken. */
     } else if (sgnd < 0.) {
-    	theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
-		s = std::max({fabs(theta), fabs(dx), fabs(dp)});
-		gamma = s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s));
-		if (stp > stx) {
-	    	gamma = -gamma;
-		}
-		p = gamma - dp + theta;
-		q = gamma - dp + gamma + dx;
-		r__ = p / q;
-		stpc = stp + r__ * (stx - stp);
-		stpq = stp + dp / (dp - dx) * (stx - stp);
+		const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;    	
+		const double s = std::max({fabs(theta), fabs(dx), fabs(dp)});
+		const double gamma = copysign(s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s)), stx - stp);		
+		const double p = gamma - dp + theta;
+		const double q = gamma - dp + gamma + dx;
+		const double r = p / q;
+		const double stpc = stp + r * (stx - stp);
+		const double stpq = stp + dp / (dp - dx) * (stx - stp);
 		if (fabs(stpc - stp) > fabs(stpq - stp)){
 			stpf = stpc;
 		} else {
@@ -144,67 +138,60 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
 		in the direction of the step or if the minimum of the cubic
 		is beyond stp. Otherwise the cubic step is defined to be the
 		secant step. */
-		theta = (fx - fp) * 3. / (stp - stx) + dx + dp;
-		s = std::max({fabs(theta), fabs(dx), fabs(dp)});
+		const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;		
+		const double s = std::max({fabs(theta), fabs(dx), fabs(dp)});
 		/* The case gamma = 0 only arises if the cubic does not tend
 		to infinity in the direction of the step.*/
-		gamma = s * sqrt(std::max(0.0, std::pow(theta / s, 2) - dx / s * (dp / s)));
-		if (stp > stx) {
-	    	gamma = -gamma;
-		}
-		p = gamma - dp + theta;
-		q = gamma + (dx - dp) + gamma;
-		r__ = p / q;
-		if (r__ < 0. && gamma != 0.) {
-	    	stpc = stp + r__ * (stx - stp);
+		const double gamma = copysign(s * sqrt(std::max(0.0, std::pow(theta / s, 2) - dx / s * (dp / s))), stx - stp);
+		const double p = gamma - dp + theta;
+		const double q = gamma + (dx - dp) + gamma;
+		const double r = p / q;
+		double stpc = stpmin;
+		if (r < 0. && gamma != 0.) {
+	    	stpc = stp + r * (stx - stp);
 		} else if (stp > stx) {
 	    	stpc = stpmax;
-		} else {
-	    	stpc = stpmin;
 		}
-		stpq = stp + dp / (dp - dx) * (stx - stp);
-		if (brackt) {
-		/* A minimizer has been bracketed. If the cubic step is
-		closer to stp than the secant step, the cubic step is
-		taken, otherwise the secant step is taken. */
-	    if (fabs(stpc - stp) < fabs(stpq - stp)) {
-			stpf = stpc;
-	    } else {
-			stpf = stpq;
-	    }
-	    if (stp > stx) {
-	    	stpf = std::min(stp + 0.66 * (sty - stp), stpf);
-	    } else {
-			stpf = std::max(stp + 0.66 * (sty - stp), stpf);
-	    }
-	} else {
-		/* A minimizer has not been bracketed. If the cubic step is
-		farther from stp than the secant step, the cubic step is
-		taken, otherwise the secant step is taken. */
-	    if (fabs(stpc - stp) > fabs(stpq - stp)) {
-	    	stpf = stpc;
-	    } else {
-	    	stpf = stpq;
-	    }
-	    stpf = std::min(stpmax, stpf);
-	    stpf = std::max(stpmin, stpf);
-	}
+		const double stpq = stp + dp / (dp - dx) * (stx - stp);
+		if (brackt){
+			/* A minimizer has been bracketed. If the cubic step is
+			closer to stp than the secant step, the cubic step is
+			taken, otherwise the secant step is taken. */
+	    	if (fabs(stpc - stp) < fabs(stpq - stp)) {
+				stpf = stpc;
+	    	} else {
+				stpf = stpq;
+	    	}
+	    	if (stp > stx) {
+	    		stpf = std::min(stp + 0.66 * (sty - stp), stpf);
+	    	} else {
+				stpf = std::max(stp + 0.66 * (sty - stp), stpf);
+	    	}
+		} else {
+			/* A minimizer has not been bracketed. If the cubic step is
+			farther from stp than the secant step, the cubic step is
+			taken, otherwise the secant step is taken. */
+	    	if (fabs(stpc - stp) > fabs(stpq - stp)) {
+	    		stpf = stpc;
+	    	} else {
+	    		stpf = stpq;
+	    	}
+	    	stpf = std::min(stpmax, stpf);
+	    	stpf = std::max(stpmin, stpf);
+		}
 	/* Fourth case: A lower function value, derivatives of the same sign,
 	and the magnitude of the derivative does not decrease. If the
 	minimum is not bracketed, the step is either stpmin or stpmax,
 	otherwise the cubic step is taken. */
     } else {
 		if (brackt) {
-	    	theta = (fp - fy) * 3. / (sty - stp) + dy + dp;
-	    	s = std::max({fabs(theta), fabs(dy), fabs(dp)});
-	    	gamma = s * sqrt(std::pow(theta / s, 2) - dy / s * (dp / s));
-	    	if (stp > sty) {
-	    		gamma = -gamma;
-	    	}
-	    	p = gamma - dp + theta;
-	    	q = gamma - dp + gamma + dy;
-	    	r__ = p / q;
-	    	stpc = stp + r__ * (sty - stp);
+	    	const double theta = (fp - fy) * 3. / (sty - stp) + dy + dp;
+	    	const double s = std::max({fabs(theta), fabs(dy), fabs(dp)});
+	    	const double gamma = copysign(s * sqrt(std::pow(theta / s, 2) - dy / s * (dp / s)), sty - stp);
+	    	const double p = gamma - dp + theta;
+	    	const double q = gamma - dp + gamma + dy;
+	    	const double r = p / q;
+	    	const double stpc = stp + r * (sty - stp);
 	    	stpf = stpc;
 		} else if (stp > stx) {
 	    	stpf = stpmax;
@@ -229,5 +216,4 @@ int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double
     }
 	/*     Compute the new step. */
     stp = stpf;
-} 
-
+}
