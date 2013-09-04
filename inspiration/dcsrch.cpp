@@ -93,21 +93,6 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
             On subsequent entries g is the derivative of the function at stp.
             On exit g is the derivative of the function at stp.
 
-        opts.ftol is a double precision variable.
-            On entry opts.ftol specifies a nonnegative tolerance for the sufficient decrease condition.
-            On exit opts.ftol is unchanged.
-
-        opts.gtol is a double precision variable.
-            On entry opts.gtol specifies a nonnegative tolerance for the curvature condition.
-            On exit opts.gtol is unchanged.
-
-        opts.xtol is a double precision variable.
-            On entry opts.xtol specifies a nonnegative relative tolerance
-                for an acceptable step. The subroutine exits with a
-                warning if the relative difference between sty and stx
-                is less than opts.xtol.
-            On exit opts.xtol is unchanged.
-
         task is a character variable of length at least 60.
             On initial entry task must be set to 'START'.
             On exit task indicates the required action:
@@ -127,26 +112,19 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
             On exit with convergence, a warning or an error, the
                 variable task contains additional information.
 
-        opts.stpmin is a double precision variable.
-            On entry opts.stpmin is a nonnegative lower bound for the step.
-            On exit opts.stpmin is unchanged. 
-
-        opts.stpmax is a double precision variable.
-            On entry opts.stpmax is a nonnegative upper bound for the step. 
-            On exit opts.stpmax is unchanged.
-
-        MINPACK-1 Project. June 1983.
-        Argonne National Laboratory.
-        Jorge J. More' and David J. Thuente.
-
-        MINPACK-2 Project. November 1993.
-        Argonne National Laboratory and University of Minnesota. 
-        Brett M. Averick, Richard G. Carter, and Jorge J. More'. */
+        opts.ftol specifies a nonnegative tolerance for the sufficient decrease condition.
+        opts.gtol specifies a nonnegative tolerance for the curvature condition.
+        opts.xtol specifies a nonnegative relative tolerance for an acceptable step. The 
+                subroutine exits with a warning if the relative difference between sty and stx
+                is less than opts.xtol.
+        opts.stpmin is a nonnegative lower bound for the step.
+        opts.stpmax is a nonnegative upper bound for the step. 
+*/
 
     static int stage;
     static double finit, ginit, width, ftest, gtest, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
     static bool brackt;
-    static double fxm, fym, gxm, gym, stx, sty;
+    static double stx, sty;
 
     /* Function Body */
     if (task == "START") {
@@ -210,12 +188,12 @@ int dcsrch(double& stp, double& f, double& g, std::string& task, const options& 
     /*     the decrease is not sufficient. */
     if (stage == 1 && f <= fx && f > ftest) {
         /*        Define the modified function and derivative values. */
-        fm = f - stp * gtest;
-        fxm = fx - stx * gtest;
-        fym = fy - sty * gtest;
-        gm = g - gtest;
-        gxm = gx - gtest;
-        gym = gy - gtest;
+        double fm = f - stp * gtest;
+        double fxm = fx - stx * gtest;
+        double fym = fy - sty * gtest;
+        double gm = g - gtest;
+        double gxm = gx - gtest;
+        double gym = gy - gtest;
         /*        Call dcstep to update stx, sty, and to compute the new step. */
         dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
         /*        Reset the function and derivative values for f. */
