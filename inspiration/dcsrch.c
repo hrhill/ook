@@ -1,15 +1,13 @@
-#include <stdbool.h>
-#include <string.h>
-#include <math.h>
+#include <string>
+#include <cmath>
+#include <algorithm>
 
 #include "line_search.h"
 
-#define max(x, y) ((x) > (y) ? (x) : (y))
-#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) std::max(x, y)
+#define min(x, y) std::min(x, y)
 
-typedef short ftnlen;
-
-int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, double* xtol, std::string& task,  double* stpmin, double* stpmax)
+int dcsrch_(double& stp, double& f, double& g, const double& ftol, const double& gtol, const double& xtol, std::string& task, const double& stpmin, const double& stpmax)
 {
 /*  Subroutine dcsrch
 
@@ -20,7 +18,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     endpoints stx and sty. The interval is initially chosen
     so that it contains a minimizer of the modified function
 
-        psi(stp) = f(stp) - f(0) - ftol*stp*f'(0).
+        psi(stp) = f(stp) - f(0) - ftolstpf'(0).
 
     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
     interval is chosen so that it contains a minimizer of f.
@@ -28,7 +26,7 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     The algorithm is designed to find a step that satisfies
     the sufficient decrease condition
 
-        f(stp) <= f(0) + ftol*stp*f'(0),
+        f(stp) <= f(0) + ftolstpf'(0),
 
     and the curvature condition
 
@@ -139,28 +137,28 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     /* Function Body */
     if (task == "START") {
         /*        Check the input arguments for errors. */
-        if (*stp < *stpmin) {
+        if (stp < stpmin) {
             task = "ERROR: STP .LT. STPMIN";
         }
-        if (*stp > *stpmax) {
+        if (stp > stpmax) {
             task = "ERROR: STP .GT. STPMAX";
         }
-        if (*g >= 0.) {
+        if (g >= 0.) {
             task = "ERROR: INITIAL G .GE. ZERO";
         }
-        if (*ftol < 0.) {
+        if (ftol < 0.) {
             task = "ERROR: FTOL .LT. ZERO";
         }
-        if (*gtol < 0.) {
+        if (gtol < 0.) {
             task = "ERROR: GTOL .LT. ZERO";
         }
-        if (*xtol < 0.) {
+        if (xtol < 0.) {
             task = "ERROR: XTOL .LT. ZERO";
         }
-        if (*stpmin < 0.) {
+        if (stpmin < 0.) {
             task = "ERROR: STPMIN .LT. ZERO";
         }
-        if (*stpmax < *stpmin) {
+        if (stpmax < stpmin) {
             task = "ERROR: STPMAX .LT. STPMIN";
         }
         /* Exit if there are errors on input. */
@@ -170,10 +168,10 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         /*        Initialize local variables. */
         brackt = false;
         stage = 1;
-        finit = *f;
-        ginit = *g;
-        gtest = *ftol * ginit;
-        width = *stpmax - *stpmin;
+        finit = f;
+        ginit = g;
+        gtest = ftol * ginit;
+        width = stpmax - stpmin;
         width1 = width / .5;
         /*        The variables stx, fx, gx contain the values of the step, */
         /*        function, and derivative at the best step. */
@@ -188,32 +186,32 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         fy = finit;
         gy = ginit;
         stmin = 0.;
-        stmax = *stp + *stp * 4.;
+        stmax = stp + stp * 4.;
 
         task =  "FG";
         return 0;
     }
     /*     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the */
     /*     algorithm enters the second stage. */
-    ftest = finit + *stp * gtest;
-    if (stage == 1 && *f <= ftest && *g >= 0.) {
+    ftest = finit + stp * gtest;
+    if (stage == 1 && f <= ftest && g >= 0.) {
         stage = 2;
     }
     /*     Test for warnings. */
-    if (brackt && (*stp <= stmin || *stp >= stmax)) {
+    if (brackt && (stp <= stmin || stp >= stmax)) {
         task = "WARNING: ROUNDING ERRORS PREVENT PROGRESS";
     }
-    if (brackt && stmax - stmin <= *xtol * stmax) {
+    if (brackt && stmax - stmin <= xtol * stmax) {
         task = "WARNING: XTOL TEST SATISFIED";
     }
-    if (*stp == *stpmax && *f <= ftest && *g <= gtest) {
+    if (stp == stpmax && f <= ftest && g <= gtest) {
         task = "WARNING: STP = STPMAX";
     }
-    if (*stp == *stpmin && (*f > ftest || *g >= gtest)) {
+    if (stp == stpmin && (f > ftest || g >= gtest)) {
         task = "WARNING: STP = STPMIN";
     }
     /*     Test for convergence. */
-    if (*f <= ftest && fabs(*g) <= *gtol * (-ginit)) {
+    if (f <= ftest && fabs(g) <= gtol * (-ginit)) {
         task = "CONVERGENCE";
     }
     /*     Test for termination. */
@@ -223,16 +221,16 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
     /*     A modified function is used to predict the step during the */
     /*     first stage if a lower function value has been obtained but */
     /*     the decrease is not sufficient. */
-    if (stage == 1 && *f <= fx && *f > ftest) {
+    if (stage == 1 && f <= fx && f > ftest) {
     /*        Define the modified function and derivative values. */
-        fm = *f - *stp * gtest;
+        fm = f - stp * gtest;
         fxm = fx - stx * gtest;
         fym = fy - sty * gtest;
-        gm = *g - gtest;
+        gm = g - gtest;
         gxm = gx - gtest;
         gym = gy - gtest;
         /*        Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep_(&stx, &fxm, &gxm, &sty, &fym, &gym, stp, &fm, &gm, &brackt, &stmin, &stmax);
+        dcstep_(&stx, &fxm, &gxm, &sty, &fym, &gym, &stp, &fm, &gm, &brackt, &stmin, &stmax);
         /*        Reset the function and derivative values for f. */
         fx = fxm + stx * gtest;
         fy = fym + sty * gtest;
@@ -240,12 +238,12 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         gy = gym + gtest;
     } else {
         /*       Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep_(&stx, &fx, &gx, &sty, &fy, &gy, stp, f, g, &brackt, &stmin, &stmax);
+        dcstep_(&stx, &fx, &gx, &sty, &fy, &gy, &stp, &f, &g, &brackt, &stmin, &stmax);
     }
     /*     Decide if a bisection step is needed. */
     if (brackt) {
         if (fabs(sty - stx) >= width1 * .66) {
-            *stp = stx + (sty - stx) * .5;
+            stp = stx + (sty - stx) * .5;
         }
         width1 = width;
         width = fabs(sty - stx);
@@ -255,16 +253,16 @@ int dcsrch_(double* stp, double* f, double* g, double* ftol, double* gtol, doubl
         stmin = min(stx,sty);
         stmax = max(stx,sty);
     } else {
-        stmin = *stp + (*stp - stx) * 1.1;
-        stmax = *stp + (*stp - stx) * 4.;
+        stmin = stp + (stp - stx) * 1.1;
+        stmax = stp + (stp - stx) * 4.;
     }
     /*     Force the step to be within the bounds stpmax and stpmin. */
-    *stp = max(*stp, *stpmin);
-    *stp = min(*stp, *stpmax);
+    stp = max(stp, stpmin);
+    stp = min(stp, stpmax);
     /*     If further progress is not possible, let stp be the best */
     /*     point obtained during the search. */
-    if (brackt && (*stp <= stmin || *stp >= stmax) || brackt && stmax - stmin <= *xtol * stmax){
-        *stp = stx;
+    if (brackt && (stp <= stmin || stp >= stmax) || brackt && stmax - stmin <= xtol * stmax){
+        stp = stx;
     }
     /*     Obtain another function and derivative. */
     task = "FG";
