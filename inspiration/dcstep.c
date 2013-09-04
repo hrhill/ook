@@ -1,7 +1,7 @@
 #include <cmath>
 #include <algorithm>
 
-int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, double& fp, double& dp, bool& brackt, double& stpmin, double& stpmax)
+int dcstep_(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax)
 {
     /* Local variables */
     static double sgnd, stpc, stpf, stpq, p, q, gamma, r__, s, theta;
