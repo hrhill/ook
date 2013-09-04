@@ -1,4 +1,3 @@
-#include <string>
 #include <cmath>
 #include <algorithm>
 #include <stdexcept>
@@ -19,7 +18,7 @@ validate_arguments(const double stp, const double g, const options& opts)
 
 #undef ASSERT_CHECK_AND_THROW
 
-int dcsrch(const double finit, const double ginit, double& stp, double f, double g, std::string& task, const options& opts)
+int dcsrch(const double finit, const double ginit, double& stp, double f, double g, task_value& task, const options& opts)
 {
 /*  Subroutine dcsrch
 
@@ -123,7 +122,7 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
 
     validate_arguments(stp, ginit, opts);
     /* Function Body */
-    if (task == "START") {
+    if (task == task_value::start) {
         /*  Initialize local variables. */
         brackt = false;
         stage = 1;
@@ -144,7 +143,7 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
         stmin = 0.;
         stmax = stp + 4.0 * stp;
 
-        task =  "FG";
+        task =  task_value::fg;
         return 0;
     }
     /* If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
@@ -157,24 +156,24 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     }
     /*     Test for warnings. */
     if (brackt && (stp <= stmin || stp >= stmax)) {
-        task = "WARNING: ROUNDING ERRORS PREVENT PROGRESS";
+        task = task_value::warning_rounding_error_prevents_progress;
         return 0;        
     }
     if (brackt && stmax - stmin <= opts.xtol * stmax) {
-        task = "WARNING: opts.xtol TEST SATISFIED";
+        task = task_value::warning_xtol_satisfied;        
         return 0;        
     }
     if (stp == opts.stpmax && f <= ftest && g <= gtest) {
-        task = "WARNING: STP = opts.stpmax";
+        task = task_value::warning_stp_eq_stpmax;
         return 0;        
     }
     if (stp == opts.stpmin && (f > ftest || g >= gtest)) {
-        task = "WARNING: STP = opts.stpmin";
+        task = task_value::warning_stp_eq_stpmin;
         return 0;
     }
     /*     Test for convergence. */
     if (f <= ftest && fabs(g) <= opts.gtol * (-ginit)) {
-        task = "CONVERGENCE";
+        task = task_value::convergence;
         return 0;
     }
     /* A modified function is used to predict the step during the
@@ -225,5 +224,5 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
         stp = stx;
     }
     /*     Obtain another function and derivative. */
-    task = "FG";
+    task = task_value::fg;
 } 
