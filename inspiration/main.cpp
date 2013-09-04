@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <algorithm>
 #include <tuple>
 #include <iomanip>
@@ -7,6 +6,29 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "line_search.h"
+
+template <typename Enumeration>
+auto as_integer(Enumeration const value)
+    -> typename std::underlying_type<Enumeration>::type
+{
+    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+}
+
+const char* task_value_string[] = {"start",
+    "fg",
+    "warning_rounding_error_prevents_progress",
+    "warning_xtol_satistfied",
+    "warning_stp_eq_stpmax",
+    "warning_stp_eq_stpmin",
+    "CONVERGENCE"}; // for testing, don't want to change this yet
+
+std::ostream&
+operator <<(std::ostream& os, const task_value& tv)
+{
+    auto id = static_cast<std::underlying_type<task_value>::type>(tv);
+   os << std::string(task_value_string[id]);
+   return os;
+}
 
 std::tuple<double, double>
 phi51(double a, double b){
@@ -71,18 +93,20 @@ more_thuente_line_search(F phi, const double stp0, const double& mu, const doubl
 
     stp = stp0;
     int nfev = 0;
-    std::string task("START");
+    task_value task = task_value::start;
 
     double f, g;
     std::tie(f, g) = phi(stp);
 
     do{
         dcsrch(f0, g0, stp, f, g, task, opts);
-        if (task.find("FG") != std::string::npos) {
+        if (task == task_value::fg) {
             nfev = nfev + 1;
             std::tie(f, g) = phi(stp);
         }
-    }while (task.find("CONV") == std::string::npos);
+        if (task == task_value::convergence)
+            break;
+    }while (true);
     std::cout << std::scientific 
               << std::setw(16) << stp0 
               << std::setw(16) << task 

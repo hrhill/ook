@@ -34,7 +34,18 @@ struct options{
 
 #undef ASSERT_CHECK_AND_THROW
 
-int dcsrch(const double finit, const double ginit, double& stp, double f, double g, std::string& task, const options& opts);
+
+enum class task_value{
+    start,
+    fg,
+    warning_rounding_error_prevents_progress,
+    warning_xtol_satisfied,
+    warning_stp_eq_stpmax,
+    warning_stp_eq_stpmin,
+    convergence
+};
+
+int dcsrch(const double finit, const double ginit, double& stp, double f, double g, task_value& task, const options& opts);
 int dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, 
             double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax);
 
