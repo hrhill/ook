@@ -16,7 +16,7 @@ template <typename State>
 bool
 curvature_condition(const State& s, const typename State::real_type& c)
 {
-    return s.dfxk_alpha_pk_dot_pk >= c * s.dfxk_dot_pk;    
+    return s.dfxk_alpha_pk_dot_pk <= c * s.dfxk_dot_pk;    
 }
 
 template <typename State>
