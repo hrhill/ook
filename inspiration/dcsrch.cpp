@@ -150,9 +150,6 @@ dcsrch(const double finit, const double ginit, double& stp, double f, double g, 
     }
     /* If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
     algorithm enters the second stage. */
-    const double gtest = opts.ftol * ginit;        
-    //const double ftest = finit + stp * opts.ftol * ginit;
-
     const bool sufficient_decrease = sufficient_decrease_condition(f, finit, ginit, stp, opts.ftol);
     const bool curvature = curvature_condition(g, ginit, opts.gtol);
 
@@ -186,10 +183,11 @@ dcsrch(const double finit, const double ginit, double& stp, double f, double g, 
     the decrease is not sufficient. */
     if (stage == 1 && f <= fx && !sufficient_decrease) {
         /* Define the modified function and derivative values. */
-        double fm = f - stp * gtest;
+        const double gtest = opts.ftol * ginit;                
+        const double fm = f - stp * gtest;
         double fxm = fx - stx * gtest;
         double fym = fy - sty * gtest;
-        double gm = g - gtest;
+        const double gm = g - gtest;
         double gxm = gx - gtest;
         double gym = gy - gtest;
         /* Call dcstep to update stx, sty, and to compute the new step. */
