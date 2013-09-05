@@ -18,7 +18,20 @@ validate_arguments(const double stp, const double g, const options& opts)
 
 #undef ASSERT_CHECK_AND_THROW
 
-int dcsrch(const double finit, const double ginit, double& stp, double f, double g, task_value& task, const options& opts)
+bool
+sufficient_decrease_condition(const double fxap, const double fx, const double dfx_dot_p, const double a, const double c)
+{
+    return fxap <= fx + a * c * dfx_dot_p;
+}
+
+bool
+curvature_condition(const double dfxap_dot_p, const double dfx_dot_p, const double c)
+{
+    return fabs(dfxap_dot_p) <= c * fabs(dfx_dot_p);
+}
+
+int 
+dcsrch(const double finit, const double ginit, double& stp, double f, double g, task_value& task, const options& opts)
 {
 /*  Subroutine dcsrch
 
@@ -29,7 +42,7 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     endpoints stx and sty. The interval is initially chosen
     so that it contains a minimizer of the modified function
 
-        psi(stp) = f(stp) - f(0) - opts.ftolstpf'(0).
+        psi(stp) = f(stp) - f(0) - opts.ftol * stp * f'(0).
 
     If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
     interval is chosen so that it contains a minimizer of f.
@@ -37,7 +50,7 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     The algorithm is designed to find a step that satisfies
     the sufficient decrease condition
 
-        f(stp) <= f(0) + opts.ftolstpf'(0),
+        f(stp) <= f(0) + opts.ftol * stp * f'(0),
 
     and the curvature condition
 
@@ -50,12 +63,6 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     If no step can be found that satisfies both conditions, then
     the algorithm stops with a warning. In this case stp only
     satisfies the sufficient decrease condition.
-
-    A typical invocation of dcsrch has the following outline:
-
-    Evaluate the function at stp = 0.0d0; store in f.
-    Evaluate the gradient at stp = 0.0d0; store in g.
-    Choose a starting step stp.
 
     task = "START"
     do{
@@ -73,14 +80,9 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
                 if task = 'FG'. If task = 'CONV' then stp satisfies
                 the sufficient decrease and curvature condition.
 
-        f is a double precision variable.
-            On initial entry f is the value of the function at 0.
-                On subsequent entries f is the value of the function at stp.
-            On exit f is the value of the function at stp.
+        f is a is the value of the function at stp.
 
-        g is a double precision variable.
-            On initial entry g is the derivative of the function at 0.
-            On subsequent entries g is the derivative of the function at stp.
+        g is a the derivative of the function at stp.
             On exit g is the derivative of the function at stp.
 
         task is a character variable of length at least 60.
@@ -116,7 +118,7 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
 */
 
     static int stage;
-    static double width, stmin, stmax, width1, fm, gm, fx, fy, gx, gy;
+    static double width, stmin, stmax, width1, fx, fy, gx, gy;
     static bool brackt;
     static double stx, sty;
 
@@ -149,9 +151,12 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     /* If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
     algorithm enters the second stage. */
     const double gtest = opts.ftol * ginit;        
-    const double ftest = finit + stp * gtest;
+    //const double ftest = finit + stp * opts.ftol * ginit;
 
-    if (stage == 1 && f <= ftest && g >= 0.){
+    const bool sufficient_decrease = sufficient_decrease_condition(f, finit, ginit, stp, opts.ftol);
+    const bool curvature = curvature_condition(g, ginit, opts.gtol);
+
+    if (stage == 1 && sufficient_decrease && g >= 0.){
         stage = 2;
     }
     /*     Test for warnings. */
@@ -163,23 +168,23 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
         task = task_value::warning_xtol_satisfied;        
         return 0;        
     }
-    if (stp == opts.stpmax && f <= ftest && g <= gtest) {
+    if (stp == opts.stpmax && sufficient_decrease && curvature) {
         task = task_value::warning_stp_eq_stpmax;
         return 0;        
     }
-    if (stp == opts.stpmin && (f > ftest || g >= gtest)) {
+    if (stp == opts.stpmin && (!sufficient_decrease || !curvature)) {
         task = task_value::warning_stp_eq_stpmin;
         return 0;
     }
     /*     Test for convergence. */
-    if (f <= ftest && fabs(g) <= opts.gtol * (-ginit)) {
+    if (sufficient_decrease && curvature) {
         task = task_value::convergence;
         return 0;
     }
     /* A modified function is used to predict the step during the
     first stage if a lower function value has been obtained but
     the decrease is not sufficient. */
-    if (stage == 1 && f <= fx && f > ftest) {
+    if (stage == 1 && f <= fx && !sufficient_decrease) {
         /* Define the modified function and derivative values. */
         double fm = f - stp * gtest;
         double fxm = fx - stx * gtest;
@@ -218,11 +223,11 @@ int dcsrch(const double finit, const double ginit, double& stp, double f, double
     stp = std::min(stp, opts.stpmax);
     /* If further progress is not possible, let stp be the best point obtained
     during the search. */
-    if (brackt && (stp <= stmin || stp >= stmax) 
-        || brackt && stmax - stmin <= opts.xtol * stmax)
+    if ((brackt && (stp <= stmin || stp >= stmax) )
+        || (brackt && stmax - stmin <= opts.xtol * stmax))
     {
         stp = stx;
     }
-    /*     Obtain another function and derivative. */
+    /* Obtain another function and derivative. */
     task = task_value::fg;
 } 
