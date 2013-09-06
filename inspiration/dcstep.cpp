@@ -3,41 +3,22 @@
 #include <algorithm>
 #include <tuple>
 
-#include "point.h"
-
-inline
-std::pair<double , double>
-cubic_minimizer_(const point& p1, const point& p2)
-{
-	const double theta = 3.0 * (p1.f - p2.f) / (p2.st - p1.st) + p1.df + p2.df;
-	const double gamma = copysign(sqrt(std::pow(theta, 2) - p1.df * p2.df), p2.st - p1.st);
-	const double p = gamma - p1.df + theta;
-	const double q = 2.0 * gamma - p1.df + p2.df;
-	return std::make_pair(p / q, gamma);
-}
-
-
-inline
-std::pair<double , double>
+double 
 cubic_minimizer(double f1, double f2, double d1, double d2, double st1, double st2)
 {
-	/*
 	const double theta = 3.0 * (f1 - f2) / (st2 - st1) + d1 + d2;
 	const double gamma = copysign(sqrt(std::pow(theta, 2) - d1 * d2), st2 - st1);
 	const double p = gamma - d1 + theta;
 	const double q = 2.0 * gamma - d1 + d2;
-	return std::make_pair(p / q, gamma);
-	*/
-	return cubic_minimizer_({f1, d1, st1}, {f2, d2, st2});
+	return p / q;
 }
 
 inline
 std::pair<double, bool>
 case1(double fx, double dx, double stx, double fp, double dp, double stp)
 {
-	double stpf, r, gamma;
-	//std::tie(r, gamma) = cubic_minimizer(fx, fp, dx, dp, stx, stp);
-	std::tie(r, gamma) = cubic_minimizer_({fx, dx, stx}, {fp, dp, stp});
+	double stpf;
+	const double r = cubic_minimizer(fx, fp, dx, dp, stx, stp);
 	const double stpc = stx + r * (stp - stx);
 	const double stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / 2. * (stp - stx);
 	if (fabs(stpc - stx) < fabs(stpq - stx)){
@@ -52,9 +33,8 @@ inline
 std::pair<double, bool>
 case2(double fx, double dx, double stx, double fp, double dp, double stp)
 {
-	double stpf, r, gamma;
-	//std::tie(r, gamma) = cubic_minimizer(fp, fx, dp, dx, stp, stx);
-	std::tie(r, gamma) = cubic_minimizer_({fp, dp, stp}, {fx, dx, stx});	
+	double stpf;
+	const double r = cubic_minimizer(fp, fx, dp, dx, stp, stx);
 	const double stpc = stp + r * (stx - stp);
 	const double stpq = stp + dp / (dp - dx) * (stx - stp);
 	if (fabs(stpc - stp) > fabs(stpq - stp)){
@@ -73,13 +53,19 @@ case3(double stx, double fx, double dx, double sty, double fy, double dy, double
 	in the direction of the step or if the minimum of the cubic
 	is beyond stp. Otherwise the cubic step is defined to be the
 	secant step. */
-	double stpf, r, gamma;
-	//std::tie(r, gamma) = cubic_minimizer(fp, fx, dp, dx, stp, stx);
-	std::tie(r, gamma) = cubic_minimizer_({fp, dp, stp}, {fx, dx, stx});
+	const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
+	/* The case gamma = 0 only arises if the cubic does not tend
+	to infinity in the direction of the step.*/
+	const double gamma = copysign(std::max(0.0, sqrt(std::pow(theta, 2) - dx * dp)), stx - stp);
+	const double p = gamma - dp + theta;
+	const double q = 2.0 * gamma - dp + dx;
+	const double r = p / q;
+	
 	double stpc = (stp > stx) ? stpmax : stpmin;
 	if (r < 0. && gamma != 0.) {
 	    stpc = stp + r * (stx - stp);
 	}
+	double stpf;
 	const double delta = 0.66; // must be less than 1.	
 	const double stpq = stp + dp / (dp - dx) * (stx - stp);
 	if (brackt){
@@ -114,11 +100,9 @@ case3(double stx, double fx, double dx, double sty, double fy, double dy, double
 double
 case4(double stx, double sty, double fy, double dy, double stp, double fp, double dp, bool brackt, double stpmin, double stpmax)
 {
-	double r, gamma;
 	double stpf = (stp > stx) ? stpmax : stpmin;
 	if (brackt) {
-		//std::tie(r, gamma) = cubic_minimizer(fp, fy, dp, dy, stp, sty);
-		std::tie(r, gamma) = cubic_minimizer_({fp, dp, stp}, {fy, dy, sty});		
+	    const double r = cubic_minimizer(fp, fy, dp, dy, stp, sty);
 	    stpf = stp + r * (sty - stp);
 	}
 	return stpf;
