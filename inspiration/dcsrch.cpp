@@ -4,32 +4,6 @@
 
 #include "line_search.h"
 
-#define ASSERT_CHECK_AND_THROW(predicate) assert((predicate));\
-    if (!(predicate))\
-        throw std::invalid_argument(std::string(#predicate) + std::string(" must hold."));
-
-void
-validate_arguments(const double stp, const double g, const options& opts)
-{
-    ASSERT_CHECK_AND_THROW(!(stp < opts.stpmin));
-    ASSERT_CHECK_AND_THROW(!(stp > opts.stpmax));
-    ASSERT_CHECK_AND_THROW(!(g > 0.0));
-}
-
-#undef ASSERT_CHECK_AND_THROW
-
-bool
-sufficient_decrease_condition(const double fxap, const double fx, const double dfx_dot_p, const double a, const double c)
-{
-    return fxap <= fx + a * c * dfx_dot_p;
-}
-
-bool
-curvature_condition(const double dfxap_dot_p, const double dfx_dot_p, const double c)
-{
-    return fabs(dfxap_dot_p) <= c * fabs(dfx_dot_p);
-}
-
 int 
 dcsrch(const double finit, const double ginit, double& stp, double f, double g, task_value& task, const options& opts)
 {
@@ -191,7 +165,7 @@ dcsrch(const double finit, const double ginit, double& stp, double f, double g, 
         double gxm = gx - gtest;
         double gym = gy - gtest;
         /* Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
+        //dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
         /* Reset the function and derivative values for f. */
         fx = fxm + stx * gtest;
         fy = fym + sty * gtest;
@@ -199,7 +173,7 @@ dcsrch(const double finit, const double ginit, double& stp, double f, double g, 
         gy = gym + gtest;
     } else {
         /* Call dcstep to update stx, sty, and to compute the new step. */
-        dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
+        //dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
     }
     /* Decide if a bisection step is needed. */
     if (brackt) {

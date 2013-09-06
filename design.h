@@ -1,8 +1,8 @@
 #include <tuple>
 
-struct real_type{};
-struct vector_type{};
-struct matrix_type{};
+struct real_type {};
+struct vector_type {};
+struct matrix_type {};
 
 namespace ook{
     // concepts

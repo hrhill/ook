@@ -23,7 +23,7 @@ const char* task_value_string[] = {"start",
     "CONVERGENCE"}; // for testing, don't want to change this yet
 
 std::ostream&
-operator <<(std::ostream& os, const task_value& tv)
+operator<<(std::ostream& os, const task_value& tv)
 {
     auto id = static_cast<std::underlying_type<task_value>::type>(tv);
    os << std::string(task_value_string[id]);
@@ -92,20 +92,24 @@ more_thuente_line_search(F phi, const double stp0, const double& mu, const doubl
     std::tie(f0, g0) = phi(stp);
 
     stp = stp0;
-    int nfev = 0;
+    int nfev = 1;
     task_value task = task_value::start;
 
     double f, g;
     std::tie(f, g) = phi(stp);
-
+    dcsrch_struct dcsrch_(f0, g0, stp, opts.stpmax - opts.stpmin);
     do{
-        dcsrch(f0, g0, stp, f, g, task, opts);
+        const bool sufficient_decrease = sufficient_decrease_condition(f, f0, g0, stp, opts.ftol);
+        const bool curvature = curvature_condition(g, g0, opts.gtol);
+        if (sufficient_decrease && curvature){
+            task = task_value::convergence;
+            break;
+        }
+        task = dcsrch_(stp, f, g, opts);
         if (task == task_value::fg) {
             nfev = nfev + 1;
             std::tie(f, g) = phi(stp);
         }
-        if (task == task_value::convergence)
-            break;
     }while (true);
     std::cout << std::scientific 
               << std::setw(16) << stp0 
