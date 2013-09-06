@@ -1,18 +1,24 @@
+#include <iostream>
 #include <cmath>
 #include <algorithm>
 #include <tuple>
+
+double 
+cubic_minimizer(double f1, double f2, double d1, double d2, double st1, double st2)
+{
+	const double theta = 3.0 * (f1 - f2) / (st2 - st1) + d1 + d2;
+	const double gamma = copysign(sqrt(std::pow(theta, 2) - d1 * d2), st2 - st1);
+	const double p = gamma - d1 + theta;
+	const double q = 2.0 * gamma - d1 + d2;
+	return p / q;
+}
 
 inline
 std::pair<double, bool>
 case1(double fx, double dx, double stx, double fp, double dp, double stp)
 {
 	double stpf;
-	const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
-	const double s = std::max({fabs(theta), fabs(dx), fabs(dp)});
-	const double gamma = copysign(s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s)), stp - stx);
-	const double p = gamma - dx + theta;
-	const double q = gamma - dx + gamma + dp;
-	const double r = p / q;
+	const double r = cubic_minimizer(fx, fp, dx, dp, stx, stp);
 	const double stpc = stx + r * (stp - stx);
 	const double stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / 2. * (stp - stx);
 	if (fabs(stpc - stx) < fabs(stpq - stx)){
@@ -28,12 +34,7 @@ std::pair<double, bool>
 case2(double fx, double dx, double stx, double fp, double dp, double stp)
 {
 	double stpf;
-	const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;    	
-	const double s = std::max({fabs(theta), fabs(dx), fabs(dp)});
-	const double gamma = copysign(s * sqrt(std::pow(theta / s, 2) - dx / s * (dp / s)), stx - stp);		
-	const double p = gamma - dp + theta;
-	const double q = gamma - dp + gamma + dx;
-	const double r = p / q;
+	const double r = cubic_minimizer(fp, fx, dp, dx, stp, stx);
 	const double stpc = stp + r * (stx - stp);
 	const double stpq = stp + dp / (dp - dx) * (stx - stp);
 	if (fabs(stpc - stp) > fabs(stpq - stp)){
@@ -46,24 +47,26 @@ case2(double fx, double dx, double stx, double fp, double dp, double stp)
 
 inline
 double
-case3(double stx, double fx, double dx, double sty, double fy, double dy, double stp, const double fp, const double dp, bool brackt, const double stpmin, const double stpmax)
+case3(double stx, double fx, double dx, double sty, double fy, double dy, double stp, double fp, double dp, bool brackt, double stpmin, double stpmax)
 {
-    const double delta = 0.66; // must be less than 1.	
-	double stpf;
+	/* 	The cubic step is computed only if the cubic tends to infinity
+	in the direction of the step or if the minimum of the cubic
+	is beyond stp. Otherwise the cubic step is defined to be the
+	secant step. */
 	const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
-	const double s = std::max({fabs(theta), fabs(dx), fabs(dp)});
 	/* The case gamma = 0 only arises if the cubic does not tend
 	to infinity in the direction of the step.*/
-	const double gamma = copysign(s * sqrt(std::max(0.0, std::pow(theta / s, 2) - dx / s * (dp / s))), stx - stp);
+	const double gamma = copysign(std::max(0.0, sqrt(std::pow(theta, 2) - dx * dp)), stx - stp);
 	const double p = gamma - dp + theta;
-	const double q = gamma + (dx - dp) + gamma;
+	const double q = 2.0 * gamma - dp + dx;
 	const double r = p / q;
-	double stpc = stpmin;
+	
+	double stpc = (stp > stx) ? stpmax : stpmin;
 	if (r < 0. && gamma != 0.) {
 	    stpc = stp + r * (stx - stp);
-	} else if (stp > stx) {
-	    stpc = stpmax;
 	}
+	double stpf;
+	const double delta = 0.66; // must be less than 1.	
 	const double stpq = stp + dp / (dp - dx) * (stx - stp);
 	if (brackt){
 		/* A minimizer has been bracketed. If the cubic step is
@@ -90,6 +93,18 @@ case3(double stx, double fx, double dx, double sty, double fy, double dy, double
 	    }
 	    stpf = std::min(stpmax, stpf);
 	    stpf = std::max(stpmin, stpf);
+	}
+	return stpf;
+}
+
+double
+case4(double stx, double sty, double fy, double dy, double stp, double fp, double dp, bool brackt, double stpmin, double stpmax)
+{
+	double stpf = (stp > stx) ? stpmax : stpmin;
+	if (brackt) {
+	    const double r = cubic_minimizer(fp, fy, dp, dy, stp, sty);
+	    const double stpc = stp + r * (sty - stp);
+	    stpf = stpc;
 	}
 	return stpf;
 }
@@ -185,30 +200,13 @@ dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy,
 	/* Third case: A lower function value, derivatives of the same sign,
 	and the magnitude of the derivative decreases. */
     } else if (fabs(dp) < fabs(dx)) {
-	/* 	The cubic step is computed only if the cubic tends to infinity
-		in the direction of the step or if the minimum of the cubic
-		is beyond stp. Otherwise the cubic step is defined to be the
-		secant step. */
-		stpf = case3(stx,fx, dx, sty, fy, dy, stp, fp, dp, brackt, stpmin, stpmax);
+		stpf = case3(stx, fx, dx, sty, fy, dy, stp, fp, dp, brackt, stpmin, stpmax);
 	/* Fourth case: A lower function value, derivatives of the same sign,
 	and the magnitude of the derivative does not decrease. If the
 	minimum is not bracketed, the step is either stpmin or stpmax,
 	otherwise the cubic step is taken. */
     } else {
-		if (brackt) {
-	    	const double theta = 3.0 * (fp - fy) / (sty - stp) + dy + dp;
-	    	const double s = std::max({fabs(theta), fabs(dy), fabs(dp)});
-	    	const double gamma = copysign(s * sqrt(std::pow(theta / s, 2) - dy / s * (dp / s)), sty - stp);
-	    	const double p = gamma - dp + theta;
-	    	const double q = gamma - dp + gamma + dy;
-	    	const double r = p / q;
-	    	const double stpc = stp + r * (sty - stp);
-	    	stpf = stpc;
-		} else if (stp > stx) {
-	    	stpf = stpmax;
-		} else {
-	    	stpf = stpmin;
-		}
+    	stpf = case4(stx, sty, fy, dy, stp, fp, dp, brackt, stpmin, stpmax);
     }
 	/* Update the interval which contains a minimizer. */
     if (fp > fx) {
