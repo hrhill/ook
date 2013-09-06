@@ -103,8 +103,7 @@ case4(double stx, double sty, double fy, double dy, double stp, double fp, doubl
 	double stpf = (stp > stx) ? stpmax : stpmin;
 	if (brackt) {
 	    const double r = cubic_minimizer(fp, fy, dp, dy, stp, sty);
-	    const double stpc = stp + r * (sty - stp);
-	    stpf = stpc;
+	    stpf = stp + r * (sty - stp);
 	}
 	return stpf;
 }
