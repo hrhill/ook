@@ -77,6 +77,7 @@ phi54(double a, double b1, double b2){
           - gamma(b1) * (1 - a)/t1 + gamma(b2) * a/t2);
 }
 
+
 template <typename F>
 void
 more_thuente_line_search(F phi, const double stp0, const double& mu, const double eta){

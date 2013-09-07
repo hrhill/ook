@@ -17,22 +17,54 @@
 #include <boost/test/test_tools.hpp>
 
 #include "more_thuente.h"
+#include "line_search_functions.h"
 
-std::tuple<double, double>
-phi(const double& a)
-{
-    const double s = 0.1;
-    if (a >= 0 && a <= 1){
-        return std::make_tuple(0.5 * (1 - s) * a * a - a, 
-                                     (1 - s) * a - 1);
-    }else{
-        return std::make_tuple(0.5 * (s - 1) - s * a,
-                                -s);
+int main(int argc, char** argv){
+
+    const double a0 = 1e-03;
+    const double factor = 100;
+    const int n = 4;
+    const double epsilon = std::numeric_limits<double>::epsilon();
+
+    std::cout << std::endl << "Table 5.1" << std::endl;
+    for (int i = 0; i < n; ++i){
+        const double stp0 = std::pow(factor, i) * a0;
+        options opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
+        more_thuente_line_search(std::bind(phi51, std::placeholders::_1, 2.0), stp0, opts);        
     }
-}
 
-BOOST_AUTO_TEST_CASE(compilation_test){
-    double phi0, dphi0;
-    std::tie(phi0, dphi0) = phi(0.0);
-    BOOST_CHECK(false);
+    std::cout << std::endl << "Table 5.2" << std::endl;
+    for (int i = 0; i < n; ++i){
+        const double stp0 = std::pow(factor, i) * a0;
+        options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};        
+        more_thuente_line_search(std::bind(phi52, std::placeholders::_1, 0.004), stp0, opts);
+    }
+
+    std::cout << std::endl << "Table 5.3" << std::endl;
+    for (int i = 0; i < n; ++i){
+        const double stp0 = std::pow(factor, i) * a0;
+        options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};                
+        more_thuente_line_search(std::bind(phi53, std::placeholders::_1, 0.01, 39), stp0, opts);
+    }
+    std::cout << std::endl << "Table 5.4" << std::endl;
+    for (int i = 0; i < n; ++i){
+        const double stp0 = std::pow(factor, i) * a0;
+        options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};        
+        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), stp0, opts);
+    }
+
+    std::cout << std::endl << "Table 5.5" << std::endl;
+    for (int i = 0; i < n; ++i){
+        const double stp0 = std::pow(factor, i) * a0;
+        options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};                
+        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), stp0, opts);
+    }
+
+    std::cout << std::endl << "Table 5.6" << std::endl;
+    for (int i = 0; i < n; ++i){
+        const double stp0 = std::pow(factor, i) * a0;
+        options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};                        
+        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), stp0, opts);
+    }
+    return 0;
 }
