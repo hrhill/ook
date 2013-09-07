@@ -83,28 +83,14 @@ curvature_condition(const double dfxap_dot_p, const double dfx_dot_p, const doub
 
 struct dcsrch_struct{
 
-    dcsrch_struct(double f0, double g0, double stp, double width0){
-        finit = f0;
-        ginit = g0;
-        brackt = false;
-        stage = 1;
-        width = width0;
-        width1 = 2.0 * width;
-        /* The variables stx, fx, gx contain the values of the step,
-        function, and derivative at the best step.
-        The variables sty, fy, gy contain the value of the step,
-        function, and derivative at sty.
-        The variables stp, f, g contain the values of the step,
-        function, and derivative at stp. */
-        stx = 0.;
-        fx = finit;
-        gx = ginit;
-        sty = 0.;
-        fy = finit;
-        gy = ginit;
-        stmin = 0.;
-        stmax = stp + 4.0 * stp;        
-    }
+    dcsrch_struct(double f0, double g0, double stp, double width0)
+    :
+        finit(f0), ginit(g0), brackt(false), stage(1), width(width0),
+            width1(2.0 * width0), 
+                stx(0), fx(f0), gx(g0), 
+                    sty(0), fy(f0), gy(0),
+                        stmin(0), stmax(5.0 * stp)
+    {}
 
     task_value
     operator()(double& stp, double f, double g, const options& opts)
@@ -180,20 +166,21 @@ struct dcsrch_struct{
         /* Obtain another function and derivative. */
         return task_value::fg;        
     }
-
-    int stage;
     double finit;
     double ginit;
+    bool brackt;    
+    int stage;    
     double width;
+    double width1;
+    double stx;    
+    double fx;
+    double gx;
+    double sty;    
+    double fy;
+    double gy;
     double stmin;
     double stmax;
-    double width1;
-    double fx;
-    double fy;
-    double gx;
-    double gy;
-    bool brackt;
-    double stx, sty;
+
 };
 
 #endif
