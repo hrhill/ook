@@ -92,7 +92,7 @@ struct dcsrch_struct{
                         stmin(0), stmax(5.0 * stp)
     {}
 
-    task_value
+    double
     operator()(double& stp, double f, double g, const options& opts)
     {
         validate_arguments(stp, ginit, opts);
@@ -101,16 +101,16 @@ struct dcsrch_struct{
 
         /*     Test for warnings. */
         if (brackt && (stp <= stmin || stp >= stmax)) {
-            return task_value::warning_rounding_error_prevents_progress;
+            return 1.0;//task_value::warning_rounding_error_prevents_progress;
         }
         if (brackt && stmax - stmin <= opts.xtol * stmax) {
-            return task_value::warning_xtol_satisfied;        
+            return 1.0;//task_value::warning_xtol_satisfied;        
         }
         if (stp == opts.stpmax && sufficient_decrease && curvature) {
-            return task_value::warning_stp_eq_stpmax;
+            return 1.0;//task_value::warning_stp_eq_stpmax;
         }
         if (stp == opts.stpmin && (!sufficient_decrease || !curvature)) {
-            return task_value::warning_stp_eq_stpmin;
+            return 1.0;//task_value::warning_stp_eq_stpmin;
         }
         if (stage == 1 && sufficient_decrease && g >= 0.){
             stage = 2;
@@ -163,8 +163,7 @@ struct dcsrch_struct{
         {
             stp = stx;
         }
-        /* Obtain another function and derivative. */
-        return task_value::fg;        
+        return stp;        
     }
     double finit;
     double ginit;
