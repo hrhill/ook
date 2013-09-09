@@ -183,8 +183,6 @@ dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy,
 
 	stpmax is an upper bound for the step.
 */
-
-    /* Local variables */
     double stpf;
     const double sgnd = dp * (dx / fabs(dx));
 	/*	First case: A higher function value. The minimum is bracketed.
@@ -225,7 +223,6 @@ dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy,
 		fx = fp;
 		dx = dp;
     }
-	/*     Compute the new step. */
     return stpf;
 }
 

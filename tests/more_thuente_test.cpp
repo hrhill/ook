@@ -30,41 +30,78 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         options opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        more_thuente_line_search(std::bind(phi51, std::placeholders::_1, 2.0), stp0, opts);        
+        auto s = more_thuente_line_search(std::bind(phi51, std::placeholders::_1, 2.0), stp0, opts);        
+        std::cout << std::scientific 
+              << std::setw(16) << stp0
+              << std::setw(16) << s.task
+              << std::setw(4) << s.nfev 
+              << std::setw(16) << s.stp  
+              << std::setw(16) << s.g << std::endl;    
+
     }
 
     std::cout << std::endl << "Table 5.2" << std::endl;
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};        
-        more_thuente_line_search(std::bind(phi52, std::placeholders::_1, 0.004), stp0, opts);
+        auto s =more_thuente_line_search(std::bind(phi52, std::placeholders::_1, 0.004), stp0, opts);
+        std::cout << std::scientific 
+              << std::setw(16) << stp0
+              << std::setw(16) << s.task
+              << std::setw(4) << s.nfev 
+              << std::setw(16) << s.stp  
+              << std::setw(16) << s.g << std::endl;          
     }
 
     std::cout << std::endl << "Table 5.3" << std::endl;
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};                
-        more_thuente_line_search(std::bind(phi53, std::placeholders::_1, 0.01, 39), stp0, opts);
+        auto s =more_thuente_line_search(std::bind(phi53, std::placeholders::_1, 0.01, 39), stp0, opts);
+        std::cout << std::scientific 
+              << std::setw(16) << stp0 
+              << std::setw(16) << s.task
+              << std::setw(4) << s.nfev 
+              << std::setw(16) << s.stp  
+              << std::setw(16) << s.g << std::endl;          
     }
     std::cout << std::endl << "Table 5.4" << std::endl;
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};        
-        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), stp0, opts);
+        auto s =more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.001), stp0, opts);
+        std::cout << std::scientific 
+              << std::setw(16) << stp0 
+              << std::setw(16) << s.task
+              << std::setw(4) << s.nfev 
+              << std::setw(16) << s.stp  
+              << std::setw(16) << s.g << std::endl;          
     }
 
     std::cout << std::endl << "Table 5.5" << std::endl;
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};                
-        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), stp0, opts);
+        auto s =more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.01, 0.001), stp0, opts);
+        std::cout << std::scientific 
+              << std::setw(16) << stp0
+              << std::setw(16) << s.task
+              << std::setw(4) << s.nfev 
+              << std::setw(16) << s.stp  
+              << std::setw(16) << s.g << std::endl;          
     }
 
     std::cout << std::endl << "Table 5.6" << std::endl;
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};                        
-        more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), stp0, opts);
+        auto s =more_thuente_line_search(std::bind(phi54, std::placeholders::_1, 0.001, 0.01), stp0, opts);
+        std::cout << std::scientific 
+              << std::setw(16) << stp0
+              << std::setw(16) << s.task
+              << std::setw(4) << s.nfev 
+              << std::setw(16) << s.stp  
+              << std::setw(16) << s.g << std::endl;          
     }
     return 0;
 }
