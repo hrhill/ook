@@ -165,7 +165,7 @@ dcsrch(const double finit, const double ginit, double& stp, double f, double g, 
         double gxm = gx - gtest;
         double gym = gy - gtest;
         /* Call dcstep to update stx, sty, and to compute the new step. */
-        //dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
+        dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
         /* Reset the function and derivative values for f. */
         fx = fxm + stx * gtest;
         fy = fym + sty * gtest;
@@ -173,7 +173,7 @@ dcsrch(const double finit, const double ginit, double& stp, double f, double g, 
         gy = gym + gtest;
     } else {
         /* Call dcstep to update stx, sty, and to compute the new step. */
-        //dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
+        dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
     }
     /* Decide if a bisection step is needed. */
     if (brackt) {

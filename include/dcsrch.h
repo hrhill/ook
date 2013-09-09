@@ -5,7 +5,7 @@
 
 enum class task_value{
     start,
-    fg,
+    update,
     warning_rounding_error_prevents_progress,
     warning_xtol_satisfied,
     warning_stp_eq_stpmax,
@@ -14,12 +14,12 @@ enum class task_value{
 };
 
 const char* task_value_string[] = {"start",
-    "fg",
+    "update",
     "warning_rounding_error_prevents_progress",
     "warning_xtol_satistfied",
     "warning_stp_eq_stpmax",
     "warning_stp_eq_stpmin",
-    "CONVERGENCE"}; // for testing, don't want to change this yet
+    "convergence"}; // for testing, don't want to change this yet
 
 std::ostream&
 operator<<(std::ostream& os, const task_value& tv)
@@ -92,8 +92,8 @@ struct dcsrch_struct{
                         stmin(0), stmax(5.0 * stp)
     {}
 
-    double
-    operator()(double& stp, double f, double g, const options& opts)
+    std::pair<task_value, double>
+    operator()(double stp, double f, double g, const options& opts)
     {
         validate_arguments(stp, ginit, opts);
         const bool sufficient_decrease = sufficient_decrease_condition(f, finit, ginit, stp, opts.ftol);
@@ -101,16 +101,16 @@ struct dcsrch_struct{
 
         /*     Test for warnings. */
         if (brackt && (stp <= stmin || stp >= stmax)) {
-            return 1.0;//task_value::warning_rounding_error_prevents_progress;
+            return std::make_pair(task_value::warning_rounding_error_prevents_progress, stp);
         }
         if (brackt && stmax - stmin <= opts.xtol * stmax) {
-            return 1.0;//task_value::warning_xtol_satisfied;        
+            return std::make_pair(task_value::warning_xtol_satisfied, stp);        
         }
         if (stp == opts.stpmax && sufficient_decrease && curvature) {
-            return 1.0;//task_value::warning_stp_eq_stpmax;
+            return std::make_pair(task_value::warning_stp_eq_stpmax, stp);
         }
         if (stp == opts.stpmin && (!sufficient_decrease || !curvature)) {
-            return 1.0;//task_value::warning_stp_eq_stpmin;
+            return std::make_pair(task_value::warning_stp_eq_stpmin, stp);
         }
         if (stage == 1 && sufficient_decrease && g >= 0.){
             stage = 2;
@@ -163,8 +163,9 @@ struct dcsrch_struct{
         {
             stp = stx;
         }
-        return stp;        
+        return std::make_pair(task_value::update, stp);        
     }
+
     double finit;
     double ginit;
     bool brackt;    

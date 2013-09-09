@@ -6,15 +6,23 @@
 
 #include "dcsrch.h"
 
+struct
+more_thuente_state{
+  double stp;
+  task_value task;
+  int nfev;
+  double f;
+  double g;
+};
+
 template <typename F>
-void
-more_thuente_line_search(F phi, const double stp0, const options& opts){
+more_thuente_state
+more_thuente_line_search(F phi, double stp, const options& opts){
 
-    double stp = 0.0;
+    task_value task = task_value::start;
     double f0, g0;
-    std::tie(f0, g0) = phi(stp);
+    std::tie(f0, g0) = phi(0.0);
 
-    stp = stp0;
     int nfev = 1;
 
     double f, g;
@@ -25,18 +33,16 @@ more_thuente_line_search(F phi, const double stp0, const options& opts){
         const bool curvature = curvature_condition(g, g0, opts.gtol);
 
         if (sufficient_decrease && curvature){
+            task = task_value::convergence;
             break;
         }
-        dcsrch_(stp, f, g, opts);
-        nfev = nfev + 1;
+
+        std::tie(task, stp) = dcsrch_(stp, f, g, opts);
+        ++nfev;
         std::tie(f, g) = phi(stp);
-    }while (true);
-    std::cout << std::scientific 
-              << std::setw(16) << stp0 
-              << std::setw(16) << "CONVERGENCE" 
-              << std::setw(4) << nfev 
-              << std::setw(16) << stp  
-              << std::setw(16) << g << std::endl;    
+    }while (task == task_value::update);
+
+    return more_thuente_state{stp, task, nfev, f, g};
 }
 
 #endif
