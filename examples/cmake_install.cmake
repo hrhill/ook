@@ -1,4 +1,4 @@
-# Install script for directory: /home/harry/projects/maths/ook/examples
+# Install script for directory: /home/harry/projects/libraries/ook/examples
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)

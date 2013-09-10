@@ -22,7 +22,7 @@ norm_1(const T& x){
     typedef typename T::value_type real_type;   
     auto acc = [](const real_type s, const real_type xi){
                         return s + sqrt(xi * xi);   
-                });
+                };
     auto reduce = [](const real_type& x){   
                         return x;   
                     };
@@ -36,7 +36,7 @@ norm_2(const T& x){
     typedef typename T::value_type real_type;   
     auto acc = [](const real_type s, const real_type xi){
                         return s + xi * xi; 
-                });
+                };
     return detail::norm(x, acc, sqrt);
 }
 
@@ -46,8 +46,7 @@ typename T::value_type
 norm_infinity(const T& x){
     typedef typename T::value_type real_type;
     return *std::max_element(x.begin(), x.end(),
-                    [](const real_type& xi, const real_type&
- yi){
+                    [](const real_type& xi, const real_type& yi){
                         return fabs(xi) < fabs(yi);
                     });
 }

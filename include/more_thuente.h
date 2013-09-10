@@ -4,45 +4,50 @@
 #include <tuple>
 #include <iomanip>
 
+#include "line_search_conditions.h"
+#include "state.h"
 #include "dcsrch.h"
 
-struct
-more_thuente_state{
-  double stp;
-  task_value task;
-  int nfev;
-  double f;
-  double g;
+namespace ook{
+
+template <typename F>
+struct function_evaluator{
+  explicit function_evaluator(F function_)
+  : function(function_)
+  {}
+
+  state
+  operator()(state s){
+      auto fx = function(s.a);
+      ++s.nfev;      
+      s.fxap = std::get<0>(fx);
+      s.dfxap_dot_p = std::get<1>(fx);
+      return s;
+  }
+
+  F function;
 };
 
 template <typename F>
-more_thuente_state
-more_thuente_line_search(F phi, double stp, const options& opts){
+state
+more_thuente_line_search(F phi, state sk, const options& opts){
 
-    task_value task = task_value::start;
-    double f0, g0;
-    std::tie(f0, g0) = phi(0.0);
+    dcsrch_struct dcsrch_(sk.fx, sk.dfx_dot_p, sk.a, opts.stpmax - opts.stpmin);
 
-    int nfev = 1;
-
-    double f, g;
-    std::tie(f, g) = phi(stp);
-    dcsrch_struct dcsrch_(f0, g0, stp, opts.stpmax - opts.stpmin);
+    function_evaluator<F> evaluator(phi);
+    sk = evaluator(sk);
     do{
-        const bool sufficient_decrease = sufficient_decrease_condition(f, f0, g0, stp, opts.ftol);
-        const bool curvature = curvature_condition(g, g0, opts.gtol);
-
-        if (sufficient_decrease && curvature){
-            task = task_value::convergence;
+        if (ook::strong_wolfe_conditions(sk, opts.ftol, opts.gtol)){
+            sk.value = state_value::convergence;
             break;
         }
+        std::tie(sk.value, sk.a) = dcsrch_(sk.a, sk.fxap, sk.dfxap_dot_p, opts);
+        sk = evaluator(sk);
+    }while (sk.value == state_value::update);
 
-        std::tie(task, stp) = dcsrch_(stp, f, g, opts);
-        ++nfev;
-        std::tie(f, g) = phi(stp);
-    }while (task == task_value::update);
-
-    return more_thuente_state{stp, task, nfev, f, g};
+    return sk;
 }
+
+} // ns ook
 
 #endif
