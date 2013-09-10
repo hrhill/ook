@@ -21,9 +21,8 @@
 #include "more_garbow_hillstrom_test_functions.h"
 
 typedef boost::mpl::list<
-        kalman_cov,
-        kalman_cov_sqrt
-> test_fucntions;
+        rosenbrock<boost::numeric::ublas::vector<double>>
+> test_function_types;
 
 template <typename Vector>
 std::ostream& operator<<(std::ostream& out, const std::tuple<typename Vector::value_type, Vector>& t)
@@ -31,13 +30,14 @@ std::ostream& operator<<(std::ostream& out, const std::tuple<typename Vector::va
     return out << "(" << std::get<0>(t) << ", " << std::get<1>(t) << ")";
 }
 
-template <typename Function, typename Vector>
-void 
+template <typename Function>
+int
 test_function_specification()
 {
-    typedef boost::numeric::ublas::vector<double> vector_type;
-    typedef vector_type::value_type real_type;
-    typedef rosenbrock<vector_type> test_function;
+    typedef typename Function::vector_type vector_type;
+    typedef typename vector_type::value_type real_type;
+    typedef Function test_function;
+
     test_function objective_function;
 
     vector_type x0(test_function::n);
@@ -52,9 +52,10 @@ test_function_specification()
 
     BOOST_CHECK_CLOSE(f_min, test_function::f_min, 1e-04);
     BOOST_CHECK_SMALL(ook::norm_infinity(df), 1e-04);    
+    return 0;
 }
 
 // Zero solution
-BOOST_AUTO_TEST_CASE_TEMPLATE(test_function_test, T, test_function_types){
-    BOOST_CHECK_EQUAL(test_function_specification<T>(lgm_simple_model_factory<vector_t, matrix_t>), 0);
+BOOST_AUTO_TEST_CASE_TEMPLATE(test_functions_test, T, test_function_types){
+    BOOST_CHECK_EQUAL(test_function_specification<T>(), 0);
 }
