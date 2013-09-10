@@ -8,24 +8,20 @@ namespace ook{
 /// main optimisation loop
 template <typename Scheme, typename State, typename F, typename X>
 State
-optimise(F objective_function, const X& x0, const typename Scheme::options_type&
- options)
+optimise(F objective_function, const X& x0, const typename Scheme::options_type& options)
 {
-    //State s0 = Scheme::initialise(objective_function, x0, State());
+    State sk = Scheme::initialise(objective_function, x0, State());
     // Evaluate at initial point
-    State s0;
-    s0.xk = x0;
+    sk.x = x0;
     auto fx_dfx = objective_function(x0);
-    s0.fxk = std::get<0>(fx_dfx);
-    s0.dfxk = std::get<1>(fx_dfx);
+    sk.fx = std::get<0>(fx_dfx);
+    sk.dfx = std::get<1>(fx_dfx);
 
     do {
         // Choose descent direction
-        s0.pk = -s0.dfxk;
-        s0.alpha = 1.0;
-
+        vector_type p = Scheme::get_descent_direction(objective_function, sk);
         // do line search
-        //State sk = Scheme::iterate(objective_function, s0);
+        sk = Scheme::search_along_direction(objective_function, sk);
         //s0 = Scheme::check_and_advance(s0, sk, options);
 
     } while(false);
