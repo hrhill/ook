@@ -7,9 +7,6 @@
 #include <tuple>
 #include <vector>
 
-#define INITIALIZE_STATICS(name, minima, x0, f_min)\
-
-
 template <typename Vector>
 struct rosenbrock{
 
@@ -34,6 +31,7 @@ struct rosenbrock{
     static std::vector<real_type> minima;
     static std::vector<real_type> x0;    
 };
+
 
 template <typename Vector>
 std::vector<typename Vector::value_type>
