@@ -62,11 +62,11 @@ struct freudenstein_roth{
         const double x2 = x(1);
         const double f1 = -13 + x1 + ((5 - x2) * x2 - 2) * x2;
         const double f2 = -29 + x1 + ((x2 + 1) * x2 - 14) * x2;
-        const double f = f1 * f1  f2 * f2;
+        const double f = f1 * f1 + f2 * f2;
         vector_type df(2);        
         df(0) = 2 * f1 + 2 * f2;
         df(1) = 2 * f1 * (10 * x2 - 3 * x2 * x2 - 2)
-                + 2 * f2 * ( 3 * x2 * x2+ 2 * x2 - 14);
+                + 2 * f2 * ( 3 * x2 * x2 + 2 * x2 - 14);
         return std::make_pair(f, df);
     }
 
@@ -522,5 +522,5 @@ struct chebyquad{
         return std::make_pair(0.0, x); 
     }
 };
-*/
+
 #endif
