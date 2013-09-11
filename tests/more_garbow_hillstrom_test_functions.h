@@ -28,10 +28,18 @@ struct rosenbrock{
     static const int n = 2;
     static const int m = 2;
     static real_type f_min;
+    static real_type tolerance;
     static std::vector<real_type> minima;
-    static std::vector<real_type> x0;    
+    static std::vector<real_type> x0;
 };
 
+template <typename Vector>
+typename Vector::value_type
+rosenbrock<Vector>::f_min = 0.0;
+
+template <typename Vector>
+typename Vector::value_type
+rosenbrock<Vector>::tolerance = std::numeric_limits<double>::epsilon();
 
 template <typename Vector>
 std::vector<typename Vector::value_type>
@@ -42,11 +50,6 @@ std::vector<typename Vector::value_type>
 rosenbrock<Vector>::x0 = {-1.2, 1.0};
 
 template <typename Vector>
-typename rosenbrock<Vector>::real_type
-rosenbrock<Vector>::f_min = 0.0;
-
-/*
-template <typename Vector>
 struct freudenstein_roth{
 
     typedef Vector vector_type;
@@ -55,9 +58,41 @@ struct freudenstein_roth{
     std::tuple<real_type, vector_type>
     operator()(const vector_type& x) const
     {
-        return std::make_pair(0.0, x); 
+        const double x1 = x(0);
+        const double x2 = x(1);
+        const double f1 = -13 + x1 + ((5 - x2) * x2 - 2) * x2;
+        const double f2 = -29 + x1 + ((x2 + 1) * x2 - 14) * x2;
+        const double f = f1 * f1  f2 * f2;
+        vector_type df(2);        
+        df(0) = 2 * f1 + 2 * f2;
+        df(1) = 2 * f1 * (10 * x2 - 3 * x2 * x2 - 2)
+                + 2 * f2 * ( 3 * x2 * x2+ 2 * x2 - 14);
+        return std::make_pair(f, df);
     }
+
+    static const int n = 2;
+    static const int m = 2;
+    static real_type f_min;
+    static real_type tolerance;
+    static std::vector<real_type> minima;
+    static std::vector<real_type> x0;    
 };
+
+template <typename Vector>
+typename Vector::value_type
+freudenstein_roth<Vector>::f_min = 0.0;
+
+template <typename Vector>
+typename Vector::value_type
+freudenstein_roth<Vector>::tolerance = 1e-04;
+
+template <typename Vector>
+std::vector<typename Vector::value_type>
+freudenstein_roth<Vector>::minima = {1.0, 1.0};
+
+template <typename Vector>
+std::vector<typename Vector::value_type>
+freudenstein_roth<Vector>::x0 = {-1.2, 1.0};
 
 template <typename Vector>
 struct powell_badly_scaled{

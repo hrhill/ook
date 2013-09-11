@@ -20,9 +20,12 @@
 #include "norms.h"
 #include "more_garbow_hillstrom_test_functions.h"
 
-typedef boost::mpl::list<
-        rosenbrock<boost::numeric::ublas::vector<double>>
-> test_function_types;
+template <typename T>
+using test_function_types = boost::mpl::list<
+rosenbrock<T>
+>;
+
+typedef test_function_types<boost::numeric::ublas::vector<double>> ublas_function_types;
 
 template <typename Vector>
 std::ostream& operator<<(std::ostream& out, const std::tuple<typename Vector::value_type, Vector>& t)
@@ -50,12 +53,12 @@ test_function_specification()
     vector_type df(test_function::n);
     std::tie(f_min, df) = objective_function(minima);
 
-    BOOST_CHECK_CLOSE(f_min, test_function::f_min, 1e-04);
-    BOOST_CHECK_SMALL(ook::norm_infinity(df), 1e-04);    
+    BOOST_CHECK_CLOSE(f_min, test_function::f_min, test_function::tolerance);
+    BOOST_CHECK_SMALL(ook::norm_infinity(df), test_function::tolerance);    
     return 0;
 }
 
 // Zero solution
-BOOST_AUTO_TEST_CASE_TEMPLATE(test_functions_test, T, test_function_types){
+BOOST_AUTO_TEST_CASE_TEMPLATE(test_functions_test, T, ublas_function_types){
     BOOST_CHECK_EQUAL(test_function_specification<T>(), 0);
 }
