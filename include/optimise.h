@@ -22,51 +22,14 @@ optimise(F objective_function, const X& x0, const typename Scheme::options_type&
         vector_type p = Scheme::get_descent_direction(objective_function, sk);
         // do line search
         sk = Scheme::search_along_direction(objective_function, sk);
-        //s0 = Scheme::check_and_advance(s0, sk, options);
-
+        if (Scheme::termination_criterion(sk, options))
+            break;
+        
     } while(false);
 
-    return s0;
+    return sk;
 }
 
-/*
-template <typename Scheme, typename ObjectiveFunction, typename Domain, typename Observer>
-std::tuple<optimiser_status, real_type, vector_type>
-optimise(ObjectiveFunction objective_function, Domain x0, options_type& options, Observer observer)
-{
-    // Check options,]. restore them to sensible values, write them to the observer
-    if (validate_options(options) != optimiser_status::keep_going)
-        break
-
-    // Validate the objective function if required
-    if (validate_objective_function(objective_function) != optimiser_status::keep_going)
-        break;
-
-    // Setup main loop
-    unsigned int iteration = 1;
-    auto fx = objective_function(x0);
-
-    do{
-        // Choose descent direction
-        auto p = Scheme::search_direction(fx);
-
-        // Perform line search to get new point
-        auto fxap = Scheme::line_search(fx, p);
-
-        // Check for convergence at new point
-        bool converged = true;
-        if (converged)
-            break;
-
-        // Update
-        fx = fxap;
-        ++iteration;
-    }while(true);
-
-    return std::make_tuple(status, fxk, xk);
-}
-
-*/
-}
+} //ns ook
 
 #endif
