@@ -37,7 +37,8 @@ more_thuente_line_search(F phi, state sk, const options& opts){
     function_evaluator<F> evaluator(phi);
     sk = evaluator(sk);
     do{
-        if (ook::strong_wolfe_conditions(sk, opts.ftol, opts.gtol)){
+        if (strong_wolfe_conditions(sk.fx, sk.fxap, sk.dfx_dot_p, sk.dfxap_dot_p, sk.a, opts.ftol, opts.gtol))
+        {
             sk.value = state_value::convergence;
             break;
         }

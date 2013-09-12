@@ -25,7 +25,9 @@ void
 do_search(ObjectiveFunction obj, const double stp0, const Options& opts)
 {
 
-    ook::state sk(0.0, 0.0, 0.0, 0.0, stp0, ook::state_value::start);
+    ook::state sk;
+    sk.value = ook::state_value::start;
+    sk.a = stp0;
     std::tie(sk.fx, sk.dfx_dot_p) = obj(0.0);    
 
     sk = ook::more_thuente_line_search(obj, sk, opts);                

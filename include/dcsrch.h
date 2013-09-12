@@ -4,7 +4,7 @@
 #include <cmath>
 #include "line_search_conditions.h"
 #include "dcstep.h"
-#include "state.h"
+#include "state_value.h"
 
 namespace ook{
 
@@ -61,8 +61,8 @@ struct dcsrch_struct{
     operator()(double stp, double f, double g, const options& opts)
     {
         validate_arguments(stp, g0, opts);
-        const bool sufficient_decrease = sufficient_decrease_condition(state(f0, f, g0, g, stp, state_value::update), opts.ftol);
-        const bool curvature = auxilliary_curvature_condition(state(f0, f, g0, g, stp, state_value::update), opts.gtol);
+        const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
+        const bool curvature = curvature_condition(g0, g, opts.gtol);
 
         /*     Test for warnings. */
         if (brackt && (stp <= stmin || stp >= stmax)) {
@@ -144,7 +144,6 @@ struct dcsrch_struct{
     double gy;
     double stmin;
     double stmax;
-
 };
 
 }
