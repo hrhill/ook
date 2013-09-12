@@ -55,7 +55,9 @@ struct dcsrch_struct{
                 stx(0), fx(f0), gx(g0), 
                     sty(0), fy(f0), gy(0),
                         stmin(0), stmax(5.0 * stp)
-    {}
+    {
+        std::cout << "g0 "<< g0 << std::endl;
+    }
 
     std::pair<state_value, double>
     operator()(double stp, double f, double g, const options& opts)
