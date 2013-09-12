@@ -35,14 +35,17 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The program to use to edit the cache.
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/harry/projects/maths/ook
+CMAKE_SOURCE_DIR = /home/harry/projects/libraries/ook
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/harry/projects/maths/ook
+CMAKE_BINARY_DIR = /home/harry/projects/libraries/ook
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -79,14 +82,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/harry/projects/maths/ook && $(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/maths/ook/CMakeFiles /home/harry/projects/maths/ook/tests/CMakeFiles/progress.marks
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/maths/ook/CMakeFiles 0
+	cd /home/harry/projects/libraries/ook && $(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/libraries/ook/CMakeFiles /home/harry/projects/libraries/ook/tests/CMakeFiles/progress.marks
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/libraries/ook/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/clean
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/clean
 .PHONY : clean
 
 # The main clean target
@@ -95,22 +98,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/preinstall
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/preinstall
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/harry/projects/maths/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/harry/projects/libraries/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 tests/CMakeFiles/more_thuente_test.dir/rule:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/more_thuente_test.dir/rule
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/more_thuente_test.dir/rule
 .PHONY : tests/CMakeFiles/more_thuente_test.dir/rule
 
 # Convenience name for target.
@@ -119,12 +122,12 @@ more_thuente_test: tests/CMakeFiles/more_thuente_test.dir/rule
 
 # fast build rule for target.
 more_thuente_test/fast:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/build
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/build
 .PHONY : more_thuente_test/fast
 
 # Convenience name for target.
 tests/CMakeFiles/optimise_test.dir/rule:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/optimise_test.dir/rule
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/optimise_test.dir/rule
 .PHONY : tests/CMakeFiles/optimise_test.dir/rule
 
 # Convenience name for target.
@@ -133,12 +136,12 @@ optimise_test: tests/CMakeFiles/optimise_test.dir/rule
 
 # fast build rule for target.
 optimise_test/fast:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/build
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/build
 .PHONY : optimise_test/fast
 
 # Convenience name for target.
 tests/CMakeFiles/test_functions_test.dir/rule:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/test_functions_test.dir/rule
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/test_functions_test.dir/rule
 .PHONY : tests/CMakeFiles/test_functions_test.dir/rule
 
 # Convenience name for target.
@@ -147,7 +150,7 @@ test_functions_test: tests/CMakeFiles/test_functions_test.dir/rule
 
 # fast build rule for target.
 test_functions_test/fast:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/build
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/build
 .PHONY : test_functions_test/fast
 
 more_thuente_test.o: more_thuente_test.cpp.o
@@ -155,7 +158,7 @@ more_thuente_test.o: more_thuente_test.cpp.o
 
 # target to build an object file
 more_thuente_test.cpp.o:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.o
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.o
 .PHONY : more_thuente_test.cpp.o
 
 more_thuente_test.i: more_thuente_test.cpp.i
@@ -163,7 +166,7 @@ more_thuente_test.i: more_thuente_test.cpp.i
 
 # target to preprocess a source file
 more_thuente_test.cpp.i:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.i
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.i
 .PHONY : more_thuente_test.cpp.i
 
 more_thuente_test.s: more_thuente_test.cpp.s
@@ -171,7 +174,7 @@ more_thuente_test.s: more_thuente_test.cpp.s
 
 # target to generate assembly for a file
 more_thuente_test.cpp.s:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.s
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.s
 .PHONY : more_thuente_test.cpp.s
 
 optimise_test.o: optimise_test.cpp.o
@@ -179,7 +182,7 @@ optimise_test.o: optimise_test.cpp.o
 
 # target to build an object file
 optimise_test.cpp.o:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.o
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.o
 .PHONY : optimise_test.cpp.o
 
 optimise_test.i: optimise_test.cpp.i
@@ -187,7 +190,7 @@ optimise_test.i: optimise_test.cpp.i
 
 # target to preprocess a source file
 optimise_test.cpp.i:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.i
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.i
 .PHONY : optimise_test.cpp.i
 
 optimise_test.s: optimise_test.cpp.s
@@ -195,7 +198,7 @@ optimise_test.s: optimise_test.cpp.s
 
 # target to generate assembly for a file
 optimise_test.cpp.s:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.s
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.s
 .PHONY : optimise_test.cpp.s
 
 test_functions_test.o: test_functions_test.cpp.o
@@ -203,7 +206,7 @@ test_functions_test.o: test_functions_test.cpp.o
 
 # target to build an object file
 test_functions_test.cpp.o:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.o
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.o
 .PHONY : test_functions_test.cpp.o
 
 test_functions_test.i: test_functions_test.cpp.i
@@ -211,7 +214,7 @@ test_functions_test.i: test_functions_test.cpp.i
 
 # target to preprocess a source file
 test_functions_test.cpp.i:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.i
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.i
 .PHONY : test_functions_test.cpp.i
 
 test_functions_test.s: test_functions_test.cpp.s
@@ -219,7 +222,7 @@ test_functions_test.s: test_functions_test.cpp.s
 
 # target to generate assembly for a file
 test_functions_test.cpp.s:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.s
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.s
 .PHONY : test_functions_test.cpp.s
 
 # Help Target
@@ -254,6 +257,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/harry/projects/maths/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/harry/projects/libraries/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

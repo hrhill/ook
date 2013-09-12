@@ -2,6 +2,7 @@
 #define OOK_LINE_SEARCH_CONDITIONS_H_
 
 #include <cassert>
+#include <cmath>
 
 namespace ook{
 

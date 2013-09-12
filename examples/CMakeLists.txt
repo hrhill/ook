@@ -1,5 +1,5 @@
 
-set(PROGRAMS "")
+set(PROGRAMS bfgs)
 
 foreach(prog ${PROGRAMS})
     add_executable(${prog} ${prog}.cpp)

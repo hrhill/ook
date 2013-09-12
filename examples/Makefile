@@ -35,14 +35,17 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The program to use to edit the cache.
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/harry/projects/maths/ook
+CMAKE_SOURCE_DIR = /home/harry/projects/libraries/ook
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/harry/projects/maths/ook
+CMAKE_BINARY_DIR = /home/harry/projects/libraries/ook
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -79,14 +82,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/harry/projects/maths/ook && $(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/maths/ook/CMakeFiles /home/harry/projects/maths/ook/examples/CMakeFiles/progress.marks
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/maths/ook/CMakeFiles 0
+	cd /home/harry/projects/libraries/ook && $(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/libraries/ook/CMakeFiles /home/harry/projects/libraries/ook/examples/CMakeFiles/progress.marks
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/harry/projects/libraries/ook/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/clean
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/clean
 .PHONY : clean
 
 # The main clean target
@@ -95,18 +98,56 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/preinstall
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/harry/projects/maths/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/preinstall
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/harry/projects/maths/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/harry/projects/libraries/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
+
+# Convenience name for target.
+examples/CMakeFiles/bfgs.dir/rule:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 examples/CMakeFiles/bfgs.dir/rule
+.PHONY : examples/CMakeFiles/bfgs.dir/rule
+
+# Convenience name for target.
+bfgs: examples/CMakeFiles/bfgs.dir/rule
+.PHONY : bfgs
+
+# fast build rule for target.
+bfgs/fast:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f examples/CMakeFiles/bfgs.dir/build.make examples/CMakeFiles/bfgs.dir/build
+.PHONY : bfgs/fast
+
+bfgs.o: bfgs.cpp.o
+.PHONY : bfgs.o
+
+# target to build an object file
+bfgs.cpp.o:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f examples/CMakeFiles/bfgs.dir/build.make examples/CMakeFiles/bfgs.dir/bfgs.cpp.o
+.PHONY : bfgs.cpp.o
+
+bfgs.i: bfgs.cpp.i
+.PHONY : bfgs.i
+
+# target to preprocess a source file
+bfgs.cpp.i:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f examples/CMakeFiles/bfgs.dir/build.make examples/CMakeFiles/bfgs.dir/bfgs.cpp.i
+.PHONY : bfgs.cpp.i
+
+bfgs.s: bfgs.cpp.s
+.PHONY : bfgs.s
+
+# target to generate assembly for a file
+bfgs.cpp.s:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f examples/CMakeFiles/bfgs.dir/build.make examples/CMakeFiles/bfgs.dir/bfgs.cpp.s
+.PHONY : bfgs.cpp.s
 
 # Help Target
 help:
@@ -114,9 +155,13 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... bfgs"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... bfgs.o"
+	@echo "... bfgs.i"
+	@echo "... bfgs.s"
 .PHONY : help
 
 
@@ -128,6 +173,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/harry/projects/maths/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/harry/projects/libraries/ook && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -1,6 +1,7 @@
 #ifndef OOK_DCSRCH_H_
 #define OOK_DCSRCH_H_
 
+#include <cmath>
 #include "line_search_conditions.h"
 #include "dcstep.h"
 #include "state.h"
