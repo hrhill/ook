@@ -18,11 +18,15 @@
 #include <boost/mpl/list.hpp>
 
 #include "norms.h"
-#include "more_garbow_hillstrom_test_functions.h"
+#include "test_functions/more_garbow_hillstrom.h"
+
+using namespace ook::test_functions;
 
 template <typename T>
 using test_function_types = boost::mpl::list<
-rosenbrock<T>
+rosenbrock<T>,
+freudenstein_roth<T>,
+powell_badly_scaled<T>
 >;
 
 typedef test_function_types<boost::numeric::ublas::vector<double>> ublas_function_types;

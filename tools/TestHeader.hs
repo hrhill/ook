@@ -2,11 +2,15 @@ module TestHeader where
 
 templateText :: String
 templateText = 
-    "#ifndef @IFDEF@_H_\n\
-    \#define @IFDEF@_H_\n\
+    "#ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_@IFDEF@_H_\n\
+    \#define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_@IFDEF@_H_\n\
     \\n\
+    \#include <tuple>\n\
+    \#include <limits>\n\
     \#include <vector>\n\
     \\n\
+    \namespace ook{\n\
+    \namespace test_functions{\n\n\
     \template <typename Vector>\n\
     \struct @NAME@\n\
     \{\n\
@@ -16,10 +20,9 @@ templateText =
     \    std::tuple<real_type, vector_type>\n\
     \    operator()(const vector_type& x) const\n\
     \    {\n\
-    \        real_type f(0.0);\n\
-    \        vector_type df(@N@, 0.0);
-    \        @BODY@\n\
-    \        return std::make_pair(f, df);\n
+    \        real_type f(1.0);\n\
+    \        vector_type df(@N@, 1.0);\n\
+    \        return std::make_pair(f, df);\n\
     \    }\n\
     \\n\
     \    static const int n = @N@;\n\
@@ -45,5 +48,7 @@ templateText =
     \template <typename Vector>\n\
     \std::vector<typename Vector::value_type>\n\
     \@NAME@<Vector>::x0 = @XO@;\n\
-    \\n\
+    \\n\n\
+    \} // ns test_functions\n\    
+    \} // ns ook\n\n\
     \#endif\n"
