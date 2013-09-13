@@ -57,10 +57,11 @@ functionList = [
     Function "linear_full_rank"               "0" "0" "{}" "{}" "0.0" epsilon,
     Function "linear_rank_1"                  "0" "0" "{}" "{}" "0.0" epsilon,
     Function "linear_rank_1_with_0_cols_rows" "0" "0" "{}" "{}" "0.0" epsilon,
-    Function "chebyquad" "0" "0" "{}" "{}" "0.0" epsilon]
+    Function "chebyquad"                      "0" "0" "{}" "{}" "0.0" epsilon]
 
 upperCase = map toUpper
 
+--replaceFunctions :: Function -> String -> String
 replaceIfDef = replace "@IFDEF@" . upperCase . name
 replaceName = replace "@NAME@" . name
 replaceN = replace "@N@" . n
@@ -70,10 +71,12 @@ replaceMinima = replace "@MINIMA@" . minima
 replaceFMin = replace "@FMIN@" . fmin
 replaceTol = replace "@TOL@" . tol
 
+doReplacements :: Function -> String -> String
 doReplacements f = (replaceIfDef f . replaceFMin f 
                         . replaceMinima f . replaceX0 f . replaceTol f
                             . replaceM f . replaceN f . replaceName f)
 
+generateHeader :: Function -> IO ()
 generateHeader f = writeFile filename filecontents
                     where
                         filename = "../include/test_functions/more_garbow_hillstrom/" ++ name f ++ ".h" 
