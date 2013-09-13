@@ -17,6 +17,7 @@
 #include <boost/test/test_tools.hpp>
 
 #include "state.h"
+#include "options.h"
 #include "more_thuente.h"
 #include "line_search_functions.h"
 
