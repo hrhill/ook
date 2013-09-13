@@ -24,9 +24,9 @@ using namespace ook::test_functions;
 
 template <typename T>
 using test_function_types = boost::mpl::list<
-rosenbrock<T>,
-freudenstein_roth<T>,
-powell_badly_scaled<T>
+rosenbrock<T>//,
+//freudenstein_roth<T>,
+//powell_badly_scaled<T>
 >;
 
 typedef test_function_types<boost::numeric::ublas::vector<double>> ublas_function_types;

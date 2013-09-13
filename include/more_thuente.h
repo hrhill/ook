@@ -2,36 +2,37 @@
 #define OOK_MORE_THUENTE_H_
 
 #include <tuple>
-#include <iomanip>
 
 #include "line_search_conditions.h"
-#include "state.h"
+#include "state_value.h"
 #include "dcsrch.h"
 
 namespace ook{
 
-template <typename F>
-state
-more_thuente_line_search(F phi, state sk, const options& opts){
+template <typename F, typename T, typename Options>
+std::tuple<state_value, T>
+more_thuente_line_search(F phi, T phi0, T dphi0, T a, const Options& opts){
 
-    std::tie(sk.fxap, sk.dfxap_dot_p) = phi(sk.a);
-    sk.value = state_value::start;
-    dcsrch_struct dcsrch_(sk.fx, sk.dfx_dot_p, sk.a, opts.stpmax - opts.stpmin);
+    T phia, dphia;
+    std::tie(phia, dphia) = phi(a);
+    dcsrch_struct dcsrch_(phi0, dphi0, a, opts.stpmax - opts.stpmin);
+
+    state_value value = state_value::start;
 
     do{
-        if (strong_wolfe_conditions(sk.fx, sk.fxap, sk.dfx_dot_p, sk.dfxap_dot_p, sk.a, opts.ftol, opts.gtol))
+        if(strong_wolfe_conditions(phi0, phia, dphi0, dphia, a, opts.ftol, opts.gtol))
         {
-            sk.value = state_value::convergence;
+            value = state_value::convergence;
             break;
         }
-        std::tie(sk.value, sk.a) = dcsrch_(sk.a, sk.fxap, sk.dfxap_dot_p, opts);
-        if (sk.value != state_value::update)
+        std::tie(value, a) = dcsrch_(a, phia, dphia, opts);
+        if (value != state_value::update)
             break;
 
-        std::tie(sk.fxap, sk.dfxap_dot_p) = phi(sk.a);
+        std::tie(phia, dphia) = phi(a);
     }while (true);
 
-    return sk;
+    return std::make_tuple(value, a);
 }
 
 } // ns ook

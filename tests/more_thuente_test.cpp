@@ -24,19 +24,24 @@ template <typename ObjectiveFunction, typename Options>
 void
 do_search(ObjectiveFunction obj, const double stp0, const Options& opts)
 {
+    int nfev = 0;
+    double phi0, dphi0, phix, dphix;
 
-    ook::state sk;
-    sk.value = ook::state_value::start;
-    sk.a = stp0;
-    std::tie(sk.fx, sk.dfx_dot_p) = obj(0.0);    
+    auto phi = [&nfev, &phix, &dphix, obj](const double x){
+                        ++nfev;
+                        std::tie(phix, dphix) = obj(x);
+                        return std::make_tuple(phix, dphix);
+                    };
 
-    sk = ook::more_thuente_line_search(obj, sk, opts);                
+    std::tie(phi0, dphi0) = obj(0.0);    
+
+    auto soln = ook::more_thuente_line_search(phi, phi0, dphi0, stp0, opts);                    
     std::cout << std::scientific 
               << std::setw(16) << stp0 
-              << std::setw(16) << sk.value
-              << std::setw(4) << sk.nfev 
-              << std::setw(16) << sk.a 
-              << std::setw(16) << sk.dfxap_dot_p << std::endl;       
+              << std::setw(16) << std::get<0>(soln)
+              << std::setw(4) << nfev 
+              << std::setw(16) << std::get<1>(soln)
+              << std::setw(16) << dphix << std::endl;       
 }
 
 int main(int argc, char** argv){

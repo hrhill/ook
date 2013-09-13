@@ -45,10 +45,10 @@ template <typename T>
 typename T::value_type
 norm_infinity(const T& x){
     typedef typename T::value_type real_type;
-    return *std::max_element(x.begin(), x.end(),
+    return fabs(*std::max_element(x.begin(), x.end(),
                     [](const real_type& xi, const real_type& yi){
                         return fabs(xi) < fabs(yi);
-                    });
+                    }));
 }
 
 }

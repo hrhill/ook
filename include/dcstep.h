@@ -6,40 +6,43 @@
 #include <algorithm>
 #include <tuple>
 
-double 
-cubic_minimizer(double f1, double f2, double d1, double d2, double st1, double st2)
+template <typename T>
+T
+cubic_minimizer(T f1, T f2, T d1, T d2, T st1, T st2)
 {
-	const double theta = 3.0 * (f1 - f2) / (st2 - st1) + d1 + d2;
-	const double gamma = copysign(sqrt(std::pow(theta, 2) - d1 * d2), st2 - st1);
-	const double p = gamma - d1 + theta;
-	const double q = 2.0 * gamma - d1 + d2;
+	const T theta = T(3.0) * (f1 - f2) / (st2 - st1) + d1 + d2;
+	const T gamma = copysign(sqrt(std::pow(theta, 2) - d1 * d2), st2 - st1);
+	const T p = gamma - d1 + theta;
+	const T q = T(2.0) * gamma - d1 + d2;
 	return p / q;
 }
 
+template <typename T>
 inline
-std::pair<double, bool>
-case1(double fx, double dx, double stx, double fp, double dp, double stp)
+std::pair<T, bool>
+case1(T fx, T dx, T stx, T fp, T dp, T stp)
 {
-	double stpf;
-	const double r = cubic_minimizer(fx, fp, dx, dp, stx, stp);
-	const double stpc = stx + r * (stp - stx);
-	const double stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / 2. * (stp - stx);
+	T stpf;
+	const T r = cubic_minimizer(fx, fp, dx, dp, stx, stp);
+	const T stpc = stx + r * (stp - stx);
+	const T stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / T(2.0) * (stp - stx);
 	if (fabs(stpc - stx) < fabs(stpq - stx)){
 	    stpf = stpc;
 	} else {
-	    stpf = stpc + (stpq - stpc) / 2.;
+	    stpf = stpc + T(0.5) * (stpq - stpc);
 	}
 	return std::make_pair(stpf, true);
 }
 
+template <typename T>
 inline
-std::pair<double, bool>
-case2(double fx, double dx, double stx, double fp, double dp, double stp)
+std::pair<T, bool>
+case2(T fx, T dx, T stx, T fp, T dp, T stp)
 {
-	double stpf;
-	const double r = cubic_minimizer(fp, fx, dp, dx, stp, stx);
-	const double stpc = stp + r * (stx - stp);
-	const double stpq = stp + dp / (dp - dx) * (stx - stp);
+	T stpf;
+	const T r = cubic_minimizer(fp, fx, dp, dx, stp, stx);
+	const T stpc = stp + r * (stx - stp);
+	const T stpq = stp + dp / (dp - dx) * (stx - stp);
 	if (fabs(stpc - stp) > fabs(stpq - stp)){
 		stpf = stpc;
 	} else {
@@ -48,29 +51,30 @@ case2(double fx, double dx, double stx, double fp, double dp, double stp)
 	return std::make_pair(stpf, true);	
 }
 
+template <typename T>
 inline
-double
-case3(double stx, double fx, double dx, double sty, double fy, double dy, double stp, double fp, double dp, bool brackt, double stpmin, double stpmax)
+T
+case3(T stx, T fx, T dx, T sty, T fy, T dy, T stp, T fp, T dp, bool brackt, T stpmin, T stpmax)
 {
 	/* 	The cubic step is computed only if the cubic tends to infinity
 	in the direction of the step or if the minimum of the cubic
 	is beyond stp. Otherwise the cubic step is defined to be the
 	secant step. */
-	const double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
+	const T theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
 	/* The case gamma = 0 only arises if the cubic does not tend
 	to infinity in the direction of the step.*/
-	const double gamma = copysign(std::max(0.0, sqrt(std::pow(theta, 2) - dx * dp)), stx - stp);
-	const double p = gamma - dp + theta;
-	const double q = 2.0 * gamma - dp + dx;
-	const double r = p / q;
+	const T gamma = copysign(std::max(T(0.0), sqrt(std::pow(theta, 2) - dx * dp)), stx - stp);
+	const T p = gamma - dp + theta;
+	const T q = T(2.0) * gamma - dp + dx;
+	const T r = p / q;
 	
-	double stpc = (stp > stx) ? stpmax : stpmin;
-	if (r < 0. && gamma != 0.) {
+	T stpc = (stp > stx) ? stpmax : stpmin;
+	if (r < 0. && gamma != T(0.0)) {
 	    stpc = stp + r * (stx - stp);
 	}
-	double stpf;
-	const double delta = 0.66; // must be less than 1.	
-	const double stpq = stp + dp / (dp - dx) * (stx - stp);
+	T stpf;
+	const T delta(0.66); // must be less than 1.	
+	const T stpq = stp + dp / (dp - dx) * (stx - stp);
 	if (brackt){
 		/* A minimizer has been bracketed. If the cubic step is
 		closer to stp than the secant step, the cubic step is
@@ -100,19 +104,21 @@ case3(double stx, double fx, double dx, double sty, double fy, double dy, double
 	return stpf;
 }
 
-double
-case4(double stx, double sty, double fy, double dy, double stp, double fp, double dp, bool brackt, double stpmin, double stpmax)
+template <typename T>
+T
+case4(T stx, T sty, T fy, T dy, T stp, T fp, T dp, bool brackt, T stpmin, T stpmax)
 {
-	double stpf = (stp > stx) ? stpmax : stpmin;
+	T stpf = (stp > stx) ? stpmax : stpmin;
 	if (brackt) {
-	    const double r = cubic_minimizer(fp, fy, dp, dy, stp, sty);
+	    const T r = cubic_minimizer(fp, fy, dp, dy, stp, sty);
 	    stpf = stp + r * (sty - stp);
 	}
 	return stpf;
 }
 
-double
-dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy, const double& stp, const double& fp, const double& dp, bool& brackt, const double& stpmin, const double& stpmax)
+template <typename T>
+T
+dcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, const T& dp, bool& brackt, const T& stpmin, const T& stpmax)
 {
 /*	This subroutine computes a safeguarded step for a search
 	procedure and updates an interval that contains a step that
@@ -135,36 +141,36 @@ dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy,
 
 	where
 
-	stx is a double precision variable.
+	stx is a T precision variable.
 		On entry stx is the best step obtained so far and is an
 			endpoint of the interval that contains the minimizer.
 		On exit stx is the updated best step.
 
-	fx is a double precision variable.
+	fx is a T precision variable.
 		On entry fx is the function at stx.
 		On exit fx is the function at stx.
 
-	dx is a double precision variable.
+	dx is a T precision variable.
 		On entry dx is the derivative of the function at
 			stx. The derivative must be negative in the direction of
 			the step, that is, dx and stp - stx must have opposite signs.
 		On exit dx is the derivative of the function at stx.
 
-	sty is a double precision variable.
+	sty is a T precision variable.
 		On entry sty is the second endpoint of the interval that contains 
 			the minimizer.
 		On exit sty is the updated endpoint of the interval that contains 
 			the minimizer.
 
-	fy is a double precision variable.
+	fy is a T precision variable.
 		On entry fy is the function at sty.
 		On exit fy is the function at sty.
 
-	dy is a double precision variable.
+	dy is a T precision variable.
 		On entry dy is the derivative of the function at sty.
 		On exit dy is the derivative of the function at the exit sty.
 
-	stp is a double precision variable.
+	stp is a T precision variable.
 		On entry stp is the current step. If brackt is set to .true.
 			then on input stp must be between stx and sty.
 		On exit stp is a new trial step.
@@ -183,8 +189,8 @@ dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy,
 
 	stpmax is an upper bound for the step.
 */
-    double stpf;
-    const double sgnd = dp * (dx / fabs(dx));
+    T stpf;
+    const T sgnd = dp * (dx / fabs(dx));
 	/*	First case: A higher function value. The minimum is bracketed.
 	If the cubic step is closer to stx than the quadratic step, the
 	cubic step is taken, otherwise the average of the cubic and 
@@ -214,7 +220,7 @@ dcstep(double& stx, double& fx, double& dx, double& sty, double& fy, double& dy,
 		fy = fp;
 		dy = dp;
     } else {
-		if (sgnd < 0.0) {
+		if (sgnd < T(0.0)) {
 	    	sty = stx;
 	    	fy = fx;
 	    	dy = dx;

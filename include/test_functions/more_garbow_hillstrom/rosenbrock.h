@@ -17,8 +17,15 @@ struct rosenbrock
     std::tuple<real_type, vector_type>
     operator()(const vector_type& x) const
     {
-        real_type f(1.0);
+        const double x1 = x(0);
+        const double x2 = x(1);
+        const double f1 = 10 * (x2 - x1 * x1);
+        const double f2 = 1- x1;
+        const double f = f1 * f1 + f2 * f2;
+
         vector_type df(2, 1.0);
+        df(0) = - 2 * f1 * 20 * x1 - 2 * f2;
+        df(1) = 2 * f1 * 10;
         return std::make_pair(f, df);
     }
 

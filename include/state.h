@@ -8,34 +8,59 @@
 
 namespace ook{
 
-struct state{
-    typedef double real_type;
+template <typename T>
+struct state_traits{
+    typedef typename T::value_type real_type;
+    
+    inline
+    static 
+    typename T::size_type
+    size(const T& t){
+        return t.size();
+    }
+};
 
-    state(const boost::numeric::ublas::vector<double>& x0 = {})
+template <>
+struct state_traits<double>{
+    typedef double real_type;
+    
+    // zero initialize a double
+    static
+    size_t
+    size(const double& d){
+        return size_t(0);
+    }
+};
+
+template <typename T>
+struct state{
+    typedef typename state_traits<T>::real_type real_type;
+
+    explicit state(const T& x0 = T())
     : 
-        x(x0), 
         fx(0.0),
-        fxap(0.0),
         dfx_dot_p(0.0),
-        dfxap_dot_p(0.0),
         a(0.0),
-        nfev(0),        
-        dfx(x0.size(), 0.0), 
-        dfxap(x0.size(), 0.0), 
-        p(x0.size(), 0.0)
+        value(state_value::start),        
+        x(x0), 
+        dfx(state_traits<T>::size(x0))
     {}
 
-    double fx;
-    double fxap;
-    double dfx_dot_p;
-    double dfxap_dot_p;
-    double a;
+    real_type fx;
+    real_type dfx_dot_p;
+    real_type a;
     state_value value;
-    int nfev;
-    boost::numeric::ublas::vector<double> x;
-    boost::numeric::ublas::vector<double> dfx;
-    boost::numeric::ublas::vector<double> dfxap;    
-    boost::numeric::ublas::vector<double> p;
+    T x;
+    T dfx;
+
+    friend
+    std::ostream&
+    operator<<(std::ostream& out, const state& s){
+        return out << "{ fx : " << s.fx << ","
+                   << " a : " << s.a << ", "
+                   << " dfx_dot_p : " << s.dfx_dot_p << ", "
+                   << " value : " << s.value << "} ";
+    }    
 };
 
 }  // ns ook
