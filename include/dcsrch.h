@@ -8,47 +8,10 @@
 
 namespace ook{
 
-#define ASSERT_CHECK_AND_THROW(predicate) assert((predicate));\
-    if (!(predicate))\
-        throw std::invalid_argument(std::string(#predicate) + std::string(" must hold."));
-
-struct options{
-    options(const double ftolIn, const double gtolIn, const double xtolIn, const double stpminIn, const double stpmaxIn)
-    :
-        ftol(ftolIn), 
-        gtol(gtolIn), 
-        xtol(xtolIn), 
-        stpmin(stpminIn), 
-        stpmax(stpmaxIn)
-    {
-        /* Check the input arguments for errors. */
-        ASSERT_CHECK_AND_THROW(ftol >= 0.);
-        ASSERT_CHECK_AND_THROW(gtol >= 0.); 
-        ASSERT_CHECK_AND_THROW(xtol >= 0.);
-        ASSERT_CHECK_AND_THROW(stpmin >= 0.); 
-        ASSERT_CHECK_AND_THROW(stpmax > stpmin); 
-    }
-    const double ftol;
-    const double gtol;
-    const double xtol;
-    const double stpmin;
-    const double stpmax;
-};
-
-inline
-void
-validate_arguments(const double stp, const double g, const options& opts)
-{
-    ASSERT_CHECK_AND_THROW(!(stp < opts.stpmin));
-    ASSERT_CHECK_AND_THROW(!(stp > opts.stpmax));
-    ASSERT_CHECK_AND_THROW(!(g > 0.0));
-}
-
-#undef ASSERT_CHECK_AND_THROW
-
+template <typename T>
 struct dcsrch_struct{
 
-    dcsrch_struct(double f0_, double g0_, double stp, double width0)
+    dcsrch_struct(T f0_, T g0_, T stp, T width0)
     :
         f0(f0_), g0(g0_), brackt(false), stage(1), width(width0),
             width1(2.0 * width0), 
@@ -57,10 +20,10 @@ struct dcsrch_struct{
                         stmin(0), stmax(5.0 * stp)
     {}
 
-    std::pair<state_value, double>
-    operator()(double stp, double f, double g, const options& opts)
+    template <typename Options>
+    std::pair<state_value, T>
+    operator()(T stp, T f, T g, const Options& opts)
     {
-        validate_arguments(stp, g0, opts);
         const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
         const bool curvature = curvature_condition(g0, g, opts.gtol);
 
@@ -77,7 +40,7 @@ struct dcsrch_struct{
         if (stp == opts.stpmin && (!sufficient_decrease || !curvature)) {
             return std::make_pair(state_value::warning_stp_eq_stpmin, stp);
         }
-        if (stage == 1 && sufficient_decrease && g >= 0.){
+        if (stage == 1 && sufficient_decrease && g >= T(0.0)){
             stage = 2;
         }        
         /* A modified function is used to predict the step during the
@@ -85,13 +48,13 @@ struct dcsrch_struct{
         the decrease is not sufficient. */
         if (stage == 1 && f <= fx && !sufficient_decrease) {
             // Define the modified function and derivative values. 
-            const double gtest = opts.ftol * g0;                
-            const double fm = f - stp * gtest;
-            double fxm = fx - stx * gtest;
-            double fym = fy - sty * gtest;
-            const double gm = g - gtest;
-            double gxm = gx - gtest;
-            double gym = gy - gtest;
+            const T gtest = opts.ftol * g0;                
+            const T fm = f - stp * gtest;
+            T fxm = fx - stx * gtest;
+            T fym = fy - sty * gtest;
+            const T gm = g - gtest;
+            T gxm = gx - gtest;
+            T gym = gy - gtest;
             // Call dcstep to update stx, sty, and to compute the new step. 
             stp = dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
             // Reset the function and derivative values for f.
@@ -105,8 +68,8 @@ struct dcsrch_struct{
         }
         /* Decide if a bisection step is needed. */
         if (brackt) {
-            if (fabs(sty - stx) >= 0.66 * width1) {
-                stp = stx + 0.5 * (sty - stx);
+            if (fabs(sty - stx) >= T(0.66) * width1) {
+                stp = stx + T(0.5) * (sty - stx);
             }
             width1 = width;
             width = fabs(sty - stx);
@@ -115,8 +78,8 @@ struct dcsrch_struct{
             stmin = std::min(stx, sty);
             stmax = std::max(stx, sty);
         } else {
-            stmin = stp + 1.1 * (stp - stx);
-            stmax = stp + 4.0 * (stp - stx);
+            stmin = stp + T(1.1) * (stp - stx);
+            stmax = stp + T(4.0) * (stp - stx);
         }
         // Force the step to be within the bounds opts.stpmax and opts.stpmin.
         stp = std::max(stp, opts.stpmin);
@@ -130,20 +93,20 @@ struct dcsrch_struct{
         return std::make_pair(state_value::update, stp);        
     }
 
-    const double f0;
-    const double g0;
+    const T f0;
+    const T g0;
     bool brackt;    
     int stage;    
-    double width;
-    double width1;
-    double stx;    
-    double fx;
-    double gx;
-    double sty;    
-    double fy;
-    double gy;
-    double stmin;
-    double stmax;
+    T width;
+    T width1;
+    T stx;    
+    T fx;
+    T gx;
+    T sty;    
+    T fy;
+    T gy;
+    T stmin;
+    T stmax;
 };
 
 }

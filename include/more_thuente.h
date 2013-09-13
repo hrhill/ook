@@ -15,7 +15,7 @@ more_thuente_line_search(F phi, T phi0, T dphi0, T a, const Options& opts){
 
     T phia, dphia;
     std::tie(phia, dphia) = phi(a);
-    dcsrch_struct dcsrch_(phi0, dphi0, a, opts.stpmax - opts.stpmin);
+    dcsrch_struct<T> dcsrch_(phi0, dphi0, a, opts.stpmax - opts.stpmin);
 
     state_value value = state_value::start;
 
