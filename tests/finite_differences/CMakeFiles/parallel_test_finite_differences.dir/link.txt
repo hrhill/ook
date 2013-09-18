@@ -1,1 +1,0 @@
-/usr/local/bin/c++   -Wall -pedantic -std=gnu++0x    -D_GLIBCXX_PARALLEL -fopenmp CMakeFiles/parallel_test_finite_differences.dir/test_finite_differences.cpp.o CMakeFiles/parallel_test_finite_differences.dir/test_functions.cpp.o  -o ../../bin/parallel_test_finite_differences -rdynamic -Wl,-Bstatic -lboost_test_exec_monitor -Wl,-Bdynamic 
