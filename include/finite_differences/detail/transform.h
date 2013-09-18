@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <parallel/algorithm>
 
-namespace smartodds{
+namespace ook{
 namespace finite_differences{
 namespace detail{
 
@@ -29,6 +29,6 @@ template <typename InIter, typename OutIter, typename F>
 
 }
 } // ns finite differences
-} // ns smartodds
+} // ns ook
 
 #endif
