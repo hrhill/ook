@@ -29,32 +29,6 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include <boost/numeric/bindings/mtl/dense2D.hpp>
-
-template <typename T>
-typename boost::numeric::ublas::vector<T>::size_type
-size(const boost::numeric::ublas::vector<T>& v){
-    return v.size();
-}
-
-template <typename M>
-typename M::size_type 
-num_rows(const M& m){
-    return m.size1();
-}
-
-template <typename M>
-typename M::size_type 
-num_rows(const M& m){
-    return m.rows();
-}
-
-template <typename M>
-typename M::size_type 
-num_cols(const M& m){
-    return m.size2();
-}
-
 namespace ook{
 
 // select the lower triangular part of the matrix.
@@ -62,8 +36,8 @@ template <typename Matrix>
 Matrix
 select_lower_triangular(const Matrix& m){
 
-    const int nrows = num_rows(m);
-    const int ncols = num_cols(m);
+    const int nrows = m.size1();
+    const int ncols = m.size2();
 
     const int dim = std::min(nrows, ncols);
     const int row_offset = std::max(0, nrows - ncols);
@@ -82,8 +56,8 @@ template <typename Matrix>
 Matrix
 select_upper_triangular(const Matrix& m){
 
-    const int nrows = num_rows(m);
-    const int ncols = num_cols(m);
+    const int nrows = m.size1();
+    const int ncols = m.size2();
 
     const int dim = std::min(nrows, ncols);
     const int col_offset = std::max(0, ncols - nrows);    
@@ -186,6 +160,42 @@ typename MatrixType::value_type
 cholesky_determinant(MatrixType A){
 
     return  exp(log_cholesky_determinant(A));
+}
+
+template <typename MatrixType>
+MatrixType
+ldlt_factorisation(MatrixType A)
+{
+    typedef typename MatrixType::size_type size_type;
+    const size_type n = A.size1();
+
+/*
+    MatrixType L(n, n, 0.0);    
+    MatrixType c(n, n, 0.0);
+    for (size_type j = 0; j < n; ++j){
+        c(j, j) = A(j, j);
+        for (size_type s = 0; s < j; ++s){
+            c(j, j) -= L(s, s) * std::pow(L(j, s), 2);
+        }
+        L(j, j) = c(j, j);
+
+        for (size_type i = j + 1; i < n; ++i){
+            c(i, j) = A(i, j);
+            for (size_type s = 0; s < j; ++s){
+                c(i, j) -= L(s, s) * L(i, s) * L(j, s);
+            }
+            L(i, j) = c(i, j) / L(j, j);
+        }
+    }
+*/    
+    MatrixType L = get_lower_cholesky_factor(A);
+    MatrixType D(n, n, 0.0);
+    for (size_type i = 0; i < n; ++i){
+        D(i, i) = sqrt(L(i, i));
+        L(i, i) = 1.0;
+    }
+    return L;
+    //return boost::numeric::ublas::prod(L, D);
 }
 
 } // ns ook

@@ -6,7 +6,7 @@
 
 #include <boost/numeric/bindings/blas.hpp>
 
-namespace ftl{
+namespace ook{
 
 template <typename T>
 T
