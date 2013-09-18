@@ -4,9 +4,7 @@
 
 #include <random>
 
-#include <smartodds/finite_differences.h>
-#include "ftl/linear_algebra.h"
-#include "ftl/types.h"
+#include <boost/numeric/bindings/blas.hpp>
 
 namespace ftl{
 
