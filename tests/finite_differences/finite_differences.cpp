@@ -23,7 +23,7 @@
 #include "backward_difference.h"
 #include "central_difference.h"
 
-using namespace smartodds::finite_differences;
+using namespace ook::finite_differences;
 
 typedef boost::numeric::ublas::vector<double> vector_t;
 typedef boost::numeric::ublas::matrix<double> matrix_t;

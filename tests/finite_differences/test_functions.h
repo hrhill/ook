@@ -1,7 +1,7 @@
 /// \file test_func.h
 
-#ifndef SMARTODDS_FINITE_DIFFERENCE_TEST_FUNCTIONS_H
-#define SMARTODDS_FINITE_DIFFERENCE_TEST_FUNCTIONS_H
+#ifndef OOK_FINITE_DIFFERENCE_TEST_FUNCTIONS_H
+#define OOK_FINITE_DIFFERENCE_TEST_FUNCTIONS_H
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>

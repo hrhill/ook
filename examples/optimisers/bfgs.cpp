@@ -11,10 +11,10 @@
 #include "norms.h"
 #include "options.h"
 #include "state_value.h"
-#include "more_thuente.h"
+#include "line_search/more_thuente.h"
 #include "test_functions/more_garbow_hillstrom/rosenbrock.h"
 
-#include "factorisation/gmw81.h"
+#include "factorisations/gmw81.h"
 
 namespace ublas = boost::numeric::ublas;
 typedef ublas::vector<double> vector_t;

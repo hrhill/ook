@@ -112,34 +112,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-tests/CMakeFiles/factorisation_test.dir/rule:
-	cd /home/harry/projects/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/factorisation_test.dir/rule
-.PHONY : tests/CMakeFiles/factorisation_test.dir/rule
-
-# Convenience name for target.
-factorisation_test: tests/CMakeFiles/factorisation_test.dir/rule
-.PHONY : factorisation_test
-
-# fast build rule for target.
-factorisation_test/fast:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/build
-.PHONY : factorisation_test/fast
-
-# Convenience name for target.
-tests/CMakeFiles/more_thuente_test.dir/rule:
-	cd /home/harry/projects/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/more_thuente_test.dir/rule
-.PHONY : tests/CMakeFiles/more_thuente_test.dir/rule
-
-# Convenience name for target.
-more_thuente_test: tests/CMakeFiles/more_thuente_test.dir/rule
-.PHONY : more_thuente_test
-
-# fast build rule for target.
-more_thuente_test/fast:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/build
-.PHONY : more_thuente_test/fast
-
-# Convenience name for target.
 tests/CMakeFiles/optimise_test.dir/rule:
 	cd /home/harry/projects/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/optimise_test.dir/rule
 .PHONY : tests/CMakeFiles/optimise_test.dir/rule
@@ -167,101 +139,53 @@ test_functions_test/fast:
 	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/build
 .PHONY : test_functions_test/fast
 
-factorisation_test.o: factorisation_test.cpp.o
-.PHONY : factorisation_test.o
+optimise.o: optimise.cpp.o
+.PHONY : optimise.o
 
 # target to build an object file
-factorisation_test.cpp.o:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/factorisation_test.cpp.o
-.PHONY : factorisation_test.cpp.o
+optimise.cpp.o:
+	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise.cpp.o
+.PHONY : optimise.cpp.o
 
-factorisation_test.i: factorisation_test.cpp.i
-.PHONY : factorisation_test.i
+optimise.i: optimise.cpp.i
+.PHONY : optimise.i
 
 # target to preprocess a source file
-factorisation_test.cpp.i:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/factorisation_test.cpp.i
-.PHONY : factorisation_test.cpp.i
+optimise.cpp.i:
+	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise.cpp.i
+.PHONY : optimise.cpp.i
 
-factorisation_test.s: factorisation_test.cpp.s
-.PHONY : factorisation_test.s
+optimise.s: optimise.cpp.s
+.PHONY : optimise.s
 
 # target to generate assembly for a file
-factorisation_test.cpp.s:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/factorisation_test.cpp.s
-.PHONY : factorisation_test.cpp.s
+optimise.cpp.s:
+	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise.cpp.s
+.PHONY : optimise.cpp.s
 
-more_thuente_test.o: more_thuente_test.cpp.o
-.PHONY : more_thuente_test.o
+test_functions.o: test_functions.cpp.o
+.PHONY : test_functions.o
 
 # target to build an object file
-more_thuente_test.cpp.o:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.o
-.PHONY : more_thuente_test.cpp.o
+test_functions.cpp.o:
+	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions.cpp.o
+.PHONY : test_functions.cpp.o
 
-more_thuente_test.i: more_thuente_test.cpp.i
-.PHONY : more_thuente_test.i
-
-# target to preprocess a source file
-more_thuente_test.cpp.i:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.i
-.PHONY : more_thuente_test.cpp.i
-
-more_thuente_test.s: more_thuente_test.cpp.s
-.PHONY : more_thuente_test.s
-
-# target to generate assembly for a file
-more_thuente_test.cpp.s:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/more_thuente_test.dir/build.make tests/CMakeFiles/more_thuente_test.dir/more_thuente_test.cpp.s
-.PHONY : more_thuente_test.cpp.s
-
-optimise_test.o: optimise_test.cpp.o
-.PHONY : optimise_test.o
-
-# target to build an object file
-optimise_test.cpp.o:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.o
-.PHONY : optimise_test.cpp.o
-
-optimise_test.i: optimise_test.cpp.i
-.PHONY : optimise_test.i
+test_functions.i: test_functions.cpp.i
+.PHONY : test_functions.i
 
 # target to preprocess a source file
-optimise_test.cpp.i:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.i
-.PHONY : optimise_test.cpp.i
+test_functions.cpp.i:
+	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions.cpp.i
+.PHONY : test_functions.cpp.i
 
-optimise_test.s: optimise_test.cpp.s
-.PHONY : optimise_test.s
-
-# target to generate assembly for a file
-optimise_test.cpp.s:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/optimise_test.dir/build.make tests/CMakeFiles/optimise_test.dir/optimise_test.cpp.s
-.PHONY : optimise_test.cpp.s
-
-test_functions_test.o: test_functions_test.cpp.o
-.PHONY : test_functions_test.o
-
-# target to build an object file
-test_functions_test.cpp.o:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.o
-.PHONY : test_functions_test.cpp.o
-
-test_functions_test.i: test_functions_test.cpp.i
-.PHONY : test_functions_test.i
-
-# target to preprocess a source file
-test_functions_test.cpp.i:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.i
-.PHONY : test_functions_test.cpp.i
-
-test_functions_test.s: test_functions_test.cpp.s
-.PHONY : test_functions_test.s
+test_functions.s: test_functions.cpp.s
+.PHONY : test_functions.s
 
 # target to generate assembly for a file
-test_functions_test.cpp.s:
-	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions_test.cpp.s
-.PHONY : test_functions_test.cpp.s
+test_functions.cpp.s:
+	cd /home/harry/projects/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/test_functions.cpp.s
+.PHONY : test_functions.cpp.s
 
 # Help Target
 help:
@@ -270,24 +194,16 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... factorisation_test"
-	@echo "... more_thuente_test"
 	@echo "... optimise_test"
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... test_functions_test"
-	@echo "... factorisation_test.o"
-	@echo "... factorisation_test.i"
-	@echo "... factorisation_test.s"
-	@echo "... more_thuente_test.o"
-	@echo "... more_thuente_test.i"
-	@echo "... more_thuente_test.s"
-	@echo "... optimise_test.o"
-	@echo "... optimise_test.i"
-	@echo "... optimise_test.s"
-	@echo "... test_functions_test.o"
-	@echo "... test_functions_test.i"
-	@echo "... test_functions_test.s"
+	@echo "... optimise.o"
+	@echo "... optimise.i"
+	@echo "... optimise.s"
+	@echo "... test_functions.o"
+	@echo "... test_functions.i"
+	@echo "... test_functions.s"
 .PHONY : help
 
 

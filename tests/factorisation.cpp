@@ -15,7 +15,7 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "factorisation/gmw81.h"
+#include "factorisations/gmw81.h"
 
 #include "test_utilities.h"
 

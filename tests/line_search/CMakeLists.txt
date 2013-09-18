@@ -1,5 +1,5 @@
-set(TESTS optimise
-          test_functions)
+set(TESTS more_thuente
+          )
 
 foreach(test ${TESTS})
     add_executable(${test}_test ${test}.cpp)
@@ -7,5 +7,3 @@ foreach(test ${TESTS})
     add_test(${test} ${EXECUTABLE_OUTPUT_PATH}/${test}_test)    
 endforeach(test)
 
-add_subdirectory(line_search)
-add_subdirectory(finite_differences)
