@@ -1,14 +1,14 @@
-#ifndef SMARTODDS_FINITE_DIFFERENCES_BACKWARD_DIFFERENCE_H_
-#define SMARTODDS_FINITE_DIFFERENCES_BACKWARD_DIFFERENCE_H_
+#ifndef OOK_FINITE_DIFFERENCES_BACKWARD_DIFFERENCE_H_
+#define OOK_FINITE_DIFFERENCES_BACKWARD_DIFFERENCE_H_
 
 #include <limits>
 #include <cmath>
 #include <tuple>
 
 #include <algorithm>
-#include "transform.h"
+#include "detail/transform.h"
 
-namespace smartodds{
+namespace ook{
 namespace finite_differences{
 
 /// \brief Backward difference approximation.
@@ -153,6 +153,6 @@ hessian_backward_difference(F f, const X& x, M& H)
 }
 
 } // ns finite_differences
-} // ns smartodds
+} // ns ook
 
 #endif

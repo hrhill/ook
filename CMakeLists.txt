@@ -23,7 +23,6 @@ add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(benchmarks)
 add_subdirectory(tests)
-add_subdirectory(inspiration)
 
 # ------------------------------------ Documentation setup ------------------------------------------
 if(DOXYGEN_FOUND)
