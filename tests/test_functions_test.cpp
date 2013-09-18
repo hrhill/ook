@@ -5,6 +5,7 @@
 #include <random>
 
 #include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/timer.hpp>
 
@@ -22,14 +23,15 @@
 
 using namespace ook::test_functions;
 
-template <typename T>
+template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-rosenbrock<T>//,
+rosenbrock<V, M>//,
 //freudenstein_roth<T>,
 //powell_badly_scaled<T>
 >;
 
-typedef test_function_types<boost::numeric::ublas::vector<double>> ublas_function_types;
+typedef test_function_types<boost::numeric::ublas::vector<double>,
+                            boost::numeric::ublas::matrix<double>> ublas_function_types;
 
 template <typename Vector>
 std::ostream& operator<<(std::ostream& out, const std::tuple<typename Vector::value_type, Vector>& t)
@@ -42,7 +44,9 @@ int
 test_function_specification()
 {
     typedef typename Function::vector_type vector_type;
+    typedef typename Function::matrix_type matrix_type;    
     typedef typename vector_type::value_type real_type;
+
     typedef Function test_function;
 
     test_function objective_function;
@@ -55,7 +59,8 @@ test_function_specification()
 
     real_type f_min;
     vector_type df(test_function::n);
-    std::tie(f_min, df) = objective_function(minima);
+    matrix_type d2f(test_function::n, test_function::n);
+    std::tie(f_min, df, d2f) = objective_function(minima);
 
     BOOST_CHECK_CLOSE(f_min, test_function::f_min, test_function::tolerance);
     BOOST_CHECK_SMALL(ook::norm_infinity(df), test_function::tolerance);    

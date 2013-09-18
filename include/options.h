@@ -1,6 +1,8 @@
 #ifndef OOK_OPTIONS_H_
 #define OOK_OPTIONS_H_
 
+#include <cassert>
+
 namespace ook{
 
 #define ASSERT_CHECK_AND_THROW(predicate) assert((predicate));\

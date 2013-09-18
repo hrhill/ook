@@ -11,7 +11,7 @@ templateText =
     \\n\
     \namespace ook{\n\
     \namespace test_functions{\n\n\
-    \template <typename Vector>\n\
+    \template <typename Vector, typename Matrix>\n\
     \struct @NAME@\n\
     \{\n\
     \    typedef Vector vector_type;\n\
@@ -22,7 +22,7 @@ templateText =
     \    {\n\
     \        real_type f(1.0);\n\
     \        vector_type df(@N@, 1.0);\n\
-    \        return std::make_pair(f, df);\n\
+    \        return std::make_tuple(f, df);\n\
     \    }\n\
     \\n\
     \    static const int n = @N@;\n\

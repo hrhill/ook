@@ -8,13 +8,15 @@
 namespace ook{
 namespace test_functions{
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 struct rosenbrock
 {
     typedef Vector vector_type;
+    typedef Matrix matrix_type;
+
     typedef typename vector_type::value_type real_type;
 
-    std::tuple<real_type, vector_type>
+    std::tuple<real_type, vector_type, matrix_type>
     operator()(const vector_type& x) const
     {
         const double x1 = x(0);
@@ -26,7 +28,13 @@ struct rosenbrock
         vector_type df(2, 1.0);
         df(0) = - 2 * f1 * 20 * x1 - 2 * f2;
         df(1) = 2 * f1 * 10;
-        return std::make_pair(f, df);
+
+        matrix_type d2f(2, 2, 0.0);
+        d2f(0, 0) = 2 - 400 * x2 + 1200 * x1 * x1;
+        d2f(1, 0) = d2f(0, 1) = -400 * x1;
+        d2f(1, 1) = 200;
+
+        return std::make_tuple(f, df, d2f);
     }
 
     static const int n = 2;
@@ -37,21 +45,21 @@ struct rosenbrock
     static std::vector<real_type> x0;
 };
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-rosenbrock<Vector>::f_min = 0.0;
+rosenbrock<Vector, Matrix>::f_min = 0.0;
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-rosenbrock<Vector>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+rosenbrock<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-rosenbrock<Vector>::minima = {1.0, 1.0};
+rosenbrock<Vector, Matrix>::minima = {1.0, 1.0};
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-rosenbrock<Vector>::x0 = {-1.2, 1.0};
+rosenbrock<Vector, Matrix>::x0 = {-1.2, 1.0};
 
 
 } // ns test_functions
