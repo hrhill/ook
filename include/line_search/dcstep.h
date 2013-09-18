@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <tuple>
 
+namespace ook{
 template <typename T>
 T
 cubic_minimizer(T f1, T f2, T d1, T d2, T st1, T st2)
@@ -232,4 +233,5 @@ dcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, co
     return stpf;
 }
 
+} // ns ook
 #endif
