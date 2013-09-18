@@ -1,6 +1,7 @@
 set(TESTS optimise
           more_thuente
-          test_functions)
+          test_functions
+          factorisation)
 
 foreach(test ${TESTS})
     add_executable(${test}_test ${test}_test.cpp)

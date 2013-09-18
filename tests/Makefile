@@ -112,6 +112,20 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+tests/CMakeFiles/factorisation_test.dir/rule:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/factorisation_test.dir/rule
+.PHONY : tests/CMakeFiles/factorisation_test.dir/rule
+
+# Convenience name for target.
+factorisation_test: tests/CMakeFiles/factorisation_test.dir/rule
+.PHONY : factorisation_test
+
+# fast build rule for target.
+factorisation_test/fast:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/build
+.PHONY : factorisation_test/fast
+
+# Convenience name for target.
 tests/CMakeFiles/more_thuente_test.dir/rule:
 	cd /home/harry/projects/libraries/ook && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/more_thuente_test.dir/rule
 .PHONY : tests/CMakeFiles/more_thuente_test.dir/rule
@@ -152,6 +166,30 @@ test_functions_test: tests/CMakeFiles/test_functions_test.dir/rule
 test_functions_test/fast:
 	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/test_functions_test.dir/build.make tests/CMakeFiles/test_functions_test.dir/build
 .PHONY : test_functions_test/fast
+
+factorisation_test.o: factorisation_test.cpp.o
+.PHONY : factorisation_test.o
+
+# target to build an object file
+factorisation_test.cpp.o:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/factorisation_test.cpp.o
+.PHONY : factorisation_test.cpp.o
+
+factorisation_test.i: factorisation_test.cpp.i
+.PHONY : factorisation_test.i
+
+# target to preprocess a source file
+factorisation_test.cpp.i:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/factorisation_test.cpp.i
+.PHONY : factorisation_test.cpp.i
+
+factorisation_test.s: factorisation_test.cpp.s
+.PHONY : factorisation_test.s
+
+# target to generate assembly for a file
+factorisation_test.cpp.s:
+	cd /home/harry/projects/libraries/ook && $(MAKE) -f tests/CMakeFiles/factorisation_test.dir/build.make tests/CMakeFiles/factorisation_test.dir/factorisation_test.cpp.s
+.PHONY : factorisation_test.cpp.s
 
 more_thuente_test.o: more_thuente_test.cpp.o
 .PHONY : more_thuente_test.o
@@ -232,11 +270,15 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... factorisation_test"
 	@echo "... more_thuente_test"
 	@echo "... optimise_test"
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... test_functions_test"
+	@echo "... factorisation_test.o"
+	@echo "... factorisation_test.i"
+	@echo "... factorisation_test.s"
 	@echo "... more_thuente_test.o"
 	@echo "... more_thuente_test.i"
 	@echo "... more_thuente_test.s"

@@ -1,6 +1,9 @@
 #ifndef OOK_STATE_VALUES_H_
 #define OOK_STATE_VALUES_H_
 
+#include <iostream>
+#include <type_traits>
+
 namespace ook{
 
 enum class state_value{
