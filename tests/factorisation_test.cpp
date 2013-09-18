@@ -17,7 +17,7 @@
 
 #include "factorisation/gmw81.h"
 
-#include "test_utils.h"
+#include "test_utilities.h"
 
 typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_t;
 

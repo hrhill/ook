@@ -16,6 +16,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.50 COMPONENTS test_exec_monitor program_options REQUIRED)
 find_package(Doxygen)
+find_package(OpenMP)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_subdirectory(src)
