@@ -1,5 +1,5 @@
-#ifndef OOK_DCSTEP_H_
-#define OOK_DCSTEP_H_
+#ifndef OOK_LINE_SEARCH_SAFE_STEP_H_
+#define OOK_LINE_SEARCH_SAFE_STEP_H_
 
 #include <iostream>
 #include <cmath>
@@ -7,6 +7,9 @@
 #include <tuple>
 
 namespace ook{
+
+namespace line_search {
+
 template <typename T>
 T
 cubic_minimizer(T f1, T f2, T d1, T d2, T st1, T st2)
@@ -119,7 +122,7 @@ case4(T stx, T sty, T fy, T dy, T stp, T fp, T dp, bool brackt, T stpmin, T stpm
 
 template <typename T>
 T
-dcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, const T& dp, bool& brackt, const T& stpmin, const T& stpmax)
+safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, const T& dp, bool& brackt, const T& stpmin, const T& stpmax)
 {
 /*	This subroutine computes a safeguarded step for a search
 	procedure and updates an interval that contains a step that
@@ -233,5 +236,8 @@ dcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, co
     return stpf;
 }
 
+} //ns line_search
+
 } // ns ook
+
 #endif

@@ -88,7 +88,7 @@ steepest_descent(F objective_function, const X& x0, const Options& opts)
             return std::make_pair(fx, dfx_dot_p);
         };
 
-        std::tie(value, a) = ook::more_thuente_line_search(phi, fx, dfx_dot_p, a, opts);
+        std::tie(value, a) = ook::line_search::more_thuente(phi, fx, dfx_dot_p, a, opts);
 
         X dx(a * p);
         x += dx;
@@ -151,7 +151,7 @@ fletcher_reeves(F objective_function, const X& x0, const Options& opts)
             return std::make_pair(fx, dfx_dot_p);
         };
 
-        std::tie(value, a) = ook::more_thuente_line_search(phi, fx, dfx_dot_p, a, opts);
+        std::tie(value, a) = ook::line_search::more_thuente(phi, fx, dfx_dot_p, a, opts);
 
         X dx(a * p);
         x += dx;
@@ -218,7 +218,7 @@ bfgs(F objective_function, const X& x0, const Options& opts)
             return std::make_pair(fx, dfx_dot_p);
         };
 
-        std::tie(value, a) = ook::more_thuente_line_search(phi, fx, dfx_dot_p, a, opts);
+        std::tie(value, a) = ook::line_search::more_thuente(phi, fx, dfx_dot_p, a, opts);
 
         X dx(a * p);
         x += dx;
@@ -290,7 +290,7 @@ newton(F objective_function, const X& x0, const Options& opts)
             return std::make_pair(fx, dfx_dot_p);
         };
 
-        std::tie(value, a) = ook::more_thuente_line_search(phi, fx, dfx_dot_p, a, opts);
+        std::tie(value, a) = ook::line_search::more_thuente(phi, fx, dfx_dot_p, a, opts);
 
         X dx(a * p);
         x += dx;

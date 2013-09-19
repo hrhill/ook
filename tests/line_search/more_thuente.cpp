@@ -36,7 +36,7 @@ do_search(ObjectiveFunction obj, const double stp0, const Options& opts)
 
     std::tie(phi0, dphi0) = obj(0.0);    
 
-    auto soln = ook::more_thuente_line_search(phi, phi0, dphi0, stp0, opts);                    
+    auto soln = ook::line_search::more_thuente(phi, phi0, dphi0, stp0, opts);                    
     std::cout << std::scientific 
               << std::setw(16) << stp0 
               << std::setw(16) << std::get<0>(soln)

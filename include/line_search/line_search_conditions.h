@@ -6,6 +6,8 @@
 
 namespace ook{
 
+namespace line_search{
+
 template <typename T>
 bool
 sufficient_decrease_condition(const T& fx, const T& fxap, const T& dfx_dot_p, const T& a, const T& c)
@@ -30,6 +32,8 @@ strong_wolfe_conditions(const T& fx, const T& fxap, const T& dfx_dot_p, const T&
     return sufficient_decrease_condition(fx, fxap, dfx_dot_p, a, c1) 
             && curvature_condition(dfx_dot_p, dfxap_dot_p, c2);
 }
+
+} // ns line_search
 
 } // ns ook
 
