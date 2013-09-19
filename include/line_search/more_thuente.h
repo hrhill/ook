@@ -1,21 +1,22 @@
-#ifndef OOK_MORE_THUENTE_H_
-#define OOK_MORE_THUENTE_H_
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_H_
+#define OOK_LINE_SEARCH_MORE_THUENTE_H_
 
 #include <tuple>
 
 #include "line_search_conditions.h"
 #include "state_value.h"
-#include "dcsrch.h"
+#include "more_thuente_searcher.h"
 
 namespace ook{
+namespace line_search{
 
 template <typename F, typename T, typename Options>
 std::tuple<state_value, T>
-more_thuente_line_search(F phi, T phi0, T dphi0, T a, const Options& opts){
+more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts){
 
     T phia, dphia;
     std::tie(phia, dphia) = phi(a);
-    dcsrch_struct<T> dcsrch_(phi0, dphi0, a, opts.stpmax - opts.stpmin);
+    more_thuente_searcher<T> search(phi0, dphi0, a, opts.stpmax - opts.stpmin);
 
     state_value value = state_value::start;
 
@@ -25,7 +26,7 @@ more_thuente_line_search(F phi, T phi0, T dphi0, T a, const Options& opts){
             value = state_value::convergence;
             break;
         }
-        std::tie(value, a) = dcsrch_(a, phia, dphia, opts);
+        std::tie(value, a) = search(a, phia, dphia, opts);
         if (value != state_value::update)
             break;
 
@@ -34,6 +35,8 @@ more_thuente_line_search(F phi, T phi0, T dphi0, T a, const Options& opts){
 
     return std::make_tuple(value, a);
 }
+
+} // ns line_search
 
 } // ns ook
 

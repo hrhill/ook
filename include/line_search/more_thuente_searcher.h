@@ -1,17 +1,19 @@
-#ifndef OOK_DCSRCH_H_
-#define OOK_DCSRCH_H_
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_SEARCHER_H_
+#define OOK_LINE_SEARCH_MORE_THUENTE_SEARCHER_H_
 
 #include <cmath>
 #include "line_search_conditions.h"
-#include "dcstep.h"
+#include "safe_step.h"
 #include "state_value.h"
 
 namespace ook{
 
-template <typename T>
-struct dcsrch_struct{
+namespace line_search{
 
-    dcsrch_struct(T f0_, T g0_, T stp, T width0)
+template <typename T>
+struct more_thuente_searcher{
+
+    more_thuente_searcher(T f0_, T g0_, T stp, T width0)
     :
         f0(f0_), g0(g0_), brackt(false), stage(1), width(width0),
             width1(2.0 * width0), 
@@ -55,16 +57,16 @@ struct dcsrch_struct{
             const T gm = g - gtest;
             T gxm = gx - gtest;
             T gym = gy - gtest;
-            // Call dcstep to update stx, sty, and to compute the new step. 
-            stp = dcstep(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
+            // Call safe_step to update stx, sty, and to compute the new step. 
+            stp = safe_step(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
             // Reset the function and derivative values for f.
             fx = fxm + stx * gtest;
             fy = fym + sty * gtest;
             gx = gxm + gtest;
             gy = gym + gtest;
         } else  {
-            // Call dcstep to update stx, sty, and to compute the new step.
-            stp = dcstep(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
+            // Call safe_step to update stx, sty, and to compute the new step.
+            stp = safe_step(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
         }
         /* Decide if a bisection step is needed. */
         if (brackt) {
@@ -109,6 +111,8 @@ struct dcsrch_struct{
     T stmax;
 };
 
-}
+} // ns line search
+
+} // ns ook
 
 #endif
