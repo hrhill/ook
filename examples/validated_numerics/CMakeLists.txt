@@ -1,5 +1,2 @@
-set(PROGRAMS line_search_test)
-
-foreach(prog ${PROGRAMS})
-    add_executable(${prog} ${prog}.cpp dcsrch.cpp dcstep.cpp)
-endforeach(prog)
+add_executable(more_thuente94 more_thuente94.cpp dcsrch.cpp dcstep.cpp)
+add_executable(gmw81 gmw81.cpp)
