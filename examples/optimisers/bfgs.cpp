@@ -371,6 +371,6 @@ int main(){
           2.0, 3.0,         1.0;
 
     std::cout << G << std::endl;
-    std::cout << ook::gmw81(G) << std::endl;
+    std::cout << ook::factorisations::gmw81(G) << std::endl;
 }
 

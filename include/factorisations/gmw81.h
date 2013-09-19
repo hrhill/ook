@@ -1,5 +1,5 @@
-#ifndef MODIFIED_LDLT_H_
-#define MODIFIED_LDLT_H_
+#ifndef OOK_FACTORISATIONS_GMW81_H_
+#define OOK_FACTORISATIONS_GMW81_H_
 
 #include <cassert>
 #include <algorithm>
@@ -10,68 +10,26 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
+#include "./tools.h"
+
 namespace ook{
 
+namespace factorisations{
+
 namespace detail{
-template <typename Matrix>
-std::tuple<typename Matrix::size_type, typename Matrix::value_type>
-max_magnitude_diagonal(const Matrix& m){
-
-    typedef typename Matrix::size_type size_type;
-    typedef typename Matrix::size_type value_type;  
-
-    const size_type n = m.size1();
-
-    if (n == 0)
-        return std::make_tuple(0, 0);
-
-    size_type idx = 0;
-    value_type mmd = fabs(m(0, 0));
-    for (size_type i = 1; i < n; ++i){
-        const value_type mii = fabs(m(i, i));
-        idx = mmd < mii ?  i : idx;
-        mmd = idx == i ? mii : mmd;
-    }
-    return std::make_tuple(idx, mmd);
-}
 
 template <typename Matrix>
 typename Matrix::value_type
-max_magnitude_off_diagonal(const Matrix& m){
+calculate_theta(const Matrix& c, const int j){
 
-    typedef typename Matrix::size_type size_type;
-    typedef typename Matrix::value_type value_type;  
-
-    const size_type n = m.size1();
-
-    value_type mmd = fabs(m(0, 0));
-    for (size_type i = 0; i < n; ++i){
-        for (size_type j = i + 1; j < n; ++j){
-            mmd = std::max(fabs(m(i, j)), mmd);
+    const int n = c.size1();
+    auto jth_col = boost::numeric::ublas::matrix_column<const Matrix>(c, j);
+    typename Matrix::value_type theta(0.0);
+    if (j < n )
+        for (int i = j + 1; i < n; ++i){
+            theta = std::max(theta, jth_col(i));
         }
-    }
-    return mmd;
-}
-
-template <typename Vector>
-std::tuple<typename Vector::size_type, typename Vector::value_type>
-max_magnitude(const Vector& x)
-{
-    typedef typename Vector::size_type size_type;
-    typedef typename Vector::value_type value_type;  
-
-    const size_type n = x.size();
-
-    if (n == 0)
-        return std::make_tuple(0, 0);
-    size_type idx = 0;
-    value_type xmax = fabs(x(0));
-    for (size_type i = 0; i < n; ++i){
-        const value_type xi = fabs(x(i));
-        idx = xmax < xi ?  i : idx;
-        xmax = idx == i ? xi : xmax;
-    }
-    return std::make_tuple(idx, xmax);      
+    return theta;        
 }
 
 } // ns detail
@@ -103,25 +61,23 @@ gmw81(Matrix G)
     const size_type n = G.size1();
     const real_type eps = std::numeric_limits<real_type>::epsilon();
     const real_type nu = std::max(1.0, sqrt(std::pow(n, 2) - 1.0));
-    const real_type gamma = std::get<1>(detail::max_magnitude_diagonal(G));
-    const real_type eta = detail::max_magnitude_off_diagonal(G);    
+    const real_type gamma = std::get<1>(tools::max_magnitude_diagonal(G));
+    const real_type eta = tools::max_magnitude_off_diagonal(G);    
     const real_type beta2 = std::max({gamma, eta/nu, eps});
     const real_type delta = sqrt(eps);
 
     // MC2
     Matrix c(n, n, 0);
     Matrix L(n, n, 0);
-    Matrix D(n, 1, 0);
-    Matrix E(n, 1, 0);
 
     for (size_type i = 0; i < n; ++i){
         c(i, i) = G(i, i);
     }
-    for (int j = 0; j < n; ++j){
+    for (size_type j = 0; j < n; ++j){
         // MC3 
         real_type cqq;
         size_type q;
-        std::tie(q, cqq) = detail::max_magnitude_diagonal(matrix_range<Matrix>(c, range(j, n), range(j, n)));
+        std::tie(q, cqq) = tools::max_magnitude_diagonal(matrix_range<Matrix>(c, range(j, n), range(j, n)));
 
         // Pivoting
         if (q != j){
@@ -133,31 +89,29 @@ gmw81(Matrix G)
             matrix_row<Matrix> colj(G, j);
             colq.swap(colj);
         }
+
         // MC4
-        for (int s = 0; s < j; ++s){
-            L(j, s) = c(j, s)/L(s, 0);
+        for (size_type s = 0; s < j; ++s){
+            L(j, s) = c(j, s)/L(s, s);
         }
-        for (int i = j + 1; i < n; ++i){
+        for (size_type i = j + 1; i < n; ++i){
             c(i, j) = G(i, j);
             for (int s = 0; s < j; ++s){
                 c(i, j) -= L(j, s) * c(i, s);
             }
         }
-        size_type theta_idx;
-        real_type theta = 0;
-        if (j < n - 1)
-            std::tie(theta_idx, theta) = detail::max_magnitude(matrix_column<Matrix>(c, j));
-
+        real_type theta = detail::calculate_theta(c, j);
         // MC 5
         L(j, j) = std::max({delta, fabs(c(j, j)), std::pow(theta, 2)/beta2});
 
-        for (int i = j + 1; i < n; ++i){
+        for (size_type i = j + 1; i < n; ++i){
             c(i, i) -= std::pow(c(i, j), 2)/L(j, j);
         }
-        E(j, 0) = L(j, j) - c(j, j);
     }
     return L;
 }
+
+} // ns factorisation
 
 } // ns ook
 
