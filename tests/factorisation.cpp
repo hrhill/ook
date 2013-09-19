@@ -23,6 +23,20 @@
 
 typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_t;
 
+template <typename Matrix>
+Matrix
+convert_to_L(const Matrix& LD)
+{
+    int n = LD.size1();
+    Matrix L(LD);
+    Matrix D(n, n, 0);
+
+    for (int i = 0; i < n; ++i){
+        D(i, i) = sqrt(L(i, i));
+        L(i, i) = 1.0;
+    }
+}
+
 BOOST_AUTO_TEST_CASE(compilation_test){
 
     std::mt19937 rng(std::time(0));
@@ -32,7 +46,9 @@ BOOST_AUTO_TEST_CASE(compilation_test){
     matrix_t ldlL = ook::ldlt_factorisation(A);
     matrix_t gmw81L = ook::gmw81(A);    
 
-    std::cout << cholL << std::endl;
-    std::cout << ldlL << std::endl;    
-    std::cout << gmw81L << std::endl;    
+    std::cout << "chol: " << cholL << std::endl;
+    std::cout << "ldl : " << ldlL << std::endl;    
+    std::cout << "gmw : " << gmw81L << std::endl;  
+
+
 }
