@@ -88,14 +88,14 @@ get_lower_cholesky_factor(Matrix m){
     return select_lower_triangular<Matrix>(sqrt_m);
 }
 
-template <typename MatrixType, typename VectorType>
+template <typename Matrix, typename VectorType>
 VectorType
-cholesky_solve(MatrixType A, const VectorType& y){
+cholesky_solve(Matrix A, const VectorType& y){
 
 	namespace lapack = boost::numeric::bindings::lapack;
 	namespace ublas = boost::numeric::ublas;
     /// Need to adapt types to that they are compatible with lapack
-    ublas::symmetric_adaptor<MatrixType, ublas::lower> sa(A);
+    ublas::symmetric_adaptor<Matrix, ublas::lower> sa(A);
 
     // factorize
     int info = lapack::potrf(sa);
@@ -103,7 +103,7 @@ cholesky_solve(MatrixType A, const VectorType& y){
         throw std::runtime_error("potrf failed in cholesky_solve" + std::to_string(info));
 
     // set up Ax = y
-    MatrixType y1(y.size(), 1);
+    Matrix y1(y.size(), 1);
     ublas::column(y1, 0) = y;
 
     // solve
@@ -112,15 +112,15 @@ cholesky_solve(MatrixType A, const VectorType& y){
     return ublas::column(y1, 0);
 }
 
-template <typename MatrixType>
-MatrixType
-cholesky_invert(MatrixType A){
+template <typename Matrix>
+Matrix
+cholesky_invert(Matrix A){
 
 	namespace lapack = boost::numeric::bindings::lapack;
 	namespace ublas = boost::numeric::ublas;
 
     /// Need to adapt types to that they are compatible with lapack
-    ublas::symmetric_adaptor<MatrixType, ublas::lower> sa(A);
+    ublas::symmetric_adaptor<Matrix, ublas::lower> sa(A);
 
     // factorize
     int info = lapack::potrf(sa);
@@ -133,14 +133,14 @@ cholesky_invert(MatrixType A){
     return sa;
 }
 
-template <typename MatrixType>
-typename MatrixType::value_type
-log_cholesky_determinant(MatrixType A){
+template <typename Matrix>
+typename Matrix::value_type
+log_cholesky_determinant(Matrix A){
 
 	namespace lapack = boost::numeric::bindings::lapack;
 	namespace ublas = boost::numeric::ublas;
 
-    ublas::symmetric_adaptor<MatrixType, ublas::lower> sa(A);
+    ublas::symmetric_adaptor<Matrix, ublas::lower> sa(A);
 
     // factorize
     int info = lapack::potrf(sa);
@@ -148,30 +148,76 @@ log_cholesky_determinant(MatrixType A){
         throw std::runtime_error("potrf failed in cholesky_determinant" + std::to_string(info));
 
     double logd(0.0);
-    for (typename MatrixType::size_type i = 0; i < A.size1(); ++i){
+    for (typename Matrix::size_type i = 0; i < A.size1(); ++i){
         logd += log(sa(i, i));
     }
     // return the square since |A| = |L|^2
     return  2.0 * logd;
 }
 
-template <typename MatrixType>
-typename MatrixType::value_type
-cholesky_determinant(MatrixType A){
+template <typename Matrix>
+typename Matrix::value_type
+cholesky_determinant(Matrix A){
 
     return  exp(log_cholesky_determinant(A));
 }
 
-template <typename MatrixType>
-MatrixType
-ldlt_factorisation(MatrixType A)
+namespace ldldetail{
+
+template <typename Matrix>
+std::tuple<typename Matrix::size_type, typename Matrix::value_type>
+max_magnitude_diagonal(const Matrix& m){
+
+    typedef typename Matrix::size_type size_type;
+    typedef typename Matrix::size_type value_type;  
+
+    const size_type n = m.size1();
+
+    if (n == 0)
+        return std::make_tuple(0, 0);
+
+    size_type idx = 0;
+    value_type mmd = fabs(m(0, 0));
+    for (size_type i = 1; i < n; ++i){
+        const value_type mii = fabs(m(i, i));
+        idx = mmd < mii ?  i : idx;
+        mmd = idx == i ? mii : mmd;
+    }
+    return std::make_tuple(idx, mmd);
+}
+
+}
+
+template <typename Matrix>
+Matrix
+ldlt_factorisation(Matrix A)
 {
-    typedef typename MatrixType::size_type size_type;
+    using namespace boost::numeric::ublas;    
+
+    typedef typename Matrix::size_type size_type;
+    typedef typename Matrix::value_type real_type;
+
     const size_type n = A.size1();
 
-    MatrixType L(n, n, 0.0);    
-    MatrixType c(n, n, 0.0);
+    Matrix L(n, n, 0.0);    
+    Matrix c(n, n, 0.0);
     for (size_type j = 0; j < n; ++j){
+
+        real_type cqq;
+        size_type q;
+        std::tie(q, cqq) = ldldetail::max_magnitude_diagonal(matrix_range<Matrix>(c, range(j, n), range(j, n)));
+
+        // Pivoting
+        if (q != j){
+            matrix_row<Matrix> rowq(A, q);
+            matrix_row<Matrix> rowj(A, j);
+            rowq.swap(rowj);
+
+            matrix_row<Matrix> colq(A, q);
+            matrix_row<Matrix> colj(A, j);
+            colq.swap(colj);
+        }
+
         c(j, j) = A(j, j);
         for (size_type s = 0; s < j; ++s){
             c(j, j) -= L(s, s) * std::pow(L(j, s), 2);
@@ -187,8 +233,8 @@ ldlt_factorisation(MatrixType A)
         }
     }
 /*
-    MatrixType L = get_lower_cholesky_factor(A);
-    MatrixType D(n, n, 0.0);
+    Matrix L = get_lower_cholesky_factor(A);
+    Matrix D(n, n, 0.0);
     for (size_type i = 0; i < n; ++i){
         D(i, i) = sqrt(L(i, i));
         L(i, i) = 1.0;

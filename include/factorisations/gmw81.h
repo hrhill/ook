@@ -35,7 +35,6 @@ max_magnitude_diagonal(const Matrix& m){
     return std::make_tuple(idx, mmd);
 }
 
-
 template <typename Matrix>
 typename Matrix::value_type
 max_magnitude_off_diagonal(const Matrix& m){
@@ -53,7 +52,6 @@ max_magnitude_off_diagonal(const Matrix& m){
     }
     return mmd;
 }
-
 
 template <typename Vector>
 std::tuple<typename Vector::size_type, typename Vector::value_type>
