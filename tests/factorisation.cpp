@@ -29,11 +29,10 @@ BOOST_AUTO_TEST_CASE(compilation_test){
     const int ndim = 3;
     matrix_t A = ook::generate_spd_matrix<matrix_t>(rng, ndim);
     matrix_t cholL = ook::get_lower_cholesky_factor(A);
-    matrix_t gmw81L = ook::gmw81(A);    
     matrix_t ldlL = ook::ldlt_factorisation(A);
+    matrix_t gmw81L = ook::gmw81(A);    
 
     std::cout << cholL << std::endl;
     std::cout << ldlL << std::endl;    
     std::cout << gmw81L << std::endl;    
-    
 }

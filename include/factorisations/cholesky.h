@@ -169,7 +169,6 @@ ldlt_factorisation(MatrixType A)
     typedef typename MatrixType::size_type size_type;
     const size_type n = A.size1();
 
-/*
     MatrixType L(n, n, 0.0);    
     MatrixType c(n, n, 0.0);
     for (size_type j = 0; j < n; ++j){
@@ -187,13 +186,14 @@ ldlt_factorisation(MatrixType A)
             L(i, j) = c(i, j) / L(j, j);
         }
     }
-*/    
+/*
     MatrixType L = get_lower_cholesky_factor(A);
     MatrixType D(n, n, 0.0);
     for (size_type i = 0; i < n; ++i){
         D(i, i) = sqrt(L(i, i));
         L(i, i) = 1.0;
     }
+*/    
     return L;
     //return boost::numeric::ublas::prod(L, D);
 }
