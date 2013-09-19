@@ -20,7 +20,6 @@ namespace ublas = boost::numeric::ublas;
 typedef ublas::vector<double> vector_t;
 typedef ublas::matrix<double> matrix_t;
 
-
 /*
 template <typename F, typename X>
 struct
@@ -256,6 +255,12 @@ bfgs(F objective_function, const X& x0, const Options& opts)
     return std::make_pair(value, x);
 }
 
+template <typename Matrix, typename Vector>
+Vector
+solve(Matrix A, const Vector& b){
+    return b;
+}
+
 template <typename F, typename X, typename Options>
 std::tuple<ook::state_value, X>
 newton(F objective_function, const X& x0, const Options& opts)
@@ -275,7 +280,7 @@ newton(F objective_function, const X& x0, const Options& opts)
 
     do {
         // Choose descent direction
-        X p = -dfx;
+        X p = solve(d2fx, -dfx);
 
         real_type a = 1.0;
         uint nfev = 0;
