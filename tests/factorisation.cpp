@@ -25,7 +25,7 @@ typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_majo
 
 BOOST_AUTO_TEST_CASE(compilation_test){
 
-    std::mt19937 rng(1);
+    std::mt19937 rng(std::time(0));
     const int ndim = 3;
     matrix_t A = ook::generate_spd_matrix<matrix_t>(rng, ndim);
     matrix_t cholL = ook::get_lower_cholesky_factor(A);
