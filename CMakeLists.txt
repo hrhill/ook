@@ -7,7 +7,6 @@ include(CheckLibraryExists)
 include(CTest)
 
 #set(CMAKE_CXX_COMPILER "clang++")
-#set(CMAKE_CXX_COMPILER "g++-4.7")
 
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${OOK_SOURCE_DIR}/modules/")
