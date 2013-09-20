@@ -16,7 +16,6 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "state.h"
 #include "options.h"
 #include "line_search/more_thuente.h"
 #include "test_functions/line_search_functions.h"
