@@ -4,7 +4,6 @@
 #include <limits>
 #include <tuple>
 
-#include "state.h"
 #include "options.h"
 #include "line_search/more_thuente.h"
 #include "test_functions/line_search_functions.h"
