@@ -59,60 +59,6 @@ solve(Matrix A, const Vector& b)
     return ublas::column(b1, 0);
 }
 
-template <typename F, typename X, typename Options>
-std::tuple<ook::state_value, X>
-newton(F objective_function, const X& x0, const Options& opts)
-{
-    typedef typename X::value_type real_type;
-
-    X x(x0);
-    X dfx;
-    real_type fx, dfx_dot_p;
-    matrix_t d2fx(x0.size(), x0.size());
-    // Evaluate at initial point
-    std::tie(fx, dfx, d2fx) = objective_function(x0);
-
-    uint iteration = 0;
-    uint nfev_total = 0;
-    ook::state_value value;
-
-    do {
-        // Choose descent direction
-        X p = -solve(d2fx, dfx);
-
-        real_type a = 1.0;
-        uint nfev = 0;
-        dfx_dot_p = std::inner_product(dfx.begin(), dfx.end(), p.begin(), real_type(0.0)); 
-        // do line search
-        // take a reference to the state variable, ensuring that fx and dfx get updated
-        // the line search call will take a fresh copy
-        auto phi = [&nfev, &fx, &dfx, &d2fx, &dfx_dot_p, x, p, objective_function](const real_type& a){
-            ++nfev;
-            std::tie(fx, dfx, d2fx) = objective_function(static_cast<const X&>(x + a * p));
-            dfx_dot_p = std::inner_product(dfx.begin(), dfx.end(), p.begin(), real_type(0.0));
-            return std::make_pair(fx, dfx_dot_p);
-        };
-
-        std::tie(value, a) = ook::line_search::more_thuente(phi, fx, dfx_dot_p, a, opts);
-
-        X dx(a * p);
-        x += dx;
-        nfev_total += nfev;
-        ++iteration;
-
-        ook::detail::report(iteration, nfev_total, nfev, a, fx, dfx, dx);
-
-        if (ook::norm_infinity(dfx) < 1e-08){
-            value = ook::state_value::convergence;
-            ook::detail::final_report(nfev_total, fx, dfx, dx);                        
-            break;
-        }
-
-    } while(true);
- 
-    return std::make_pair(value, x);
-}
-
 template <typename F, typename X>
 struct
 gradient_only_wrapper{
