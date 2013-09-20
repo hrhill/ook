@@ -1,8 +1,12 @@
-#ifndef LINE_SEARCH_FUNCTIONS_H_
-#define LINE_SEARCH_FUNCTIONS_H_
+#ifndef OOK_TEST_FUNCTIONS_LINE_SEARCH_FUNCTIONS_H_
+#define OOK_TEST_FUNCTIONS_LINE_SEARCH_FUNCTIONS_H_
 
 #include <tuple>
 #include <boost/math/constants/constants.hpp>
+
+namespace ook{
+
+namespace test_functions{
 
 std::tuple<double, double>
 phi51(double a, double b){
@@ -50,5 +54,9 @@ phi54(double a, double b1, double b2){
             gamma(b1) * t1 + gamma(b2) * t2,
           - gamma(b1) * (1 - a)/t1 + gamma(b2) * a/t2);
 }
+
+} // ns test_functions
+
+} // ns ook
 
 #endif

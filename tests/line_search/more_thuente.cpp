@@ -19,7 +19,7 @@
 #include "state.h"
 #include "options.h"
 #include "line_search/more_thuente.h"
-#include "line_search_functions.h"
+#include "test_functions/line_search_functions.h"
 
 template <typename ObjectiveFunction, typename Options>
 void
@@ -51,6 +51,8 @@ int main(int argc, char** argv){
     const double factor = 100;
     const int n = 4;
     const double epsilon = std::numeric_limits<double>::epsilon();
+
+    using namespace ook::test_functions;
 
     std::cout << std::endl << "Table 5.1" << std::endl;
     for (int i = 0; i < n; ++i){
