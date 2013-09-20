@@ -26,7 +26,8 @@ int main(){
 
     std::cout << 
         "\nThis is code to check that the implementation of gmw81\n"
-        "gives the same numbers as the example on page 111 which takes\n"
+        "gives the same numbers as the example on page 111 of\n"
+        "\"Practical Optimization\" by Gill, Murray and Wright, which takes\n"
         "the matrix from example 4.7 (p109) and applies gmw81 to it. The\n"
         "input matrix G is given by,\n\n"
         "|       1       1       2|\n"
@@ -43,7 +44,7 @@ int main(){
           2.0, 3.0,         1.0;
 
     std::cout << "\nThe result of the algorithm is a lower triangular matrix L and a\n"
-                 "diagonal matrix D with entries,\n\n";
+                 "diagonal matrix D, given by,\n\n";
     L <<= 1.0,    0.0,    0.0,
           0.2652, 1.0,    0.0,
           0.5304, 0.4295, 1.0;
@@ -56,7 +57,7 @@ int main(){
     std::cout << "D = \n";    
     pretty_print(D);    
 
-    std::cout << "output from gmw81\n";
+    std::cout << "Output from gmw81\n";
     matrix_t LD = ook::factorisations::gmw81(G);
     matrix_t d(n, n, 0.0);
     for (int i = 0; i < n; ++i){
