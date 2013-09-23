@@ -3,8 +3,17 @@
 
 #include <tuple>
 
-#include "line_search_method.h"
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/assignment.hpp>
 
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/lapack/computational/potrs.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+
+#include "line_search_method.h"
 #include "factorisations/gmw81.h"
 
 namespace ook{

@@ -117,41 +117,6 @@ backward_difference::hessian(F f, const X& x)
 	return std::make_tuple(fx, H);
 }
 
-/// \brief Calculate the backward difference approximation to the gradient of f.
-/// \details This function computes the finite difference approximation to the gradient
-/// of the scalar function f,
-/// \f[ (\nabla f)_i = \frac{f(x) - f(x - h e_i)}{h} \f].
-template <typename F, typename X>
-void 
-gradient_backward_difference(F f, const X& x, X& df)
-{
-	double fx;
-	std::tie(fx, df) = backward_difference::gradient(f, x);
-}
-
-/// \brief User friendly non-reference version.
-template <typename F, typename X>
-X 
-gradient_backward_difference(F f, const X& x)
-{
-	auto df = backward_difference::gradient(f, x);
-	return std::get<1>(df);
-}
-
-/// \brief Calculate the backward difference approximation to the hessian of f.
-/// \details This function computes the finite difference approximation to the hessian
-/// of the scalar function f,
-/// \f[ (\nabla^2 f)_{ij} = \frac{f(x - h_i e_i - h_j e_j)
-///							      - f(x - h_i e_i)
-///								  - f(x - h_j e_j) + f(x)}{h_i h_j} \f].
-template <typename F, typename X, typename M>
-void 
-hessian_backward_difference(F f, const X& x, M& H)
-{
-	double fx;
-	std::tie(fx, H) = backward_difference::hessian<F, X, M>(f, x);
-}
-
 } // ns finite_differences
 } // ns ook
 

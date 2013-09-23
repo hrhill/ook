@@ -68,7 +68,7 @@ central_difference::gradient(F f, const X& x)
 	return std::make_tuple(fx, df);
 }
 
-/// Calculate the forward difference approximation to the hessian of f.
+/// Calculate the central difference approximation to the hessian of f.
 template <typename F, typename X, typename M>
 std::tuple<typename X::value_type, M>
 central_difference::hessian(F f, const X& x)
@@ -143,46 +143,6 @@ central_difference::hessian(F f, const X& x)
 		}
 	}
 	return std::make_tuple(fx, H);
-}
-
-/// \brief Calculate the central difference approximation to the gradient of f.
-/// \details This function computes the central difference difference approximation to the gradient
-/// of the scalar function f,
-/// \f[ (\nabla f)_i = \frac{f(x + h e_i) - f(x - h e_i)}{2 h} \f].
-template <typename F, typename X>
-void 
-gradient_central_difference(const F& f, const X& x, X& df)
-{
-	double fx;
-	std::tie(fx, df) = central_difference::gradient(f, x);
-}
-
-/// \brief User friendly non-reference version.
-template <typename F, typename X>
-X 
-gradient_central_difference(F f, const X& x)
-{
-	auto dfx = central_difference::gradient(f, x);
-	return std::get<1>(dfx);
-}
-
-/// \brief Calculate the central difference approximation to the hessian of f.
-/// \details This function computes the finite difference approximation to the hessian
-/// of the scalar function f,
-/// \f{eqnarray*}{ &i \neq j ,(\nabla^2 f)_{ij} & = \frac{f(x + h_x e_i + h_y e_j)
-///							      - f(x - h_x e_i + h_y e_j)
-///								  - f(x + h_x e_i - h_y e_j)
-///								  - f(x - h_x e_i - h_y e_j)}{4 h_i h_j},\\
-///  &i = j,  (\nabla^2 f)_{ii} & = \frac{-f(x + 2 h_i e_i)
-///												+ 16 f(x + h_i e_i) - 30 f(x)
-///												+ 16 f(x - h_i e_i) - f(x - 2 h_i e_i)}{12 h_i^2}
-/// \f}
-template <typename F, typename X, typename M>
-void 
-hessian_central_difference(F f, const X& x, M& H)
-{
-	double fx;
-	std::tie(fx, H) = central_difference::hessian<F, X, M>(f, x);
 }
 
 } // ns finite_differences
