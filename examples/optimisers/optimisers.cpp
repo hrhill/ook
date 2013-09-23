@@ -18,8 +18,6 @@
 
 #include "test_functions/more_garbow_hillstrom/rosenbrock.h"
 
-#include "factorisations/gmw81.h"
-#include "line_search_methods/more_thuente/more_thuente.h"
 #include "line_search_methods/steepest_descent.h"
 #include "line_search_methods/fletcher_reeves.h"
 #include "line_search_methods/bfgs.h"

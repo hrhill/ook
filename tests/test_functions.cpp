@@ -69,7 +69,6 @@ test_function_specification()
     return 0;
 }
 
-// Zero solution
 BOOST_AUTO_TEST_CASE_TEMPLATE(test_functions_test, T, ublas_function_types){
     BOOST_CHECK_EQUAL(test_function_specification<T>(), 0);
 }

@@ -103,7 +103,7 @@ int checker(F f, G g, int dim){
 
 		// Generate a course upper bound for gradient error
 		const double grad_error_bound = 0.1;
-		const double hess_error_bound = 1;
+		//const double hess_error_bound = 1;
 		//BOOST_REQUIRE_SMALL(static_cast<double>(ublas::norm_inf(H - std::get<1>(d2fh))), hess_error_bound);
 		BOOST_REQUIRE_SMALL(ublas::norm_inf(df - std::get<1>(dfh)), grad_error_bound);
 	}

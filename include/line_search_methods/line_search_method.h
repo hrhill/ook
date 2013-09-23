@@ -1,7 +1,14 @@
 #ifndef OOK_LINE_SEARCH_METHOD_H_
 #define OOK_LINE_SEARCH_METHOD_H_
 
+#include <iomanip>
+
 #include <boost/numeric/ublas/matrix.hpp>
+
+#include "norms.h"
+#include "state_value.h"
+
+#include "./more_thuente/more_thuente.h"
 
 namespace ook{
 
@@ -65,13 +72,19 @@ report(int iteration, int nfev_total, int nfev, double a, double fx, const X& df
 
 template <typename X>
 void
-final_report(int nfev_total,double fx, const X& dfx, const X& dx)
+final_report(int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
 {
-    std::cout << std::setw(8) << std::scientific 
-                 << std::setw(16) << nfev_total
-                 << std::setw(16) << fx
-                 << std::setw(16) << ook::norm_infinity(dfx)
-                 << std::setw(16) << ook::norm_infinity(dx) << std::endl;  
+    std::cout << std::setw(8) << "iter"
+              << std::setw(8) << "nfev"
+              << std::setw(16) << "fx"
+              << std::setw(16) << "max ||dfx||"
+              << std::setw(16) << "|dx|" << std::endl;  
+    std::cout << std::setw(8) << iteration 
+              << std::setw(8) << nfev_total
+              << std::scientific 
+              << std::setw(16) << fx
+              << std::setw(16) << ook::norm_infinity(dfx)
+              << std::setw(16) << ook::norm_infinity(dx) << std::endl;  
 }
 
 
@@ -141,7 +154,7 @@ line_search_method(F objective_function, X x, const Options& opts)
         //detail::report(s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
         if (ook::norm_infinity(s.dfx) < 1e-08){
             value = ook::state_value::convergence;
-            detail::final_report(nfev_total, s.fx, s.dfx, dx);
+            detail::final_report(s.iteration, nfev_total, s.fx, s.dfx, dx);
             break;
         }
 

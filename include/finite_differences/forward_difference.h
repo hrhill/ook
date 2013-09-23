@@ -117,58 +117,6 @@ forward_difference::hessian(F f, const X& x)
 	return std::make_tuple(fx, H);
 }
 
-/// \brief Calculate the forward difference approximation to the gradient of f.
-/// \details This function computes the forward difference difference approximation to the gradient
-/// of the scalar function f,
-/// \f[ (\nabla f)_i = \frac{f(x + h e_i) - f(x)}{h} \f].
-template <typename F, typename X>
-void
-gradient_forward_difference(F f, const X& x, X& df)
-{
-	double fx;
-	std::tie(fx, df) = forward_difference::gradient(f, x);
-}
-
-/// \brief User friendly non-reference version.
-template <typename F, typename X>
-X
-gradient_forward_difference(F f, const X& x)
-{
-	auto df = forward_difference::gradient(f, x);
-	return std::get<1>(df);
-}
-
-/// \brief Calculate the forward difference approximation to the hessian of f.
-/// \details This function computes the finite difference approximation to the hessian
-/// of the scalar function f,
-/// \f[ (\nabla^2 f)_{ij} = \frac{f(x + h_i e_i + h_j e_j)
-///							      - f(x + h_i e_i)
-///								  - f(x + h_j e_j) + f(x)}{h_i h_j} \f].
-template <typename F, typename X, typename M>
-void 
-hessian_forward_difference(F f, const X& x, M& H)
-{
-	double fx;
-	std::tie(fx, H) = forward_difference::hessian<F, X, M>(f, x);
-}
-
-/*
- * Check call in client code before un-commenting this, e.g.,
- *
- *  matrix_t H = hessian_forward_difference(f, x);
- *
- *  or
- *  matrix_t H = hessian_forward_difference<matrix_t>(f, x);
- *
-template <typename F, typename X, typename M>
-auto hessian_forward_difference(F f, const X& x) -> decltype(M()){
-
-	M H(x.size(), x.size(), 0);
-	forward_difference fd;
-	fd.hessian(f, x, H);
-	return H;
-}
-*/
 } // ns finite_differences
 } // ns ook
 
