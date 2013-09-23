@@ -54,7 +54,7 @@ struct newton{
     initialise(F objective_function, const X& x0)
     {
         state_type s(x0.size());
-        std::tie(s.fx, s.dfx, s.H) = objective_function(x0);
+        std::tie(s.fx, s.dfx, s.d2fx) = objective_function(x0);
         return s;
     }
     
@@ -62,7 +62,7 @@ struct newton{
     vector_type
     descent_direction(state_type& s)
     {
-        return -detail::solve(s.H, s.dfx);
+        return -detail::solve(s.d2fx, s.dfx);
     }
 
     static
