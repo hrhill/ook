@@ -1,5 +1,5 @@
 
-set(PROGRAMS bfgs)
+set(PROGRAMS optimisers)
 
 foreach(prog ${PROGRAMS})
     add_executable(${prog} ${prog}.cpp)
