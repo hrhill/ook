@@ -8,18 +8,20 @@
 namespace ook{
 namespace test_functions{
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 struct broyden_tridiagonal
 {
     typedef Vector vector_type;
+    typedef Vector matrix_type;
     typedef typename vector_type::value_type real_type;
 
-    std::tuple<real_type, vector_type>
+    std::tuple<real_type, vector_type, matrix_type>
     operator()(const vector_type& x) const
     {
         real_type f(1.0);
         vector_type df(0, 1.0);
-        return std::make_pair(f, df);
+        matrix_type d2f(0, 0, 0.0);
+        return std::make_tuple(f, df, d2f);
     }
 
     static const int n = 0;
@@ -30,21 +32,21 @@ struct broyden_tridiagonal
     static std::vector<real_type> x0;
 };
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-broyden_tridiagonal<Vector>::f_min = 0.0;
+broyden_tridiagonal<Vector, Matrix>::f_min = 0.0;
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-broyden_tridiagonal<Vector>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+broyden_tridiagonal<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-broyden_tridiagonal<Vector>::minima = {};
+broyden_tridiagonal<Vector, Matrix>::minima = {};
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-broyden_tridiagonal<Vector>::x0 = {};
+broyden_tridiagonal<Vector, Matrix>::x0 = {};
 
 
 } // ns test_functions
