@@ -15,10 +15,11 @@
 #include "norms.h"
 #include "options.h"
 #include "state_value.h"
-#include "line_search/more_thuente.h"
+
 #include "test_functions/more_garbow_hillstrom/rosenbrock.h"
 
 #include "factorisations/gmw81.h"
+#include "line_search_methods/more_thuente/more_thuente.h"
 #include "line_search_methods/steepest_descent.h"
 #include "line_search_methods/fletcher_reeves.h"
 #include "line_search_methods/bfgs.h"
@@ -27,37 +28,6 @@
 namespace ublas = boost::numeric::ublas;
 typedef ublas::vector<double> vector_t;
 typedef ublas::matrix<double, ublas::column_major> matrix_t;
-
-template <typename Matrix>
-Matrix
-convert_to_cholesky(const Matrix& LD)
-{
-    int n = LD.size1();
-    Matrix L(LD);
-    Matrix D(n, n, 0);
-
-    for (int i = 0; i < n; ++i){
-        D(i, i) = sqrt(L(i, i));
-        L(i, i) = 1.0;
-    }
-    return boost::numeric::ublas::prod(L, D);
-}
-
-template <typename Matrix, typename Vector>
-Vector
-solve(Matrix A, const Vector& b)
-{
-    Matrix LD = ook::factorisations::gmw81(A);
-    Matrix L = convert_to_cholesky(LD);
-
-    ublas::symmetric_adaptor<Matrix, ublas::lower> sa(L);    
-    Matrix b1(b.size(), 1);
-
-    boost::numeric::ublas::column(b1, 0) = b;
-    boost::numeric::bindings::lapack::potrs(sa, b1);
-
-    return ublas::column(b1, 0);
-}
 
 template <typename F, typename X>
 struct

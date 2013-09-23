@@ -16,15 +16,27 @@ state{
     typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
     state(const int n)
     :
-         dfx(n), dfx0(n), p(n), H(boost::numeric::ublas::identity_matrix<double>(n)), a(1), beta(0), iteration(0)
-    {}
+         dfx(n), 
+         dfx0(n), 
+         p(n), 
+         H(n, n, 0), 
+         d2fx(n, n, 0), 
+         a(1), 
+         beta(0), 
+         iteration(0)
+    {
+        for (int i = 0; i < n; ++i){
+            H(i, i) = 1.0;
+        }
+    }
 
 
     value_type fx;
     vector_type dfx;
     vector_type dfx0;        
     vector_type p;    
-    matrix_type H;    
+    matrix_type H;
+    matrix_type d2fx;
     value_type a;    
     value_type beta;
     int iteration; 
@@ -63,6 +75,8 @@ final_report(int nfev_total,double fx, const X& dfx, const X& dx)
 }
 
 
+// Meta program to select the right function call
+// based on the properties of the return type.
 template <typename F, typename X, typename State, int dim>
 struct function_caller{};
 
@@ -80,7 +94,7 @@ struct function_caller<F, X, State, 3>{
     static 
     void
     call(F objective_function, const X& x, State& s){
-        std::tie(s.fx, s.dfx, s.H) =  objective_function(x);
+        std::tie(s.fx, s.dfx, s.d2fx) =  objective_function(x);
     }
 };
 
