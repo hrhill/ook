@@ -8,18 +8,20 @@
 namespace ook{
 namespace test_functions{
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 struct discrete_boundary_value
 {
     typedef Vector vector_type;
+    typedef Vector matrix_type;
     typedef typename vector_type::value_type real_type;
 
-    std::tuple<real_type, vector_type>
+    std::tuple<real_type, vector_type, matrix_type>
     operator()(const vector_type& x) const
     {
         real_type f(1.0);
         vector_type df(0, 1.0);
-        return std::make_pair(f, df);
+        matrix_type d2f(0, 0, 0.0);
+        return std::make_tuple(f, df, d2f);
     }
 
     static const int n = 0;
@@ -30,21 +32,21 @@ struct discrete_boundary_value
     static std::vector<real_type> x0;
 };
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-discrete_boundary_value<Vector>::f_min = 0.0;
+discrete_boundary_value<Vector, Matrix>::f_min = 0.0;
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-discrete_boundary_value<Vector>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+discrete_boundary_value<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-discrete_boundary_value<Vector>::minima = {};
+discrete_boundary_value<Vector, Matrix>::minima = {};
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-discrete_boundary_value<Vector>::x0 = {};
+discrete_boundary_value<Vector, Matrix>::x0 = {};
 
 
 } // ns test_functions

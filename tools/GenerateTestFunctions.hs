@@ -18,7 +18,7 @@ epsilon = "std::numeric_limits<typename Vector::value_type>::epsilon()"
 infinity = "std::numeric_limits<typename Vector::value_type>::infinity()"
 neg_infinity = "-std::numeric_limits<typename Vector::value_type>::infinity()"
 vector = "std::vector<typename Vector::value_type>"
--- Function "name" "0" "0" "{}" "{}" "0.0" epsilon,
+-- Function "name" "0" "0" "{x0}" "{minima}" "f_min" epsilon,
 functionList = [
     --Function "rosenbrock"          "2" "2"  "{-1.2, 1.0}" "{1.0, 1.0}"         "0.0"     epsilon,
     Function "freudenstein_roth"   "2" "2"  "{0.5,  2.0}" "{5.0, 4.0}"         "0.0"     epsilon,
@@ -45,7 +45,7 @@ functionList = [
     Function "watson"              "12" "31" (vector ++ "(12, 0.0)")                             "{}"                  "4.72238e-10" epsilon,
     Function "extended_rosenbrock"            "10" "10" "{-1.2, 1.0, -1.2, 1.0, -1.2, 1.0, -1.2, 1.0, -1.2, 1.0, }" "{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, }" "0.0" epsilon,
     Function "extended_powell_singular"       "0" "0" "{}" "{}" "0.0" epsilon,
-    Function "penalty_i"                      "0" "0" "{}" "{}" "0.0" epsilon,
+    Function "penalty_i"                      "10" "11" "{}" "{}" "0.0" epsilon,
     Function "penalty_ii"                     "0" "0" "{}" "{}" "0.0" epsilon,
     Function "variable_dim"                   "0" "0" "{}" "{}" "0.0" epsilon,
     Function "trigonometric"                  "0" "0" "{}" "{}" "0.0" epsilon,

@@ -8,18 +8,20 @@
 namespace ook{
 namespace test_functions{
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 struct powell_singular
 {
     typedef Vector vector_type;
+    typedef Vector matrix_type;
     typedef typename vector_type::value_type real_type;
 
-    std::tuple<real_type, vector_type>
+    std::tuple<real_type, vector_type, matrix_type>
     operator()(const vector_type& x) const
     {
         real_type f(1.0);
         vector_type df(4, 1.0);
-        return std::make_pair(f, df);
+        matrix_type d2f(4, 4, 0.0);
+        return std::make_tuple(f, df, d2f);
     }
 
     static const int n = 4;
@@ -30,21 +32,21 @@ struct powell_singular
     static std::vector<real_type> x0;
 };
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-powell_singular<Vector>::f_min = 0.0;
+powell_singular<Vector, Matrix>::f_min = 0.0;
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-powell_singular<Vector>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+powell_singular<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_singular<Vector>::minima = {0.0, 0.0, 0.0, 0.0};
+powell_singular<Vector, Matrix>::minima = {0.0, 0.0, 0.0, 0.0};
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_singular<Vector>::x0 = {3, -1, 0, 1};
+powell_singular<Vector, Matrix>::x0 = {3, -1, 0, 1};
 
 
 } // ns test_functions
