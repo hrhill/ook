@@ -2,6 +2,8 @@
 #define OOK_OPTIONS_H_
 
 #include <cassert>
+#include <string>
+#include <stdexcept>
 
 namespace ook{
 
@@ -16,7 +18,9 @@ struct options{
         gtol(gtolIn), 
         xtol(xtolIn), 
         stpmin(stpminIn), 
-        stpmax(stpmaxIn)
+        stpmax(stpmaxIn),
+        max_iteration(10000),
+        max_line_search_attempts(20)
     {
         /* Check the input arguments for errors. */
         ASSERT_CHECK_AND_THROW(ftol >= 0.);
@@ -30,6 +34,8 @@ struct options{
     const double xtol;
     const double stpmin;
     const double stpmax;
+    const uint max_iteration;
+    const uint max_line_search_attempts;
 };
 
 inline

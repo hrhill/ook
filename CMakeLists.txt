@@ -30,3 +30,15 @@ if(DOXYGEN_FOUND)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
+
+#------------------------------------- Installation details -----------------------------------------
+set(LIB_INST_DIR "${CMAKE_INSTALL_PREFIX}/lib64")
+set(HEADER_INST_DIR "${CMAKE_INSTALL_PREFIX}/include")
+
+install(DIRECTORY "${OOK_SOURCE_DIR}/include/"
+    DESTINATION "${HEADER_INST_DIR}/ook"
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN "CMakeFiles" EXCLUDE
+    PATTERN "Testing" EXCLUDE
+    PATTERN ".svn" EXCLUDE
+    )

@@ -3,6 +3,7 @@
 
 #include <tuple>
 #include <algorithm>
+
 #include "line_search_method.h"
 
 namespace ook{

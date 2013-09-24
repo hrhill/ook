@@ -1,6 +1,8 @@
 #ifndef OOK_FACTORISATIONS_H_
 #define OOK_FACTORISATIONS_H_
 
+#include <algorithm>
+
 namespace ook{
 namespace factorisations{
 namespace tools{

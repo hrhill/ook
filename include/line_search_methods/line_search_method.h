@@ -5,8 +5,8 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 
-#include "norms.h"
-#include "state_value.h"
+#include "../norms.h"
+#include "../state_value.h"
 
 #include "./more_thuente/more_thuente.h"
 
@@ -58,28 +58,31 @@ inner_product(const T& x, const T& y){
 
 template <typename X>
 void
-report(int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
+report(state_value value, int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
 {
-    std::cout << std::setw(8) << iteration
-                 << std::setw(16) << nfev_total
-                 << std::setw(8) << nfev 
-                 << std::scientific 
-                 << std::setw(16) << a
-                 << std::setw(16) << fx
-                 << std::setw(16) << ook::norm_infinity(dfx)
-                 << std::setw(16) << ook::norm_infinity(dx) << std::endl;  
+    std::cout << std::setw(64) << value 
+              << std::setw(8) << iteration
+              << std::setw(16) << nfev_total
+              << std::setw(8) << nfev 
+              << std::scientific 
+              << std::setw(16) << a
+              << std::setw(16) << fx
+              << std::setw(16) << ook::norm_infinity(dfx)
+              << std::setw(16) << ook::norm_infinity(dx) << std::endl;  
 }
 
 template <typename X>
 void
-final_report(int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
+final_report(state_value value, int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
 {
-    std::cout << std::setw(8) << "iter"
+    std::cout << std::setw(64) << "status" 
+              << std::setw(8) << "iter"
               << std::setw(8) << "nfev"
               << std::setw(16) << "fx"
               << std::setw(16) << "max ||dfx||"
               << std::setw(16) << "|dx|" << std::endl;  
-    std::cout << std::setw(8) << iteration 
+    std::cout << std::setw(64) << value 
+              << std::setw(8) << iteration 
               << std::setw(8) << nfev_total
               << std::scientific 
               << std::setw(16) << fx
@@ -151,12 +154,15 @@ line_search_method(F objective_function, X x, const Options& opts)
         nfev_total += nfev;
         ++s.iteration;
 
-        //detail::report(s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
+        //detail::report(value, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
         if (ook::norm_infinity(s.dfx) < 1e-08){
             value = ook::state_value::convergence;
-            detail::final_report(s.iteration, nfev_total, s.fx, s.dfx, dx);
+            detail::final_report(value, s.iteration, nfev_total, s.fx, s.dfx, dx);
             break;
         }
+
+        if (value == state_value::warning_max_line_search_attempts_reached)
+            break;
 
         s = Scheme::update(s);
     } while(true);
