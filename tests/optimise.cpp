@@ -15,13 +15,13 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "line_search_methods/steepest_descent.h"
-#include "line_search_methods/fletcher_reeves.h"
-#include "line_search_methods/bfgs.h"
-#include "line_search_methods/newton.h"
-#include "options.h"
+#include "ook/line_search_methods/steepest_descent.h"
+#include "ook/line_search_methods/fletcher_reeves.h"
+#include "ook/line_search_methods/bfgs.h"
+#include "ook/line_search_methods/newton.h"
+#include "ook/options.h"
 
-#include "test_functions/more_garbow_hillstrom.h"
+#include "ook/test_functions/more_garbow_hillstrom.h"
 
 namespace ublas = boost::numeric::ublas;
 

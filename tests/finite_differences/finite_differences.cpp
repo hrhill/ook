@@ -19,15 +19,14 @@
 
 #include "test_functions.h"
 
-#include "forward_difference.h"
-#include "backward_difference.h"
-#include "central_difference.h"
+#include "ook/finite_differences/forward_difference.h"
+#include "ook/finite_differences/backward_difference.h"
+#include "ook/finite_differences/central_difference.h"
 
 using namespace ook::finite_differences;
 
 typedef boost::numeric::ublas::vector<double> vector_t;
 typedef boost::numeric::ublas::matrix<double> matrix_t;
-
 
 template <typename FD>
 struct

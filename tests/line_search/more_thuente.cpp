@@ -16,9 +16,9 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "options.h"
-#include "line_search_methods/more_thuente/more_thuente.h"
-#include "test_functions/line_search_functions.h"
+#include "ook/options.h"
+#include "ook/line_search_methods/more_thuente/more_thuente.h"
+#include "ook/test_functions/line_search_functions.h"
 
 template <typename ObjectiveFunction, typename Options>
 void

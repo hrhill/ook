@@ -18,8 +18,8 @@
 
 #include <boost/mpl/list.hpp>
 
-#include "norms.h"
-#include "test_functions/more_garbow_hillstrom.h"
+#include "ook/norms.h"
+#include "ook/test_functions/more_garbow_hillstrom.h"
 
 using namespace ook::test_functions;
 

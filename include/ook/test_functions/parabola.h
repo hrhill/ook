@@ -5,7 +5,7 @@
 #include <limits>
 #include <vector>
 
-#include "../norms.h"
+#include "ook/norms.h"
 
 namespace ook{
 namespace test_functions{

@@ -1,20 +1,18 @@
-#ifndef OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_H_
-#define OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_H_
+#ifndef OOK_LINE_SEARCH_METHODS_STEEPEST_DESCENT_H_
+#define OOK_LINE_SEARCH_METHODS_STEEPEST_DESCENT_H_
 
 #include <tuple>
-#include <algorithm>
-
-#include "line_search_method.h"
+#include "ook/line_search_methods/line_search_method.h"
 
 namespace ook{
 
 namespace detail{
 
 template <typename X>
-struct fletcher_reeves{
+struct steepest_descent{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef state<X> state_type;    
+    typedef state<X> state_type;
 
     template <typename F>
     static
@@ -23,7 +21,6 @@ struct fletcher_reeves{
     {
         state_type s(x0.size());
         std::tie(s.fx, s.dfx) = objective_function(x0);
-        s.dfx0 = s.dfx;
         return s;
     }
     
@@ -31,27 +28,23 @@ struct fletcher_reeves{
     vector_type
     descent_direction(state_type& s)
     {
-        s.p = -s.dfx + s.beta * s.p;
-        return s.p;
+        return -s.dfx;
     }
 
     static
     state_type
-    update(state_type s)
-    {
-        s.beta = detail::inner_product(s.dfx, s.dfx)/detail::inner_product(s.dfx0, s.dfx0);
-        s.dfx0 = s.dfx;
+    update(state_type s){
         return s;
-    }
+    }    
 };
 
 } // ns detail
 
 template <typename F, typename X, typename Options>
 std::tuple<ook::state_value, X>
-fletcher_reeves(F objective_function, const X& x0, const Options& opts)
+steepest_descent(F objective_function, const X& x0, const Options& opts)
 {
-    return line_search_method<detail::fletcher_reeves<X>>(objective_function, x0, opts);
+    return line_search_method<detail::steepest_descent<X>>(objective_function, x0, opts);
 }
 
 } //ns ook

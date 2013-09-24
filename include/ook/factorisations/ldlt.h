@@ -12,7 +12,7 @@
 #include <boost/numeric/ublas/assignment.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 
-#include "./tools.h"
+#include "ook/factorisations/tools.h"
 
 namespace ook{
 
