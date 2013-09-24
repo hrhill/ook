@@ -2,9 +2,11 @@
 #define OOK_LINE_SEARCH_MORE_THUENTE_SEARCHER_H_
 
 #include <cmath>
+
+#include "../../state_value.h"
+
 #include "line_search_conditions.h"
 #include "safe_step.h"
-#include "state_value.h"
 
 namespace ook{
 

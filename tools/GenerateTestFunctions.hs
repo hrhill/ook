@@ -21,7 +21,7 @@ vector = "std::vector<typename Vector::value_type>"
 -- Function "name" "0" "0" "{x0}" "{minima}" "f_min" epsilon,
 functionList = [
     --Function "rosenbrock"          "2" "2"  "{-1.2, 1.0}" "{1.0, 1.0}"         "0.0"     epsilon,
-    Function "freudenstein_roth"   "2" "2"  "{0.5,  2.0}" "{5.0, 4.0}"         "0.0"     epsilon,
+    --Function "freudenstein_roth"   "2" "2"  "{0.5,  2.0}" "{5.0, 4.0}"         "0.0"     epsilon,
     Function "powell_badly_scaled" "2" "2"  "{0.0,  1.0}" "{1.098e-05, 9.106}" "0.0"     epsilon,
     Function "brown_badly_scaled"  "2" "3"  "{0.0,  1.0}" "{1e6, 2e-06}"       "0.0"     epsilon,
     Function "beale"               "2" "3"  "{1.0,  1.0}" "{3, 0.5}"           "0.0"     epsilon,

@@ -3,8 +3,9 @@
 
 #include <tuple>
 
+#include "../../state_value.h"
+
 #include "line_search_conditions.h"
-#include "state_value.h"
 #include "more_thuente_searcher.h"
 
 namespace ook{
@@ -19,7 +20,7 @@ more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts){
     more_thuente_searcher<T> search(phi0, dphi0, a, opts.stpmax - opts.stpmin);
 
     state_value value = state_value::start;
-
+    uint attempts = 0;
     do{
         if(strong_wolfe_conditions(phi0, phia, dphi0, dphia, a, opts.ftol, opts.gtol))
         {
@@ -27,6 +28,13 @@ more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts){
             break;
         }
         std::tie(value, a) = search(a, phia, dphia, opts);
+        ++attempts;
+
+        if (attempts == opts.max_line_search_attempts){
+            value = state_value::warning_max_line_search_attempts_reached;
+            break;
+        }
+
         if (value != state_value::update)
             break;
 

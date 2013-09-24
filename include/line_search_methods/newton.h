@@ -14,7 +14,7 @@
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
 #include "line_search_method.h"
-#include "factorisations/gmw81.h"
+#include "../factorisations/gmw81.h"
 
 namespace ook{
 

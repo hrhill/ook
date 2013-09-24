@@ -13,6 +13,7 @@ enum class state_value{
     warning_xtol_satisfied,
     warning_stp_eq_stpmax,
     warning_stp_eq_stpmin,
+    warning_max_line_search_attempts_reached,
     convergence
 };
 
@@ -22,6 +23,7 @@ const char* state_value_string[] = {"start",
     "warning_xtol_satistfied",
     "warning_stp_eq_stpmax",
     "warning_stp_eq_stpmin",
+    "warning_max_line_search_attempts_reached",
     "convergence"}; 
 
 std::ostream&

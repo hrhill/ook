@@ -1,6 +1,8 @@
 #ifndef OOK_OPTIMISER_STATUS_H_
 #define OOK_OPTIMISER_STATUS_H_
 
+#include <type_traits>
+
 namespace ook{
 
 enum class optimiser_status{
