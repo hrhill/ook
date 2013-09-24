@@ -12,16 +12,16 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include "norms.h"
-#include "options.h"
-#include "state_value.h"
+#include "ook/norms.h"
+#include "ook/options.h"
+#include "ook/state_value.h"
 
-#include "test_functions/more_garbow_hillstrom/rosenbrock.h"
+#include "ook/test_functions/more_garbow_hillstrom/rosenbrock.h"
 
-#include "line_search_methods/steepest_descent.h"
-#include "line_search_methods/fletcher_reeves.h"
-#include "line_search_methods/bfgs.h"
-#include "line_search_methods/newton.h"
+#include "ook/line_search_methods/steepest_descent.h"
+#include "ook/line_search_methods/fletcher_reeves.h"
+#include "ook/line_search_methods/bfgs.h"
+#include "ook/line_search_methods/newton.h"
 
 namespace ublas = boost::numeric::ublas;
 typedef ublas::vector<double> vector_t;

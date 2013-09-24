@@ -29,7 +29,7 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include "./tools.h"
+#include "ook/factorisations/tools.h"
 
 namespace ook{
 namespace factorisations{

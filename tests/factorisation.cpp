@@ -16,9 +16,9 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "factorisations/cholesky.h"
-#include "factorisations/ldlt.h"
-#include "factorisations/gmw81.h"
+#include "ook/factorisations/cholesky.h"
+#include "ook/factorisations/ldlt.h"
+#include "ook/factorisations/gmw81.h"
 
 #include "test_utilities.h"
 

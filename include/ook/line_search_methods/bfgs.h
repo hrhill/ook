@@ -3,7 +3,8 @@
 
 #include <tuple>
 #include <boost/numeric/ublas/matrix.hpp>
-#include "line_search_method.h"
+
+#include "ook/line_search_methods/line_search_method.h"
 
 namespace ook{
 

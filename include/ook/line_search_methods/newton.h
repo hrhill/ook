@@ -13,8 +13,8 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include "line_search_method.h"
-#include "../factorisations/gmw81.h"
+#include "ook/line_search_methods/line_search_method.h"
+#include "ook/factorisations/gmw81.h"
 
 namespace ook{
 

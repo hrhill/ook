@@ -5,10 +5,10 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 
-#include "../norms.h"
-#include "../state_value.h"
+#include "ook/norms.h"
+#include "ook/state_value.h"
 
-#include "./more_thuente/more_thuente.h"
+#include "ook/line_search_methods/more_thuente/more_thuente.h"
 
 namespace ook{
 

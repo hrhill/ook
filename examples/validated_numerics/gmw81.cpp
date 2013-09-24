@@ -5,7 +5,7 @@
 #include <boost/numeric/ublas/assignment.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-#include "factorisations/gmw81.h"
+#include "ook/factorisations/gmw81.h"
 
 typedef boost::numeric::ublas::matrix<double> matrix_t;
 typedef boost::numeric::ublas::vector<double> vector_t;
