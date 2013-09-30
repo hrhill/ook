@@ -6,7 +6,7 @@
 #include <tuple>
 
 #include <algorithm>
-#include "detail/transform.h"
+#include "ook/finite_differences/detail/transform.h"
 
 namespace ook{
 namespace finite_differences{
@@ -57,7 +57,7 @@ central_difference::gradient(F f, const X& x)
 	sample_points[2 * n] = x;
 	// evaluate function at each point
 	std::vector<value_type> function_values(sample_points.size());
-	detail::transform(sample_points.begin(), sample_points.end(), function_values.begin(), f);
+	ook::finite_differences::detail::transform(sample_points.begin(), sample_points.end(), function_values.begin(), f);
 
 	// assemble
 	X df(n);
