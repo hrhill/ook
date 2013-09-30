@@ -19,7 +19,6 @@ find_package(OpenMP)
 find_package(ATLAS)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(benchmarks)
 add_subdirectory(tests)
