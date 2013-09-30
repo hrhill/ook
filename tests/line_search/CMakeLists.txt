@@ -1,4 +1,5 @@
 set(TESTS more_thuente
+          more_thuente_degenerate
           )
 
 foreach(test ${TESTS})

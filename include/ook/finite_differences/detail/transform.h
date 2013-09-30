@@ -1,5 +1,5 @@
-#ifndef FINITE_DIFFERENCES_TRANSFORM_H_
-#define FINITE_DIFFERENCES_TRANSFORM_H_
+#ifndef OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_H_
+#define OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_H_
 
 #include <algorithm>
 #include <parallel/algorithm>
@@ -9,7 +9,7 @@ namespace finite_differences{
 namespace detail{
 
 template <typename InIter, typename OutIter, typename F>
-    void transform(const InIter xbegin, const InIter xend, OutIter ybegin, F f)
+void transform(const InIter xbegin, const InIter xend, OutIter ybegin, F f)
 {
 
 #ifdef _GLIBCXX_PARALLEL

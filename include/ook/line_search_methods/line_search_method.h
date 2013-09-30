@@ -157,7 +157,7 @@ line_search_method(F objective_function, X x, const Options& opts)
         //detail::report(value, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
         if (ook::norm_infinity(s.dfx) < 1e-08){
             value = ook::state_value::convergence;
-            detail::final_report(value, s.iteration, nfev_total, s.fx, s.dfx, dx);
+            //detail::final_report(value, s.iteration, nfev_total, s.fx, s.dfx, dx);
             break;
         }
 
