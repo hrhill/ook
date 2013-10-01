@@ -47,11 +47,11 @@ struct fletcher_reeves{
 
 } // ns detail
 
-template <typename F, typename X, typename Options>
+template <typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
-fletcher_reeves(F objective_function, const X& x0, const Options& opts)
+fletcher_reeves(F objective_function, const X& x0, const Options& opts, Stream& stream)
 {
-    return line_search_method<detail::fletcher_reeves<X>>(objective_function, x0, opts);
+    return line_search_method<detail::fletcher_reeves<X>>(objective_function, x0, opts, stream);
 }
 
 } //ns ook
