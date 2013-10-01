@@ -10,6 +10,8 @@ namespace ook{
 
 namespace detail{
 
+/// \brief Implementation of the required steps of line_search_method
+/// for Fletcher-Reeves method.
 template <typename X>
 struct fletcher_reeves{
     typedef X vector_type;
@@ -47,6 +49,9 @@ struct fletcher_reeves{
 
 } // ns detail
 
+/// \brief The Fletcher-Reeves algorithm.
+/** \details Implementation of the Fletcher-Reeves algorithm using the generic line search function.
+**/
 template <typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
 fletcher_reeves(F objective_function, const X& x0, const Options& opts, Stream& stream)

@@ -8,6 +8,8 @@ namespace ook{
 
 namespace detail{
 
+/// \brief Implementation of the required steps of line_search_method
+/// for the steepes descent method.
 template <typename X>
 struct steepest_descent{
     typedef X vector_type;
@@ -40,6 +42,10 @@ struct steepest_descent{
 
 } // ns detail
 
+
+/// \brief The Steepest descent algorithm.
+/** \details Implementation of the Steepest descent algorithm using the generic line search function.
+**/
 template <typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
 steepest_descent(F objective_function, const X& x0, const Options& opts, Stream& stream)
