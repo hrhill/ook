@@ -56,11 +56,11 @@ inner_product(const T& x, const T& y){
     return std::inner_product(x.begin(), x.end(), y.begin(), value_type(0.0));
 }
 
-template <typename X>
+template <typename Stream, typename X>
 void
-report(state_value value, int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
+report(Stream& stream, state_value value, int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
 {
-    std::cout << std::setw(6) << iteration
+    stream << std::setw(6) << iteration
               << std::setw(6) << nfev_total
               << std::scientific 
               << std::setw(14) << a
@@ -69,24 +69,23 @@ report(state_value value, int iteration, int nfev_total, int nfev, double a, dou
               << std::setw(14) << ook::norm_infinity(dx) << std::endl;  
 }
 
-template <typename X>
+template <typename Stream, typename X>
 void
-final_report(state_value value, int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
+final_report(Stream& stream, state_value value, int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
 {
-    std::cout << "status : " << value << std::endl;
-    std::cout << std::setw(8) << "iter"
-              << std::setw(8) << "nfev"
-              << std::setw(16) << "fx"
-              << std::setw(16) << "max ||dfx||"
-              << std::setw(16) << "max ||dx||" << std::endl;  
-    std::cout << std::setw(8) << iteration 
-              << std::setw(8) << nfev_total
-              << std::scientific 
-              << std::setw(16) << fx
-              << std::setw(16) << ook::norm_infinity(dfx)
-              << std::setw(16) << ook::norm_infinity(dx) << std::endl;  
+    stream << "status : " << value << std::endl;
+    stream << std::setw(8) << "iter"
+           << std::setw(8) << "nfev"
+           << std::setw(16) << "fx"
+           << std::setw(16) << "max ||dfx||"
+           << std::setw(16) << "max ||dx||" << std::endl;  
+    stream << std::setw(8) << iteration 
+           << std::setw(8) << nfev_total
+           << std::scientific 
+           << std::setw(16) << fx
+           << std::setw(16) << ook::norm_infinity(dfx)
+           << std::setw(16) << ook::norm_infinity(dx) << std::endl;  
 }
-
 
 // Meta program to select the right function call
 // based on the properties of the return type.
@@ -114,9 +113,9 @@ struct function_caller<F, X, State, 3>{
 
 } // ns detail
 
-template <typename Scheme, typename F, typename X, typename Options>
+template <typename Scheme, typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
-line_search_method(F objective_function, X x, const Options& opts)
+line_search_method(F objective_function, X x, const Options& opts, Stream& stream)
 {
     typedef typename X::value_type real_type;
     typedef typename Scheme::state_type state_type;
@@ -130,13 +129,14 @@ line_search_method(F objective_function, X x, const Options& opts)
     uint nfev_total = 0;
     ook::state_value value;
 
-    std::cout << std::setw(6) << "n"
-              << std::setw(6) << "nfev"
-              << std::scientific 
-              << std::setw(14) << "a"
-              << std::setw(14) << "fx"
-              << std::setw(14) << "max ||dfx||"
-              << std::setw(14) << "max ||dx||" << std::endl;  
+    stream << std::endl;
+    stream << std::setw(6) << "n"
+           << std::setw(6) << "nfev"
+           << std::scientific 
+           << std::setw(14) << "a"
+           << std::setw(14) << "fx"
+           << std::setw(14) << "max ||dfx||"
+           << std::setw(14) << "max ||dx||" << std::endl;  
 
     do {
         X p = Scheme::descent_direction(s);
@@ -159,10 +159,10 @@ line_search_method(F objective_function, X x, const Options& opts)
         nfev_total += nfev;
         ++s.iteration;
 
-        detail::report(value, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
+        detail::report(stream, value, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
         if (ook::norm_infinity(s.dfx) < 1e-08){
             value = ook::state_value::convergence;
-            detail::final_report(value, s.iteration, nfev_total, s.fx, s.dfx, dx);
+            detail::final_report(stream, value, s.iteration, nfev_total, s.fx, s.dfx, dx);
             break;
         }
 

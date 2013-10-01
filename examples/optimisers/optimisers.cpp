@@ -62,19 +62,19 @@ int main(){
     std::copy(test_function::x0.begin(), test_function::x0.end(), x.begin());
 
     std::cout << "steepest_descent\n";
-    auto soln = ook::steepest_descent(wrapper, x, opts);
+    auto soln = ook::steepest_descent(wrapper, x, opts, std::cout);
     std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
 
     std::cout << "fletcher_reeves\n";
-    soln = ook::fletcher_reeves(wrapper, x, opts);
+    soln = ook::fletcher_reeves(wrapper, x, opts, std::cout);
     std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
 
     std::cout << "bfgs\n";
-    soln = ook::bfgs(wrapper, x, opts);
+    soln = ook::bfgs(wrapper, x, opts, std::cout);
     std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
 
     std::cout << "newton\n";
-    soln = ook::newton(objective_function, x, opts);
+    soln = ook::newton(objective_function, x, opts, std::cout);
     std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
 }
 

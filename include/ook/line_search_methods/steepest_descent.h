@@ -40,11 +40,11 @@ struct steepest_descent{
 
 } // ns detail
 
-template <typename F, typename X, typename Options>
+template <typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
-steepest_descent(F objective_function, const X& x0, const Options& opts)
+steepest_descent(F objective_function, const X& x0, const Options& opts, Stream& stream)
 {
-    return line_search_method<detail::steepest_descent<X>>(objective_function, x0, opts);
+    return line_search_method<detail::steepest_descent<X>>(objective_function, x0, opts, stream);
 }
 
 } //ns ook
