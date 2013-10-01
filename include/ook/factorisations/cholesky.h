@@ -4,27 +4,13 @@
 #include <vector>
 #include <stdexcept>
 
-#include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/assignment.hpp>
-#include <boost/numeric/ublas/triangular.hpp>
-
-#include <boost/numeric/bindings/blas/level1.hpp>
-#include <boost/numeric/bindings/blas/level2.hpp>
-#include <boost/numeric/bindings/blas/level3.hpp>
 
 #include <boost/numeric/bindings/lapack/computational/potrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/potrs.hpp>
-#include <boost/numeric/bindings/lapack/computational/potri.hpp>
-#include <boost/numeric/bindings/lapack/computational/geqrf.hpp>
-#include <boost/numeric/bindings/lapack/computational/tptri.hpp>
 
-#include <boost/numeric/bindings/std/vector.hpp>
-
-#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
@@ -34,7 +20,7 @@
 namespace ook{
 namespace factorisations{
 
-// get the lower triangular cholesky factor of m.
+/// \brief User friendly Cholesky factorisation.
 template <typename Matrix>
 Matrix
 cholesky(Matrix m){

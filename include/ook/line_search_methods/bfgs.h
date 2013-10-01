@@ -10,6 +10,8 @@ namespace ook{
 
 namespace detail{
 
+/// \brief Implementation of the required steps of line_search_method
+/// for BFGS method.
 template <typename X>
 struct bfgs{
     typedef X vector_type;
@@ -62,6 +64,9 @@ struct bfgs{
 
 } // ns detail
 
+/// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
+/** \details Implementation of the BFGS algorithm using the generic line search function.
+**/
 template <typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
 bfgs(F objective_function, const X& x0, const Options& opts, Stream& stream)

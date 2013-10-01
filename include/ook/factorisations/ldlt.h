@@ -18,6 +18,10 @@ namespace ook{
 
 namespace factorisations{
 
+/// \brief LDL^t factorisation.
+/**
+\details Compute the LDL^t factorisation
+**/
 template <typename Matrix>
 Matrix
 ldlt(Matrix A)

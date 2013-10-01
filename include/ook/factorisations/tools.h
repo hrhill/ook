@@ -7,7 +7,7 @@ namespace ook{
 namespace factorisations{
 namespace tools{
 
-// select the lower triangular part of the matrix.
+///\brief Select the lower triangular part of the matrix.
 template <typename Matrix>
 Matrix
 select_lower_triangular(const Matrix& m){
@@ -27,7 +27,7 @@ select_lower_triangular(const Matrix& m){
     return lower;
 }
 
-// select the upper triangular part of the matrix.
+/// \brief Select the upper triangular part of the matrix.
 template <typename Matrix>
 Matrix
 select_upper_triangular(const Matrix& m){
@@ -47,6 +47,7 @@ select_upper_triangular(const Matrix& m){
     return upper;
 }
 
+/// \brief Get the value of maximum magnitude on the diagonal of the matrix.
 template <typename Matrix>
 std::tuple<typename Matrix::size_type, typename Matrix::value_type>
 max_magnitude_diagonal(const Matrix& m){
@@ -69,6 +70,7 @@ max_magnitude_diagonal(const Matrix& m){
     return std::make_tuple(idx, mmd);
 }
 
+/// \brief Get the value of maximum magnitude off the diagonal of the matrix.
 template <typename Matrix>
 typename Matrix::value_type
 max_magnitude_off_diagonal(const Matrix& m){

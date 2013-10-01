@@ -7,6 +7,7 @@ namespace line_search_method{
 
 namespace detail{
 
+/// \brief State for use with line search method.
 template <typename X>
 struct 
 state{

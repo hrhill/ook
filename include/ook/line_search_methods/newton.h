@@ -51,6 +51,8 @@ solve(Matrix A, const Vector& b)
     return boost::numeric::ublas::column(b1, 0);
 }
 
+/// \brief Implementation of the required steps of line_search_method
+/// for Newtons method.
 template <typename X>
 struct newton{
     typedef X vector_type;
@@ -83,6 +85,9 @@ struct newton{
 
 } // ns detail
 
+/// \brief The Newton algorithm.
+/** \details Implementation of the Newton algorithm using the generic line search function.
+**/
 template <typename F, typename X, typename Options, typename Stream>
 std::tuple<ook::state_value, X>
 newton(F objective_function, const X& x0, const Options& opts, Stream& stream)
