@@ -123,6 +123,10 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
     typedef decltype(objective_function(x)) result_type;
     typedef detail::function_caller<F, X, state_type, std::tuple_size<result_type>::value> fcaller_type;
 
+    const real_type epsilon = std::numeric_limits<real_type>::epsilon();
+    const real_type dx_eps = sqrt(epsilon);
+    const real_type df_eps = exp(log(epsilon)/3);
+
     state_type s = Scheme::initialise(objective_function, x);
 
     s.iteration = 0;
@@ -152,22 +156,31 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
             dfx_dot_p = detail::inner_product(s.dfx, p); 
             return std::make_pair(s.fx, dfx_dot_p);
         };
+        const real_type fxk = s.fx;
         std::tie(value, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
-        X dx(s.a * p);
-        x += dx;
-        nfev_total += nfev;
-        ++s.iteration;
+        if (value == state_value::warning_max_line_search_attempts_reached){
+            s.fx = fxk;
+            s.a = 0.0;
+        }else{
+
+            X dx(s.a * p);
+            x += dx;
+            nfev_total += nfev;
+            ++s.iteration;
+        }
+        // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
+        const double theta = epsilon * (1 + fabs(s.fx));
+        const bool u1 = (fxk - s.fx) <= theta;
+        const bool u2 = ook::norm_infinity(dx) <=  dx_eps * (1 + ook::norm_infinity(x));
+        const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1 + fabs(s.fx));
 
         detail::report(stream, value, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
-        if (ook::norm_infinity(s.dfx) < 1e-08){
+        if (u1 & u2 & u3){
             value = ook::state_value::convergence;
             detail::final_report(stream, value, s.iteration, nfev_total, s.fx, s.dfx, dx);
             break;
         }
-
-        if (value == state_value::warning_max_line_search_attempts_reached)
-            break;
 
         s = Scheme::update(s);
     } while(true);
