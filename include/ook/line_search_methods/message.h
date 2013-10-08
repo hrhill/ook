@@ -1,12 +1,12 @@
-#ifndef OOK_STATE_VALUES_H_
-#define OOK_STATE_VALUES_H_
+#ifndef OOK_LINE_SEARCH_METHODS_MESSAGE_H_
+#define OOK_LINE_SEARCH_METHODS_MESSAGE_H_
 
 #include <iostream>
 #include <type_traits>
 
 namespace ook{
 
-enum class state_value{
+enum class message{
     start,
     update,
     warning_rounding_error_prevents_progress,
@@ -17,7 +17,7 @@ enum class state_value{
     convergence
 };
 
-const char* state_value_string[] = {"start",
+const char* message_string[] = {"start",
     "update",
     "warning_rounding_error_prevents_progress",
     "warning_xtol_satistfied",
@@ -27,10 +27,10 @@ const char* state_value_string[] = {"start",
     "convergence"}; 
 
 std::ostream&
-operator<<(std::ostream& os, const state_value& tv)
+operator<<(std::ostream& os, const message& tv)
 {
-    auto id = static_cast<std::underlying_type<state_value>::type>(tv);
-    return os << std::string(state_value_string[id]);
+    auto id = static_cast<std::underlying_type<message>::type>(tv);
+    return os << std::string(message_string[id]);
 }
 
 } // ns ook

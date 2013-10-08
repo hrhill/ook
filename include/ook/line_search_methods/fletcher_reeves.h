@@ -53,7 +53,7 @@ struct fletcher_reeves{
 /** \details Implementation of the Fletcher-Reeves algorithm using the generic line search function.
 **/
 template <typename F, typename X, typename Options, typename Stream>
-std::tuple<ook::state_value, X>
+std::tuple<ook::message, X>
 fletcher_reeves(F objective_function, const X& x0, const Options& opts, Stream& stream)
 {
     return line_search_method<detail::fletcher_reeves<X>>(objective_function, x0, opts, stream);

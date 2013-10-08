@@ -26,8 +26,8 @@ using namespace ook::test_functions;
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
 rosenbrock<V, M>,
-freudenstein_roth<V, M>
-//powell_badly_scaled<T>
+freudenstein_roth<V, M>,
+powell_badly_scaled<V, M>
 >;
 /*
 

@@ -68,7 +68,7 @@ struct bfgs{
 /** \details Implementation of the BFGS algorithm using the generic line search function.
 **/
 template <typename F, typename X, typename Options, typename Stream>
-std::tuple<ook::state_value, X>
+std::tuple<ook::message, X>
 bfgs(F objective_function, const X& x0, const Options& opts, Stream& stream)
 {
     return line_search_method<detail::bfgs<X>>(objective_function, x0, opts, stream);
