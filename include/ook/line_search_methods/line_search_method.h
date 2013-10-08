@@ -21,19 +21,24 @@ state{
     typedef typename X::value_type value_type;
     
     typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
-    state(const int n)
+    state(const int n, const bool with_matrix = false)
     :
          dfx(n), 
          dfx0(n), 
          p(n), 
-         H(n, n, 0), 
-         d2fx(n, n, 0), 
          a(1), 
          beta(0), 
          iteration(0)
     {
-        for (int i = 0; i < n; ++i){
-            H(i, i) = 1.0;
+        if (with_matrix){
+            H.resize(n, n);
+            for (int i = 0; i < n; ++i){
+                H(i, i) = 1.0;              
+                for (int j = 0; j < i; ++j){
+                    H(i, j) = 0.0;
+                    H(j, i) = 0.0;                    
+                }
+            }
         }
     }
 
@@ -42,7 +47,6 @@ state{
     vector_type dfx0;        
     vector_type p;    
     matrix_type H;
-    matrix_type d2fx;
     value_type a;    
     value_type beta;
     int iteration; 
@@ -105,7 +109,7 @@ struct function_caller<F, X, State, 3>{
     static 
     void
     call(F objective_function, const X& x, State& s){
-        std::tie(s.fx, s.dfx, s.d2fx) =  objective_function(x);
+        std::tie(s.fx, s.dfx, s.H) =  objective_function(x);
     }
 };
 
@@ -142,6 +146,7 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
            << std::setw(14) << "max ||dx||" << std::endl;
 
     do {
+        // Get descent direction and set up line search procedure.
         X p = Scheme::descent_direction(s);
         real_type dfx_dot_p = detail::inner_product(s.dfx, p); 
         // do line search
@@ -151,32 +156,35 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         auto phi = [&nfev, &s, &dfx_dot_p, &x, &p, objective_function](const real_type& a){
             ++nfev;
             fcaller_type::call(objective_function, x + a * p, s);
-
             dfx_dot_p = detail::inner_product(s.dfx, p); 
+/*
+            std::cout << "Inside phi\n" << std::endl;
+            std::cout << "a = " << a << std::endl;
+            std::cout << "p = " << p << std::endl;
+            std::cout << "fx = " << s.fx << std::endl;                        
+            std::cout << "dfxdotp = " << dfx_dot_p << std::endl;            
+*/            
             return std::make_pair(s.fx, dfx_dot_p);
         };
+
         // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
-        const X dfx = s.dfx;
         std::tie(msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
-        // Check that line search exited ok
-        if (msg != message::convergence){
-            s.fx = fxk;
-            s.dfx = dfx;
+        if (msg != ook::message::convergence){
             break;
-        }else{
-            dx = s.a * p;
-            x += dx;
-            nfev_total += nfev;
-            ++s.iteration;
         }
+
+        dx = s.a * p;
+        x += dx;
+        nfev_total += nfev;
+        ++s.iteration;
         
         // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
         const double theta = epsilon * (1 + fabs(s.fx));
         const bool u1 = (fxk - s.fx) <= theta;
-        const bool u2 = ook::norm_infinity(dx) <=  dx_eps * (1 + ook::norm_infinity(x));
-        const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1 + fabs(s.fx));
+        const bool u2 = ook::norm_infinity(dx) <=  dx_eps * (1.0 + ook::norm_infinity(x));
+        const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
 
         detail::report(stream, msg, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
         if (u1 & u2 & u3){
@@ -185,6 +193,7 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         }
 
         s = Scheme::update(s);
+
     } while(true);
 
     detail::final_report(stream, msg, s.iteration, nfev_total, s.fx, s.dfx, dx);

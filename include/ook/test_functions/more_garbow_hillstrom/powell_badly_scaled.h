@@ -71,11 +71,11 @@ powell_badly_scaled<Vector, Matrix>::tolerance = std::numeric_limits<typename Ve
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_badly_scaled<Vector, Matrix>::minima = {1.098e-05, 9.106};
+powell_badly_scaled<Vector, Matrix>::minima = {1.098159e-05,9.106147};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_badly_scaled<Vector, Matrix>::local_minima = {1.098e-05, 9.106};
+powell_badly_scaled<Vector, Matrix>::local_minima = {1.098159e-05,9.106147};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>

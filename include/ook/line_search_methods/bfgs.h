@@ -23,7 +23,7 @@ struct bfgs{
     state_type
     initialise(F objective_function, const X& x0)
     {
-        state_type s(x0.size());
+        state_type s(x0.size(), true);
         std::tie(s.fx, s.dfx) = objective_function(x0);
         s.dfx0 = s.dfx;
         return s;
