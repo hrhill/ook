@@ -17,17 +17,20 @@ struct more_thuente_searcher{
 
     more_thuente_searcher(T f0_, T g0_, T stp, T width0)
     :
-        f0(f0_), g0(g0_), brackt(false), stage(1), width(width0),
-            width1(2.0 * width0), 
-                stx(0), fx(f0), gx(g0), 
-                    sty(0), fy(f0), gy(0),
-                        stmin(0), stmax(5.0 * stp)
+        f0(f0_), g0(g0_), 
+        xtrapl(1.1), xtrapu(4.0), 
+        brackt(false), stage(1), width(width0),
+        width1(2.0 * width0), 
+        stx(0), fx(f0), gx(g0), 
+        sty(0), fy(0), gy(0),
+        stmin(0), stmax(stp + xtrapu * stp)
     {}
 
     template <typename Options>
     std::pair<message, T>
     operator()(T stp, T f, T g, const Options& opts)
     {
+        //std::cout << "Calling search with arguments\n" << stp << ", " << f << ", " << g << std::endl;
         const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
         const bool curvature = curvature_condition(g0, g, opts.gtol);
 
@@ -82,15 +85,15 @@ struct more_thuente_searcher{
             stmin = std::min(stx, sty);
             stmax = std::max(stx, sty);
         } else {
-            stmin = stp + T(1.1) * (stp - stx);
-            stmax = stp + T(4.0) * (stp - stx);
+            stmin = stp + xtrapl * (stp - stx);
+            stmax = stp + xtrapu * (stp - stx);
         }
         // Force the step to be within the bounds opts.stpmax and opts.stpmin.
         stp = std::max(stp, opts.stpmin);
         stp = std::min(stp, opts.stpmax);
         //If further progress is not possible, let stp be the best point obtained during the search.
-        if ((brackt && (stp <= stmin || stp >= stmax))
-            || (brackt && stmax - stmin <= opts.xtol * stmax))
+        if ((brackt and (stp <= stmin || stp >= stmax))
+            || (brackt and (stmax - stmin <= opts.xtol * stmax)))
         {
             stp = stx;
         }
@@ -99,6 +102,8 @@ struct more_thuente_searcher{
 
     const T f0;
     const T g0;
+    const T xtrapl;    
+    const T xtrapu;
     bool brackt;    
     int stage;    
     T width;

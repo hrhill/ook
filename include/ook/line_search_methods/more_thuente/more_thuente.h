@@ -15,34 +15,35 @@ template <typename F, typename T, typename Options>
 std::tuple<message, T>
 more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts){
 
+//    std::cout << "Entering more_thuente with arguments\n" << phi0 << ", " << dphi0 << ", " << a << std::endl;
     T phia, dphia;
     std::tie(phia, dphia) = phi(a);
+
     more_thuente_searcher<T> search(phi0, dphi0, a, opts.stpmax - opts.stpmin);
 
-    message value = message::start;
+    message msg = message::start;
     uint attempts = 0;
     do{
         if(strong_wolfe_conditions(phi0, phia, dphi0, dphia, a, opts.ftol, opts.gtol))
         {
-            value = message::convergence;
+            msg = message::convergence;
             break;
         }
-        std::tie(value, a) = search(a, phia, dphia, opts);
+        std::tie(msg, a) = search(a, phia, dphia, opts);
         ++attempts;
-
+/*
         if (attempts == opts.max_line_search_attempts){
-            a = T(0);
             value = message::warning_max_line_search_attempts_reached;
             break;
         }
-
-        if (value != message::update)
+*/
+        if (msg != message::update)
             break;
 
         std::tie(phia, dphia) = phi(a);
     }while (true);
 
-    return std::make_tuple(value, a);
+    return std::make_tuple(msg, a);
 }
 
 } // ns line_search

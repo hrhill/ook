@@ -15,7 +15,9 @@ T
 cubic_minimizer(T f1, T f2, T d1, T d2, T st1, T st2)
 {
 	const T theta = T(3.0) * (f1 - f2) / (st2 - st1) + d1 + d2;
-	const T gamma = copysign(sqrt(std::pow(theta, 2) - d1 * d2), st2 - st1);
+	// This is in the original dcstep implementation, scaling so that largest value is 1.
+	const T s = std::max({fabs(theta), fabs(d1), fabs(d2)});
+	const T gamma = copysign(s * sqrt(std::pow(theta/s, 2) - d1 / s * d2 / s), st2 - st1);
 	const T p = gamma - d1 + theta;
 	const T q = T(2.0) * gamma - d1 + d2;
 	return p / q;
@@ -67,7 +69,8 @@ case3(T stx, T fx, T dx, T sty, T fy, T dy, T stp, T fp, T dp, bool brackt, T st
 	const T theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
 	/* The case gamma = 0 only arises if the cubic does not tend
 	to infinity in the direction of the step.*/
-	const T gamma = copysign(std::max(T(0.0), sqrt(std::pow(theta, 2) - dx * dp)), stx - stp);
+	const T s = std::max({fabs(theta), fabs(dx), fabs(dp)});
+	const T gamma = copysign(std::max(T(0.0), s * sqrt(std::pow(theta/s, 2) - dx / s * dp / s)), stx - stp);
 	const T p = gamma - dp + theta;
 	const T q = T(2.0) * gamma - dp + dx;
 	const T r = p / q;
@@ -124,6 +127,13 @@ template <typename T>
 T
 safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, const T& dp, bool& brackt, const T& stpmin, const T& stpmax)
 {
+	/*
+	std::cout << "Calling safe_stp with arguments\n";
+	std::cout << stx << " , " << fx << " , " << dx << " , " 
+	          << sty << " , " << fy << " , " << dy << " , " 
+	          << stp << " , " << fp << " , " << dp << " , " 
+	          <<  brackt << " , " << stpmin << " , " << stpmax << std::endl;
+*/
 /*	This subroutine computes a safeguarded step for a search
 	procedure and updates an interval that contains a step that
 	satisfies a sufficient decrease and a curvature condition.
