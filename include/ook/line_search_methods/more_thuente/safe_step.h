@@ -70,7 +70,7 @@ case3(T stx, T fx, T dx, T sty, T fy, T dy, T stp, T fp, T dp, bool brackt, T st
 	/* The case gamma = 0 only arises if the cubic does not tend
 	to infinity in the direction of the step.*/
 	const T s = std::max({fabs(theta), fabs(dx), fabs(dp)});
-	const T gamma = copysign(std::max(T(0.0), s * sqrt(std::pow(theta/s, 2) - dx / s * dp / s)), stx - stp);
+	const T gamma = s * copysign(sqrt(std::max(T(0.0), std::pow(theta/s, 2) - dx / s * dp / s)), stx - stp);
 	const T p = gamma - dp + theta;
 	const T q = T(2.0) * gamma - dp + dx;
 	const T r = p / q;
