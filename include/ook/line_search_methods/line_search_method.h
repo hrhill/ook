@@ -156,19 +156,21 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
             dfx_dot_p = detail::inner_product(s.dfx, p); 
             return std::make_pair(s.fx, dfx_dot_p);
         };
+        // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
         std::tie(value, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
+
+        X dx(s.a * p);
 
         if (value == state_value::warning_max_line_search_attempts_reached){
             s.fx = fxk;
             s.a = 0.0;
         }else{
-
-            X dx(s.a * p);
             x += dx;
             nfev_total += nfev;
             ++s.iteration;
         }
+        
         // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
         const double theta = epsilon * (1 + fabs(s.fx));
         const bool u1 = (fxk - s.fx) <= theta;

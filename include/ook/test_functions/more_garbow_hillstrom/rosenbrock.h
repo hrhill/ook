@@ -42,6 +42,7 @@ struct rosenbrock
     static real_type f_min;
     static real_type tolerance;
     static std::vector<real_type> minima;
+    static std::vector<real_type> local_minima;
     static std::vector<real_type> x0;
 };
 
@@ -56,6 +57,11 @@ rosenbrock<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::val
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
 rosenbrock<Vector, Matrix>::minima = {1.0, 1.0};
+
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type>
+rosenbrock<Vector, Matrix>::local_minima = {1.0, 1.0};
+
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
