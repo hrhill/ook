@@ -6,7 +6,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include "ook/norms.h"
-#include "ook/state_value.h"
+#include "ook/line_search_methods/message.h"
 
 #include "ook/line_search_methods/more_thuente/more_thuente.h"
 
@@ -37,7 +37,6 @@ state{
         }
     }
 
-
     value_type fx;
     vector_type dfx;
     vector_type dfx0;        
@@ -58,7 +57,7 @@ inner_product(const T& x, const T& y){
 
 template <typename Stream, typename X>
 void
-report(Stream& stream, state_value value, int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
+report(Stream& stream, message msg, int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
 {
     stream << std::setw(6) << iteration
               << std::setw(6) << nfev_total
@@ -71,9 +70,9 @@ report(Stream& stream, state_value value, int iteration, int nfev_total, int nfe
 
 template <typename Stream, typename X>
 void
-final_report(Stream& stream, state_value value, int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
+final_report(Stream& stream, message msg, int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
 {
-    stream << "status : " << value << std::endl;
+    stream << "status : " << msg << std::endl;
     stream << std::setw(8) << "iter"
            << std::setw(8) << "nfev"
            << std::setw(16) << "fx"
@@ -114,7 +113,7 @@ struct function_caller<F, X, State, 3>{
 } // ns detail
 
 template <typename Scheme, typename F, typename X, typename Options, typename Stream>
-std::tuple<ook::state_value, X>
+std::tuple<ook::message, X>
 line_search_method(F objective_function, X x, const Options& opts, Stream& stream)
 {
     typedef typename X::value_type real_type;
@@ -128,10 +127,10 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
     const real_type df_eps = exp(log(epsilon)/3);
 
     state_type s = Scheme::initialise(objective_function, x);
-
+    X dx(x.size());
     s.iteration = 0;
     uint nfev_total = 0;
-    ook::state_value value;
+    ook::message msg;
 
     stream << std::endl;
     stream << std::setw(6) << "n"
@@ -140,14 +139,14 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
            << std::setw(14) << "a"
            << std::setw(14) << "fx"
            << std::setw(14) << "max ||dfx||"
-           << std::setw(14) << "max ||dx||" << std::endl;  
+           << std::setw(14) << "max ||dx||" << std::endl;
 
     do {
         X p = Scheme::descent_direction(s);
         real_type dfx_dot_p = detail::inner_product(s.dfx, p); 
         // do line search
         uint nfev = 0;        
-        s.a = 1.0;        
+        s.a = 1.0;
         // take a reference to the state variable, ensuring that fx and dfx get updated
         auto phi = [&nfev, &s, &dfx_dot_p, &x, &p, objective_function](const real_type& a){
             ++nfev;
@@ -158,14 +157,16 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         };
         // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
-        std::tie(value, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
+        const X dfx = s.dfx;
+        std::tie(msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
-        X dx(s.a * p);
-
-        if (value == state_value::warning_max_line_search_attempts_reached){
+        // Check that line search exited ok
+        if (msg != message::convergence){
             s.fx = fxk;
-            s.a = 0.0;
+            s.dfx = dfx;
+            break;
         }else{
+            dx = s.a * p;
             x += dx;
             nfev_total += nfev;
             ++s.iteration;
@@ -177,17 +178,17 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         const bool u2 = ook::norm_infinity(dx) <=  dx_eps * (1 + ook::norm_infinity(x));
         const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1 + fabs(s.fx));
 
-        detail::report(stream, value, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
+        detail::report(stream, msg, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
         if (u1 & u2 & u3){
-            value = ook::state_value::convergence;
-            detail::final_report(stream, value, s.iteration, nfev_total, s.fx, s.dfx, dx);
+            msg = ook::message::convergence;
             break;
         }
 
         s = Scheme::update(s);
     } while(true);
 
-    return std::make_pair(value, x);
+    detail::final_report(stream, msg, s.iteration, nfev_total, s.fx, s.dfx, dx);
+    return std::make_pair(msg, x);
 }
 
 } // ns ook

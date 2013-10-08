@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include "../../state_value.h"
+#include "ook/line_search_methods/message.h"
 
 #include "line_search_conditions.h"
 #include "safe_step.h"
@@ -25,7 +25,7 @@ struct more_thuente_searcher{
     {}
 
     template <typename Options>
-    std::pair<state_value, T>
+    std::pair<message, T>
     operator()(T stp, T f, T g, const Options& opts)
     {
         const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
@@ -33,16 +33,16 @@ struct more_thuente_searcher{
 
         /*     Test for warnings. */
         if (brackt && (stp <= stmin || stp >= stmax)) {
-            return std::make_pair(state_value::warning_rounding_error_prevents_progress, stp);
+            return std::make_pair(message::warning_rounding_error_prevents_progress, stp);
         }
         if (brackt && stmax - stmin <= opts.xtol * stmax) {
-            return std::make_pair(state_value::warning_xtol_satisfied, stp);        
+            return std::make_pair(message::warning_xtol_satisfied, stp);        
         }
         if (stp == opts.stpmax && sufficient_decrease && curvature) {
-            return std::make_pair(state_value::warning_stp_eq_stpmax, stp);
+            return std::make_pair(message::warning_stp_eq_stpmax, stp);
         }
         if (stp == opts.stpmin && (!sufficient_decrease || !curvature)) {
-            return std::make_pair(state_value::warning_stp_eq_stpmin, stp);
+            return std::make_pair(message::warning_stp_eq_stpmin, stp);
         }
         if (stage == 1 && sufficient_decrease && g >= T(0.0)){
             stage = 2;
@@ -94,7 +94,7 @@ struct more_thuente_searcher{
         {
             stp = stx;
         }
-        return std::make_pair(state_value::update, stp);        
+        return std::make_pair(message::update, stp);        
     }
 
     const T f0;

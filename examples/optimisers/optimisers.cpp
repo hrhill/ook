@@ -14,7 +14,7 @@
 
 #include "ook/norms.h"
 #include "ook/options.h"
-#include "ook/state_value.h"
+#include "ook/line_search_methods/message.h"
 
 #include "ook/test_functions/more_garbow_hillstrom/rosenbrock.h"
 
