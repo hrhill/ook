@@ -57,6 +57,7 @@ struct freudenstein_roth
     static real_type tolerance;
     static std::vector<real_type> minima;
     static std::vector<real_type> x0;
+    static std::vector<real_type> local_minima;
 };
 
 template <typename Vector, typename Matrix>
@@ -70,6 +71,10 @@ freudenstein_roth<Vector, Matrix>::tolerance = std::numeric_limits<typename Vect
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
 freudenstein_roth<Vector, Matrix>::minima = {5.0, 4.0};
+
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type>
+freudenstein_roth<Vector, Matrix>::local_minima = {11.41278, -0.8968053};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
