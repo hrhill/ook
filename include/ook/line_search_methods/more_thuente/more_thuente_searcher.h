@@ -2,6 +2,7 @@
 #define OOK_LINE_SEARCH_MORE_THUENTE_SEARCHER_H_
 
 #include <cmath>
+#include <tuple>
 
 #include "ook/line_search_methods/message.h"
 
@@ -12,10 +13,10 @@ namespace ook{
 
 namespace line_search{
 
-template <typename T>
+template <typename T, typename Options>
 struct more_thuente_searcher{
 
-    more_thuente_searcher(T f0_, T g0_, T stp, T width0)
+    more_thuente_searcher(T f0_, T g0_, T stp, T width0, const Options& opts_)
     :
         f0(f0_), g0(g0_), 
         xtrapl(1.1), xtrapu(4.0), 
@@ -23,14 +24,17 @@ struct more_thuente_searcher{
         width1(2.0 * width0), 
         stx(0), fx(f0), gx(g0), 
         sty(0), fy(0), gy(0),
-        stmin(0), stmax(stp + xtrapu * stp)
-    {}
-
-    template <typename Options>
-    std::pair<message, T>
-    operator()(T stp, T f, T g, const Options& opts)
+        stmin(0), stmax(stp + xtrapu * stp),
+        opts(opts_)
     {
-        //std::cout << "Calling search with arguments\n" << stp << ", " << f << ", " << g << std::endl;
+        assert(stp < opts.stpmin);
+        assert(stp > opts.stpmax);
+        assert(g0 > 0.0);
+    }
+
+    std::tuple<message, T>
+    operator()(T stp, T f, T g)
+    {
         const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
         const bool curvature = curvature_condition(g0, g, opts.gtol);
 
@@ -116,6 +120,7 @@ struct more_thuente_searcher{
     T gy;
     T stmin;
     T stmax;
+    const Options opts;
 };
 
 } // ns line search

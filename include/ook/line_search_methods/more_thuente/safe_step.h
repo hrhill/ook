@@ -31,7 +31,7 @@ case1(T fx, T dx, T stx, T fp, T dp, T stp)
 	T stpf;
 	const T r = cubic_minimizer(fx, fp, dx, dp, stx, stp);
 	const T stpc = stx + r * (stp - stx);
-	const T stpq = stx + dx / ((fx - fp) / (stp - stx) + dx) / T(2.0) * (stp - stx);
+	const T stpq = stx + (dx / ((fx - fp) / (stp - stx) + dx) / T(2.0)) * (stp - stx);
 	if (fabs(stpc - stx) < fabs(stpq - stx)){
 	    stpf = stpc;
 	} else {
@@ -127,13 +127,6 @@ template <typename T>
 T
 safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp, const T& dp, bool& brackt, const T& stpmin, const T& stpmax)
 {
-	/*
-	std::cout << "Calling safe_stp with arguments\n";
-	std::cout << stx << " , " << fx << " , " << dx << " , " 
-	          << sty << " , " << fy << " , " << dy << " , " 
-	          << stp << " , " << fp << " , " << dp << " , " 
-	          <<  brackt << " , " << stpmin << " , " << stpmax << std::endl;
-*/
 /*	This subroutine computes a safeguarded step for a search
 	procedure and updates an interval that contains a step that
 	satisfies a sufficient decrease and a curvature condition.
@@ -148,12 +141,6 @@ safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp,
 
 	and that the derivative at stx is negative in the direction
 	of the step.
-
-	The subroutine statement is
-
-		subroutine dcstep(stx,fx,dx,sty,fy,dy,stp,fp,dp,brackt,stpmin,stpmax)
-
-	where
 
 	stx is a T precision variable.
 		On entry stx is the best step obtained so far and is an
@@ -215,7 +202,7 @@ safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp,
 	sign. The minimum is bracketed. If the cubic step is farther from
 	stp than the secant step, the cubic step is taken, otherwise the
 	secant step is taken. */
-    } else if (sgnd < 0.) {
+    } else if (sgnd < 0.0) {
 		std::tie(stpf, brackt) = case2(fx, dx, stx, fp, dp, stp);
 	/* Third case: A lower function value, derivatives of the same sign,
 	and the magnitude of the derivative decreases. */
@@ -234,7 +221,7 @@ safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp,
 		fy = fp;
 		dy = dp;
     } else {
-		if (sgnd < T(0.0)) {
+		if (sgnd < 0.0) {
 	    	sty = stx;
 	    	fy = fx;
 	    	dy = dx;
@@ -242,6 +229,16 @@ safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp,
 		stx = stp;
 		fx = fp;
 		dx = dp;
+    }
+
+    stpf = std::min(stpmax, stpf);
+    stpf = std::max(stpmin, stpf);
+    if (brackt) {
+        if (sty > stx) {
+            stpf = std::min(stx + (sty - stx) * .66f, stpf);
+        } else {
+            stpf = std::max(stx + (sty - stx) * .66f, stpf);
+        }
     }
     return stpf;
 }
