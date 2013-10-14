@@ -18,7 +18,7 @@ find_package(Doxygen)
 find_package(OpenMP)
 find_package(ATLAS)
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include" ${ATLAS_INCLUDE_DIR})
 add_subdirectory(examples)
 add_subdirectory(benchmarks)
 add_subdirectory(tests)

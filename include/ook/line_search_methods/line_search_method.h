@@ -129,6 +129,8 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
     const real_type epsilon = std::numeric_limits<real_type>::epsilon();
     const real_type dx_eps = sqrt(epsilon);
     const real_type df_eps = exp(log(epsilon)/3);
+    const real_type fx_max = std::numeric_limits<real_type>::max();
+    const real_type fx_min = std::numeric_limits<real_type>::min();    
 
     state_type s = Scheme::initialise(objective_function, x);
     X dx(x.size());
@@ -148,7 +150,10 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
     do {
         // Get descent direction and set up line search procedure.
         X p = Scheme::descent_direction(s);
-        real_type dfx_dot_p = detail::inner_product(s.dfx, p); 
+        real_type dfx_dot_p = detail::inner_product(s.dfx, p);
+        dfx_dot_p = std::min(dfx_dot_p, std::numeric_limits<real_type>::max());
+        dfx_dot_p = std::max(dfx_dot_p, std::numeric_limits<real_type>::lowest());
+
         // do line search
         uint nfev = 0;        
         s.a = 1.0;
@@ -156,14 +161,11 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         auto phi = [&nfev, &s, &dfx_dot_p, &x, &p, objective_function](const real_type& a){
             ++nfev;
             fcaller_type::call(objective_function, x + a * p, s);
-            dfx_dot_p = detail::inner_product(s.dfx, p); 
-/*
-            std::cout << "Inside phi\n" << std::endl;
-            std::cout << "a = " << a << std::endl;
-            std::cout << "p = " << p << std::endl;
-            std::cout << "fx = " << s.fx << std::endl;                        
-            std::cout << "dfxdotp = " << dfx_dot_p << std::endl;            
-*/            
+            dfx_dot_p = detail::inner_product(s.dfx, p);
+            s.fx = std::min(s.fx, std::numeric_limits<real_type>::max());
+            s.fx = std::max(s.fx, std::numeric_limits<real_type>::lowest());
+            dfx_dot_p = std::min(dfx_dot_p, std::numeric_limits<real_type>::max());
+            dfx_dot_p = std::max(dfx_dot_p, std::numeric_limits<real_type>::lowest());
             return std::make_pair(s.fx, dfx_dot_p);
         };
 
@@ -174,7 +176,6 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         if (msg != ook::message::convergence){
             break;
         }
-
         dx = s.a * p;
         x += dx;
         nfev_total += nfev;
@@ -187,7 +188,7 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
 
         detail::report(stream, msg, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
-        if (u1 & u2 & u3){
+        if ((u1 & u2) || u3){
             msg = ook::message::convergence;
             break;
         }

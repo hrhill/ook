@@ -19,8 +19,9 @@ struct options{
         xtol(xtolIn), 
         stpmin(stpminIn), 
         stpmax(stpmaxIn),
-        max_iteration(10000),
-        max_line_search_attempts(20)
+        max_iteration(1000),
+        max_line_search_attempts(20),
+        max_function_evaluations(2000)
     {
         /* Check the input arguments for errors. */
         ASSERT_CHECK_AND_THROW(ftol >= 0.);
@@ -36,6 +37,7 @@ struct options{
     const double stpmax;
     const uint max_iteration;
     const uint max_line_search_attempts;
+    const uint max_function_evaluations;
 };
 
 inline
