@@ -47,9 +47,10 @@ struct bfgs{
         X y(s.dfx - s.dfx0);
         const int n = s.dfx.size();
 
-        const value_type rho = 1.0/(detail::inner_product(y, dx));
+        const value_type rho = 1.0/detail::inner_product(y, dx);
         matrix_type Z(ublas::identity_matrix<double>(n) - rho * ublas::outer_prod(dx, y));
         matrix_type ss = rho * ublas::outer_prod(dx, dx);
+
         if (s.iteration == 1){
             const value_type hii = detail::inner_product(dx, dx);
             for (int i = 0; i < n; ++i){

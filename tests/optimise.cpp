@@ -103,10 +103,11 @@ test_gradient_based_optimisers()
     std::cout << "fletcher_reeves" << std::endl;    
     run_gradient_based_optimiser(Function(), 
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
-    std::cout << "lbfgs" << std::endl;        
+    std::cout << "lbfgs" << std::endl;
+    */        
     run_gradient_based_optimiser(Function(), 
             ook::lbfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
-*/            
+
     std::cout << "bfgs" << std::endl;        
     run_gradient_based_optimiser(Function(), 
             ook::bfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
