@@ -19,7 +19,7 @@ cubic_minimizer(T f1, T f2, T d1, T d2, T st1, T st2)
 	const T s = std::max({fabs(theta), fabs(d1), fabs(d2)});
 	const T gamma = copysign(s * sqrt(std::pow(theta/s, 2) - d1 / s * d2 / s), st2 - st1);
 	const T p = gamma - d1 + theta;
-	const T q = T(2.0) * gamma - d1 + d2;
+	const T q = gamma - d1 + gamma + d2;
 	return p / q;
 }
 
@@ -70,13 +70,16 @@ case3(T stx, T fx, T dx, T sty, T fy, T dy, T stp, T fp, T dp, bool brackt, T st
 	/* The case gamma = 0 only arises if the cubic does not tend
 	to infinity in the direction of the step.*/
 	const T s = std::max({fabs(theta), fabs(dx), fabs(dp)});
-	const T gamma = s * copysign(sqrt(std::max(T(0.0), std::pow(theta/s, 2) - dx / s * dp / s)), stx - stp);
+	T gamma = s * sqrt(std::max(T(0.0), std::pow(theta/s, 2) - dx / s * dp / s));
+	if (stx < stp){
+		gamma = -gamma;
+	}
 	const T p = gamma - dp + theta;
-	const T q = T(2.0) * gamma - dp + dx;
+	const T q = gamma - dp + gamma + dx;
 	const T r = p / q;
 	
 	T stpc = (stp > stx) ? stpmax : stpmin;
-	if (r < 0. && gamma != T(0.0)) {
+	if (r < T(0.0) && gamma != T(0.0)) {
 	    stpc = stp + r * (stx - stp);
 	}
 	T stpf;
@@ -229,17 +232,7 @@ safe_step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, const T& stp, const T& fp,
 		stx = stp;
 		fx = fp;
 		dx = dp;
-    }
-
-    stpf = std::min(stpmax, stpf);
-    stpf = std::max(stpmin, stpf);
-    if (brackt) {
-        if (sty > stx) {
-            stpf = std::min(stx + (sty - stx) * .66f, stpf);
-        } else {
-            stpf = std::max(stx + (sty - stx) * .66f, stpf);
-        }
-    }
+    }  
     return stpf;
 }
 

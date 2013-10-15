@@ -100,7 +100,6 @@ compute_hg(int& cp, int& point, double ys, int n, int m, double* w, double* g, i
         cblas_daxpy(n, beta, &w[iscn], 1, w, 1);
         cp = (cp == m - 1) ? 0 : cp + 1;
     }
-    /*     STORE THE NEW SEARCH DIRECTION */
     std::copy(w, w + n, w + ispt + point * n);    
 }
 
@@ -246,36 +245,6 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
 /*                                 THERE MAY NOT BE A STEP WHICH SATISFIES */
 /*                                 THE SUFFICIENT DECREASE AND CURVATURE */
 /*                                 CONDITIONS. TOLERANCES MAY BE TOO SMALL. */
-
-/*    ON THE DRIVER: */
-
-/*     The subroutine contains one common area, which the user may wish to */
-/*    reference: */
-
-/*    MP  is an int variable with default value 6. It is used as the */
-/*        unit number for the printing of the monitoring information */
-/*        controlled by IPRINT. */
-
-/*    LP  is an int variable with default value 6. It is used as the */
-/*        unit number for the printing of error messages. This printing */
-/*        may be suppressed by setting LP to a non-positive value. */
-
-/*    GTOL is a DOUBLE PRECISION variable with default value 0.9, which */
-/*        controls the accuracy of the line search routine MCSRCH. If the */
-/*        function and gradient evaluations are inexpensive with respect */
-/*        to the cost of the iteration (which is sometimes the case when */
-/*        solving very large problems) it may be advantageous to set GTOL */
-/*        to a small value. A typical small value is 0.1.  Restriction: */
-/*        GTOL should be greater than 1.D-04. */
-
-/*    STPMIN and STPMAX are non-negative DOUBLE PRECISION variables which */
-/*        specify lower and uper bounds for the step in the line search. */
-/*        Their default values are 1.D-20 and 1.D+20, respectively. These */
-/*        values need not be modified unless the exponents are too large */
-/*        for the machine being used, or unless the problem is extremely */
-/*        badly scaled (in which case the exponents should be increased). */
-
-/*    Other routines called directly:  MCSRCH */
     assert(n > 0 && m > 0);
     /* Local variables */
     static int info, nfev;
@@ -417,6 +386,5 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
 
 } // ns detail
 } // ns ook
-
 
 #endif

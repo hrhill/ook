@@ -126,15 +126,11 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
     static double dginit, dgtest;
     static double dgx, dgy, stx, sty;
 
-    if (n <= 0 || stp <= 0.0 || ftol < 0.0 || lb3_1.gtol < 0.0 || xtol < 0.0 || lb3_1.stpmin < 0.0 || lb3_1.stpmax < lb3_1.stpmin || maxfev <= 0) {
-        throw std::runtime_error("  IMPROPER INPUT PARAMETERS");
-    }
-
     if (info == 0) {
         /*     COMPUTE THE INITIAL GRADIENT IN THE SEARCH DIRECTION AND CHECK THAT S IS A DESCENT DIRECTION. */
         dginit = std::inner_product(g, g + n, s, 0.0);
         if (dginit >= 0.0) {
-            throw std::runtime_error("  THE SEARCH DIRECTION IS NOT A DESCENT DIRECTION");
+            throw std::runtime_error("Not a search direction");
         }
 
         /*  INITIALIZE LOCAL VARIABLES. */
@@ -245,8 +241,8 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
             double dgxm = dgx - dgtest;
             double dgym = dgy - dgtest;
             /* CALL CSTEP TO UPDATE THE INTERVAL OF UNCERTAINTY AND TO COMPUTE THE NEW STEP. */
-            mcstep(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
-            //stp = ook::line_search::safe_step(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
+            //stp = mcstep(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
+            stp = ook::line_search::safe_step(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
             /* RESET THE FUNCTION AND GRADIENT VALUES FOR F. */
             fx = fxm + stx * dgtest;
             fy = fym + sty * dgtest;
@@ -254,8 +250,8 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
             dgy = dgym + dgtest;
         } else {
             /* CALL MCSTEP TO UPDATE THE INTERVAL OF UNCERTAINTY AND TO COMPUTE THE NEW STEP. */
-            mcstep(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
-            //stp = ook::line_search::safe_step(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
+            //stp = mcstep(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
+            stp = ook::line_search::safe_step(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
         }
         /* FORCE A SUFFICIENT DECREASE IN THE SIZE OF THE INTERVAL OF UNCERTAINTY. */
         if (brackt) {
