@@ -10,7 +10,7 @@ struct lb3_1_ {
 
 
 template <typename T>
-int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int& info, int& nfev, T *wa)
+int mcsrch(int n, T *x, T f, T dg, T *s, T& stp, T ftol, T xtol, int maxfev, int& info, int& nfev, T *wa)
 {
 /*                     SUBROUTINE MCSRCH */
 
@@ -121,17 +121,13 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
     /* Local variables */
     static double finit, width, stmin, stmax;
     static bool stage1;
-    static double width1, ftest1, dg, fx, fy;
+    static double width1, ftest1, fx, fy;
     static bool brackt;
     static double dginit, dgtest;
     static double dgx, dgy, stx, sty;
-
     if (info == 0) {
         /*     COMPUTE THE INITIAL GRADIENT IN THE SEARCH DIRECTION AND CHECK THAT S IS A DESCENT DIRECTION. */
-        dginit = std::inner_product(g, g + n, s, 0.0);
-        if (dginit >= 0.0) {
-            throw std::runtime_error("Not a search direction");
-        }
+        dginit = dg;
 
         /*  INITIALIZE LOCAL VARIABLES. */
         brackt = false;
@@ -180,7 +176,6 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
             }
             /*        EVALUATE THE FUNCTION AND GRADIENT AT STP */
             /*        AND COMPUTE THE DIRECTIONAL DERIVATIVE. */
-            /*        We return to main program to obtain F and G. */
             for (int j = 0; j < n; ++j) {
                 x[j] = wa[j] + stp * s[j];
             }
@@ -189,7 +184,6 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
         }
         info = 0;
         ++nfev;
-        dg = std::inner_product(g, g + n, s, 0.0);
         ftest1 = finit + stp * dgtest;
 
         if ((brackt && (stp <= stmin || stp >= stmax))) {
@@ -210,15 +204,6 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
         if (f <= ftest1 && fabs(dg) <= lb3_1.gtol * (-dginit)) {
             info = 1;
         }
-
-        if (info > 1) {
-            throw std::runtime_error(" IFLAG= -1 \n LINE SEARCH FAILED.\n"
-                   "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
-                   "  ERROR RETURN OF LINE SEARCH: INFO= " + std::to_string(info) + "\n"
-                   "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
-                   "  INCORRECT OR INCORRECT TOLERANCES");
-        }
-
         if (info != 0) {
             return 0;
         }
@@ -261,6 +246,7 @@ int mcsrch(int n, T *x, T f, T *g, T *s, T& stp, T ftol, T xtol, int maxfev, int
             width1 = width;
             width = fabs(sty - stx);
         }
+        
     }
 }
 

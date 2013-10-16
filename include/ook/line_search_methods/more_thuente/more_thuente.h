@@ -13,29 +13,27 @@ namespace line_search{
 
 template <typename F, typename T, typename Options>
 std::tuple<message, T>
-more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts){
+more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts)
+{
+    message msg = message::start;
+
+    if (dphi0 >= 0){
+        msg = message::search_direction_is_not_a_descent_direction;
+        return std::make_tuple(msg, a);
+    }
 
     T phia, dphia;
     std::tie(phia, dphia) = phi(a);
 
     more_thuente_searcher<T, Options> search(phi0, dphi0, a, opts.stpmax - opts.stpmin, opts);
 
-    message msg = message::start;
-    uint attempts = 0;
     do{
-        if (isnan(a)) exit(1);        
         if(strong_wolfe_conditions(phi0, phia, dphi0, dphia, a, opts.ftol, opts.gtol))
         {
             msg = message::convergence;
             break;
         }
         std::tie(msg, a) = search(a, phia, dphia);
-        ++attempts;
-  /*
-        if (attempts == opts.max_line_search_attempts){
-            msg = message::warning_max_line_search_attempts_reached;
-            break;
-        }*/
         if (msg != message::update)
             break;
 

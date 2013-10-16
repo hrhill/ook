@@ -31,9 +31,9 @@ typedef ublas::matrix<double, ublas::column_major> matrix_t;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-//ook::test_functions::rosenbrock<V, M>,
-//ook::test_functions::freudenstein_roth<V, M>,
-ook::test_functions::powell_badly_scaled<V, M>
+ook::test_functions::rosenbrock<V, M>,
+ook::test_functions::freudenstein_roth<V, M>//,
+//ook::test_functions::powell_badly_scaled<V, M>
 >;
 
 typedef test_function_types<ublas::vector<double>, ublas::matrix<double>> ublas_function_types;

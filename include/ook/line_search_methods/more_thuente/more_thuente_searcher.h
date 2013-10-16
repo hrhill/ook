@@ -27,9 +27,9 @@ struct more_thuente_searcher{
         stmin(0), stmax(stp + xtrapu * stp),
         opts(opts_)
     {
-        assert(stp < opts.stpmin);
-        assert(stp > opts.stpmax);
-        assert(g0 > 0.0);
+        assert(stp > opts.stpmin);
+        assert(stp < opts.stpmax);
+        assert(g0 < 0.0);
     }
 
     std::tuple<message, T>
@@ -77,7 +77,7 @@ struct more_thuente_searcher{
             // Call safe_step to update stx, sty, and to compute the new step.
             stp = safe_step(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
         }
-        /* Decide if a bisection step is needed. */
+        // Decide if a bisection step is needed. 
         if (brackt) {
             if (fabs(sty - stx) >= T(0.66) * width1) {
                 stp = stx + T(0.5) * (sty - stx);
@@ -96,8 +96,7 @@ struct more_thuente_searcher{
         stp = std::max(stp, opts.stpmin);
         stp = std::min(stp, opts.stpmax);
         //If further progress is not possible, let stp be the best point obtained during the search.
-        if ((brackt and (stp <= stmin || stp >= stmax))
-            || (brackt and (stmax - stmin <= opts.xtol * stmax)))
+        if ((brackt and (stp <= stmin || stp >= stmax)) || (brackt and (stmax - stmin <= opts.xtol * stmax)))
         {
             stp = stx;
         }
