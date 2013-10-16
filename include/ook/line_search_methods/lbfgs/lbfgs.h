@@ -256,8 +256,8 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
     static double stp, stp1;
 
     /* Genuine static variables */
-    static int iter = 0;
-    static int nfun = 0;
+    static int iter;
+    static int nfun;
     /* Local variables
        Parameters for line search, should be const */
     double ftol = 1e-4;
@@ -266,6 +266,8 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
     int npt = 0;
 
     if (iflag == 0){
+        iter = 0;
+        nfun = 0;
         nfun = 1;
         point = 0;
         finish = false;
@@ -300,7 +302,15 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
             label(iprint, iter, nfun, gnorm, n, m, x, f, g, stp, finish);            
         }
     }else if (iflag == 1){
-        mcsrch(n, x, f, g, &w[ispt + point * n], stp, ftol, xtol, maxfev, info, nfev, diag);
+        double dg = std::inner_product(g, g + n, &w[ispt + point * n], 0.0);
+        mcsrch(n, x, f, dg, &w[ispt + point * n], stp, ftol, xtol, maxfev, info, nfev, diag);
+        if (info > 1) {
+            throw std::runtime_error(" IFLAG= -1 \n LINE SEARCH FAILED.\n"
+                   "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
+                   "  ERROR RETURN OF LINE SEARCH: INFO= " + std::to_string(info) + "\n"
+                   "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
+                   "  INCORRECT OR INCORRECT TOLERANCES");
+        }    
         if (info == -1) {
             return 0;
         }
@@ -353,7 +363,15 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
         nfev = 0;
         stp = (iter == 1) ? stp1 : 1.0;
         std::copy(g, g + n, w);
-        mcsrch(n, x, f, g, &w[ispt + point * n], stp, ftol, xtol, maxfev, info, nfev, diag);
+        double dg = std::inner_product(g, g + n, &w[ispt + point * n], 0.0);
+        mcsrch(n, x, f, dg, &w[ispt + point * n], stp, ftol, xtol, maxfev, info, nfev, diag);
+        if (info > 1) {
+            throw std::runtime_error(" IFLAG= -1 \n LINE SEARCH FAILED.\n"
+                   "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
+                   "  ERROR RETURN OF LINE SEARCH: INFO= " + std::to_string(info) + "\n"
+                   "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
+                   "  INCORRECT OR INCORRECT TOLERANCES");
+        }
         if (info == -1) {
             iflag = 1;
             return 0;

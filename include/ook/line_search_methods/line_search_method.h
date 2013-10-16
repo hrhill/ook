@@ -151,9 +151,6 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         // Get descent direction and set up line search procedure.
         X p = Scheme::descent_direction(s);
         real_type dfx_dot_p = detail::inner_product(s.dfx, p);
-        dfx_dot_p = std::min(dfx_dot_p, std::numeric_limits<real_type>::max());
-        dfx_dot_p = std::max(dfx_dot_p, std::numeric_limits<real_type>::lowest());
-
         // do line search
         uint nfev = 0;        
         s.a = 1.0;
@@ -162,10 +159,6 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
             ++nfev;
             fcaller_type::call(objective_function, x + a * p, s);
             dfx_dot_p = detail::inner_product(s.dfx, p);
-            s.fx = std::min(s.fx, std::numeric_limits<real_type>::max());
-            s.fx = std::max(s.fx, std::numeric_limits<real_type>::lowest());
-            dfx_dot_p = std::min(dfx_dot_p, std::numeric_limits<real_type>::max());
-            dfx_dot_p = std::max(dfx_dot_p, std::numeric_limits<real_type>::lowest());
             return std::make_pair(s.fx, dfx_dot_p);
         };
 
@@ -173,9 +166,9 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         const real_type fxk = s.fx;
         std::tie(msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
-        if (msg != ook::message::convergence){
-            break;
-        }
+        //if (msg != ook::message::convergence){
+        //    break;
+        //}
         dx = s.a * p;
         x += dx;
         nfev_total += nfev;
