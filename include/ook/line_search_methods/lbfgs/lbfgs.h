@@ -305,11 +305,13 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
         double dg = std::inner_product(g, g + n, &w[ispt + point * n], 0.0);
         mcsrch(n, x, f, dg, &w[ispt + point * n], stp, ftol, xtol, maxfev, info, nfev, diag);
         if (info > 1) {
-            throw std::runtime_error(" IFLAG= -1 \n LINE SEARCH FAILED.\n"
-                   "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
-                   "  ERROR RETURN OF LINE SEARCH: INFO= " + std::to_string(info) + "\n"
-                   "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
-                   "  INCORRECT OR INCORRECT TOLERANCES");
+            std::cout << " IFLAG= -1 \n LINE SEARCH FAILED.\n"
+                         "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
+                         "  ERROR RETURN OF LINE SEARCH: INFO= " 
+                      << std::to_string(info)
+                      << "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
+                         "  INCORRECT OR INCORRECT TOLERANCES\n";        
+            iflag = -1;
         }    
         if (info == -1) {
             return 0;
@@ -366,11 +368,13 @@ int lbfgs(int n, int m, T *x, T f, T *g, bool diagco, T *diag, int *iprint, T ep
         double dg = std::inner_product(g, g + n, &w[ispt + point * n], 0.0);
         mcsrch(n, x, f, dg, &w[ispt + point * n], stp, ftol, xtol, maxfev, info, nfev, diag);
         if (info > 1) {
-            throw std::runtime_error(" IFLAG= -1 \n LINE SEARCH FAILED.\n"
-                   "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
-                   "  ERROR RETURN OF LINE SEARCH: INFO= " + std::to_string(info) + "\n"
-                   "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
-                   "  INCORRECT OR INCORRECT TOLERANCES");
+            std::cout << " IFLAG= -1 \n LINE SEARCH FAILED.\n"
+                         "  SEE DOCUMENTATION OF ROUTINE MCSRCH\n "
+                         "  ERROR RETURN OF LINE SEARCH: INFO= " 
+                      << std::to_string(info)
+                      << "  POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE "
+                         "  INCORRECT OR INCORRECT TOLERANCES\n";        
+            iflag = -1;
         }
         if (info == -1) {
             iflag = 1;

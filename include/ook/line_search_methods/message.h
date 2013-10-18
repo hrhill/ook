@@ -15,7 +15,9 @@ enum class message{
     warning_stp_eq_stpmin,
     warning_max_line_search_attempts_reached,
     convergence,
-    search_direction_is_not_a_descent_direction
+    search_direction_is_not_a_descent_direction,
+    error_step_less_than_stpmin,
+    error_step_greater_than_stpmax
 };
 
 const char* message_string[] = {"start",
@@ -26,7 +28,10 @@ const char* message_string[] = {"start",
     "warning_stp_eq_stpmin",
     "warning_max_line_search_attempts_reached",
     "convergence",
-    "search_direction_is_not_a_descent_direction"}; 
+    "search_direction_is_not_a_descent_direction",
+    "error_step_less_than_stpmin",
+    "error_step_greater_than_stpmax"
+}; 
 
 std::ostream&
 operator<<(std::ostream& os, const message& tv)

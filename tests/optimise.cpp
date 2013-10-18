@@ -96,7 +96,7 @@ test_gradient_based_optimisers()
 {
     typedef typename Function::vector_type vector_type;
 
-    /*
+
     std::cout << "steepest_descent" << std::endl;
     run_gradient_based_optimiser(Function(), 
             ook::steepest_descent<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
@@ -104,14 +104,11 @@ test_gradient_based_optimisers()
     run_gradient_based_optimiser(Function(), 
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
     std::cout << "lbfgs" << std::endl;
-    */        
     run_gradient_based_optimiser(Function(), 
             ook::lbfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
-
     std::cout << "bfgs" << std::endl;        
     run_gradient_based_optimiser(Function(), 
             ook::bfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
-
     return 0;
 }
 

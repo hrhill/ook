@@ -49,8 +49,10 @@ BOOST_AUTO_TEST_CASE(constant_check){
                     };
 
     std::tie(phi0, dphi0) = phi(0.0);    
+    std::tie(phix, dphix) = phi(1.0);        
 
     auto soln = ook::line_search::more_thuente(phi, phi0, dphi0, stp0, opts);       
+
     std::cout << phix << std::endl;
     std::cout << dphix << std::endl;
     std::cout << std::get<0>(soln) << std::endl;
