@@ -166,9 +166,9 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         const real_type fxk = s.fx;
         std::tie(msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
-        //if (msg != ook::message::convergence){
-        //    break;
-        //}
+        if (msg != ook::message::convergence){
+            break;
+        }
         dx = s.a * p;
         x += dx;
         nfev_total += nfev;

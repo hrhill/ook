@@ -19,7 +19,7 @@
 #include "ook/options.h"
 #include "ook/line_search_methods/more_thuente/more_thuente.h"
 #include "ook/test_functions/line_search_functions.h"
-
+/*
 template <typename ObjectiveFunction, typename Options>
 void
 do_search(ObjectiveFunction obj, const double stp0, const Options& opts)
@@ -100,4 +100,19 @@ int main(int argc, char** argv){
         do_search(objective_function, stp0, opts);
     }
     return 0;
+}
+*/
+
+BOOST_AUTO_TEST_CASE(safe_guarded_value)
+{
+    const double a0 = 0.0;
+    double a = 1.0;
+    const double amax = 5.0;
+    const double delta = 1.1;
+    while(true){
+        a = ook::line_search::safeguarded(a, a0, delta, amax);
+        if (a >= amax)
+            break;
+    }
+    BOOST_CHECK_CLOSE(a, amax, 0.01);
 }

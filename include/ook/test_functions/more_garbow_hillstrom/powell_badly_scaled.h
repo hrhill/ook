@@ -47,7 +47,7 @@ struct powell_badly_scaled
 
         d2f(0, 0) = 2 * df1x1 * df1x1 + 2 * f1 * d2f1x1 + 2 * df2x1 * df2x1 + 2 * f2 * d2f2x1;
         d2f(1, 1) = 2 * df1x2 * df1x2 + 2 * f1 * d2f1x2 + 2 * df2x2 * df2x2 + 2 * f2 * d2f2x2;
-        d2f(0, 1) = d2f(1, 0) = 2 * df1x1 * df1x2 + + 2 * f1 * d2f1x1x2 + 2 * df2x2 * df2x2 + 2 * f2 * d2f2x1x2;
+        d2f(0, 1) = d2f(1, 0) = 2 * df1x1 * df1x2 + + 2 * f1 * d2f1x1x2 + 2 * df2x1 * df2x2 + 2 * f2 * d2f2x1x2;
 
         return std::make_tuple(f, df, d2f);
     }
@@ -80,7 +80,6 @@ powell_badly_scaled<Vector, Matrix>::local_minima = {1.098159e-05,9.106147};
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
 powell_badly_scaled<Vector, Matrix>::x0 = {0.0,  1.0};
-
 
 } // ns test_functions
 } // ns ook

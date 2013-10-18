@@ -37,18 +37,17 @@ struct more_thuente_searcher{
     {
         const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
         const bool curvature = curvature_condition(g0, g, opts.gtol);
-
         /*     Test for warnings. */
         if (brackt && (stp <= stmin || stp >= stmax)) {
             return std::make_pair(message::warning_rounding_error_prevents_progress, stp);
         }
-        if (brackt && stmax - stmin <= opts.xtol * stmax) {
+        if (brackt && (stmax - stmin <= opts.xtol * stmax)) {
             return std::make_pair(message::warning_xtol_satisfied, stp);        
         }
-        if (stp == opts.stpmax && sufficient_decrease && curvature) {
+        if (stp >= opts.stpmax && sufficient_decrease && curvature) {
             return std::make_pair(message::warning_stp_eq_stpmax, stp);
         }
-        if (stp == opts.stpmin && (!sufficient_decrease || !curvature)) {
+        if (stp <= opts.stpmin && (!sufficient_decrease || !curvature)) {
             return std::make_pair(message::warning_stp_eq_stpmin, stp);
         }
         if (stage == 1 && sufficient_decrease && g >= T(0.0)){
