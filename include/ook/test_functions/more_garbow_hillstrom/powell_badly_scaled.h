@@ -23,9 +23,10 @@ struct powell_badly_scaled
         const real_type e1 = exp(-x1);
         const real_type e2 = exp(-x2);
 
-        const real_type a = 1e04;
-        const real_type f1 = a * x1 * x2 - 1;
-        const real_type f2 = e1 + e2 - 1.0001;
+        const real_type a = 1e4;
+        const real_type b = 1.0001;
+        const real_type f1 = a * x1 * x2  - 1.0;
+        const real_type f2 = e1 + e2 - b;
 
         const real_type f = f1 * f1 + f2 * f2;
         vector_type df(2, 0.0);
@@ -36,18 +37,18 @@ struct powell_badly_scaled
         const real_type df2x1 = -e1;
         const real_type df2x2 = -e2;
 
-        const real_type d2f1x1 = 0;
-        const real_type d2f1x2 = 0;
+        const real_type d2f1x1 = 0.0;
+        const real_type d2f1x2 = 0.0;
         const real_type d2f1x1x2 = a;
         const real_type d2f2x1 = e1;
         const real_type d2f2x2 = e2;
-        const real_type d2f2x1x2 = 0;
-        df(0) = 2 * f1 * df1x1 + 2 * f2 * df2x1;
-        df(1) = 2 * f1 * df1x2 + 2 * f2 * df2x2;
+        const real_type d2f2x1x2 = 0.0;
+        df(0) = 2.0 * f1 * df1x1 + 2.0 * f2 * df2x1;
+        df(1) = 2.0 * f1 * df1x2 + 2.0 * f2 * df2x2;
 
-        d2f(0, 0) = 2 * df1x1 * df1x1 + 2 * f1 * d2f1x1 + 2 * df2x1 * df2x1 + 2 * f2 * d2f2x1;
-        d2f(1, 1) = 2 * df1x2 * df1x2 + 2 * f1 * d2f1x2 + 2 * df2x2 * df2x2 + 2 * f2 * d2f2x2;
-        d2f(0, 1) = d2f(1, 0) = 2 * df1x1 * df1x2 + + 2 * f1 * d2f1x1x2 + 2 * df2x1 * df2x2 + 2 * f2 * d2f2x1x2;
+        d2f(0, 0) = 2.0 * df1x1 * df1x1 + 2.0 * f1 * d2f1x1 + 2.0 * df2x1 * df2x1 + 2.0 * f2 * d2f2x1;
+        d2f(1, 1) = 2.0 * df1x2 * df1x2 + 2.0 * f1 * d2f1x2 + 2.0 * df2x2 * df2x2 + 2.0 * f2 * d2f2x2;
+        d2f(0, 1) = d2f(1, 0) = 2.0 * df1x1 * df1x2 + + 2.0 * f1 * d2f1x1x2 + 2.0 * df2x1 * df2x2 + 2.0 * f2 * d2f2x1x2;
 
         return std::make_tuple(f, df, d2f);
     }
@@ -67,19 +68,19 @@ powell_badly_scaled<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
 typename Vector::value_type
-powell_badly_scaled<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+powell_badly_scaled<Vector, Matrix>::tolerance = 1e-13;
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_badly_scaled<Vector, Matrix>::minima = {1.098159e-05,9.106147};
+powell_badly_scaled<Vector, Matrix>::minima = {1.09815933e-05, 9.10614738};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_badly_scaled<Vector, Matrix>::local_minima = {1.098159e-05,9.106147};
+powell_badly_scaled<Vector, Matrix>::local_minima = {1.09815933e-05, 9.10614738};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-powell_badly_scaled<Vector, Matrix>::x0 = {0.0,  1.0};
+powell_badly_scaled<Vector, Matrix>::x0 = {0.0, 1.0};
 
 } // ns test_functions
 } // ns ook

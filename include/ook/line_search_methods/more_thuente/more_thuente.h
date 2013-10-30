@@ -98,12 +98,16 @@ more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts)
 
         if (a <= opts.stpmin){
             a = opts.stpmin;
-            msg = message::error_step_less_than_stpmin;
+            std::tie(phia, dphia) = phi(a);
+            msg = message::convergence;            
+            //msg = message::error_step_less_than_stpmin;
             break;
         }
         if (a >= opts.stpmax){
             a = opts.stpmax;
-            msg = message::error_step_greater_than_stpmax;
+            std::tie(phia, dphia) = phi(a);        
+            msg = message::convergence;            
+            //msg = message::error_step_greater_than_stpmax;
             break;            
         }
 
