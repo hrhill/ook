@@ -3,6 +3,7 @@
 #include <string>
 #include <limits>
 #include <random>
+#include <iomanip>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -26,12 +27,10 @@ using namespace ook::test_functions;
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
 rosenbrock<V, M>,
-freudenstein_roth<V, M>,
-powell_badly_scaled<V, M>
+freudenstein_roth<V, M>//,
+//powell_badly_scaled<V, M>
 >;
-/*
 
-*/
 typedef test_function_types<boost::numeric::ublas::vector<double>,
                             boost::numeric::ublas::matrix<double>> ublas_function_types;
 
@@ -64,8 +63,8 @@ test_function_specification()
     matrix_type d2f(test_function::n, test_function::n);
     std::tie(f_min, df, d2f) = objective_function(minima);
 
-    BOOST_CHECK_CLOSE(f_min, test_function::f_min, test_function::tolerance);
-    BOOST_CHECK_SMALL(ook::norm_infinity(df), test_function::tolerance);    
+    BOOST_CHECK(abs(f_min - test_function::f_min) <= test_function::tolerance);
+    BOOST_CHECK(ook::norm_infinity(df) <= test_function::tolerance);    
     return 0;
 }
 
