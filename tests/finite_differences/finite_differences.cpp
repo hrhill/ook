@@ -93,8 +93,8 @@ int checker(F f, G g, int dim){
 		auto dfh = FD::gradient(g, x);
 
 		/// Terrible hacks to 
-		//typedef hessian_picker<FD> hp;
-		//auto d2fh = hp::call(g, x, H);
+		typedef hessian_picker<FD> hp;
+		auto d2fh = hp::call(g, x, H);
 		//auto d2fh = forward_difference::hessian<G, vector_t, matrix_t>(g, x);
 
 		// Evaluate true gradient.
@@ -102,8 +102,8 @@ int checker(F f, G g, int dim){
 
 		// Generate a course upper bound for gradient error
 		const double grad_error_bound = 0.1;
-		//const double hess_error_bound = 1;
-		//BOOST_REQUIRE_SMALL(static_cast<double>(ublas::norm_inf(H - std::get<1>(d2fh))), hess_error_bound);
+		const double hess_error_bound = 1;
+		BOOST_REQUIRE_SMALL(static_cast<double>(ublas::norm_inf(H - std::get<1>(d2fh))), hess_error_bound);
 		BOOST_REQUIRE_SMALL(ublas::norm_inf(df - std::get<1>(dfh)), grad_error_bound);
 	}
 	return 0;
@@ -119,8 +119,5 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(finite_difference_checker, G, test_types){
 	BOOST_CHECK_EQUAL(checker<G>(rosenbrock, rosenbrock_f, 2), 0);
     BOOST_CHECK_EQUAL(checker<G>(symmetrical_gaussian, symmetrical_gaussian_f, 2), 0);
 	BOOST_CHECK_EQUAL(checker<G>(paraboloid, paraboloid_f, 4), 0);
-
-	// Possibly something wrong with this function
-	//BOOST_CHECK_EQUAL(checker<G>(powells_singular, 4), 0);
 }
 
