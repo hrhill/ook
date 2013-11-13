@@ -17,7 +17,7 @@ struct backward_difference{
 	template <typename F, typename X>
 	static	
 	std::tuple<typename X::value_type, X>
-	gradient(F f, const X& x);
+	gradient(F f, X x);
 
 	/// \brief Calculate the backward difference approximation to the hessian of f.
 	template <typename F, typename X, typename M>
@@ -28,17 +28,16 @@ struct backward_difference{
 
 template <typename F, typename X>
 std::tuple<typename X::value_type, X>
-backward_difference::gradient(F f, const X& x)
+backward_difference::gradient(F f, X x)
 {
 	typedef typename X::value_type value_type;
 	typedef typename X::size_type size_type;
 
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x)
-	size_type n = x.size();
-	std::vector<X> sample_points(n + 1);
+	const size_type n = std::distance(x.begin(), x.end());	
 	const value_type hmin(sqrt(std::numeric_limits<value_type>::epsilon()));
-	X x_(x);
+	std::vector<X> sample_points(n + 1);	
 	X h(n);
 
 	for (size_type i = 0; i < n; ++i)
@@ -46,9 +45,9 @@ backward_difference::gradient(F f, const X& x)
 		const value_type xi = x[i];
 		const value_type hx = hmin * (1 + fabs(xi));
 		h[i] = hx;
-		x_[i] = xi - hx;
-		sample_points[i] = x_;
-		x_[i] = xi;
+		x[i] = xi - hx;
+		sample_points[i] = x;
+		x[i] = xi;
 	}
 	sample_points[n] = x;
 
@@ -75,18 +74,18 @@ backward_difference::hessian(F f, const X& x)
 	const double eps = std::numeric_limits<value_type>::epsilon();
 	auto hmin(std::pow(eps, 1.0/3.0));
 
-	const size_type dim = x.size();
+	const size_type n = std::distance(x.begin(), x.end());
 
 	X xi(x);
 	X xj(x);
 
 	const value_type fx = f(x);
-	M H(dim, dim);
+	M H(n, n);
 #pragma omp parallel for default(none)\
 		shared(H, hmin, x)\
 		firstprivate(xi, xj, f)
 
-	for (size_type i = 0; i < dim; ++i){
+	for (size_type i = 0; i < n; ++i){
 		const value_type xii = xi[i];
 		const value_type hi = hmin * (1 + fabs(xii));
 

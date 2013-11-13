@@ -17,7 +17,7 @@ struct central_difference{
 	template <typename F, typename X>
 	static 
 	std::tuple<typename X::value_type, X>
-	gradient(F f, const X& x);
+	gradient(F f, X x);
 
 	/// \brief Calculate the central difference approximation to the hessian of f.
 	template <typename F, typename X, typename M>
@@ -28,17 +28,17 @@ struct central_difference{
 
 template <typename F, typename X>
 std::tuple<typename X::value_type, X>
-central_difference::gradient(F f, const X& x)
+central_difference::gradient(F f, X x)
 {
 	typedef typename X::value_type value_type;
 	typedef typename X::size_type size_type;
 
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x+he_n, x-he_1,..., x-he_n, x)
-	size_type n = x.size();
-	std::vector<X> sample_points(2 * n + 1);
+	const size_type n = std::distance(x.begin(), x.end());
 	const value_type hmin(sqrt(std::numeric_limits<value_type>::epsilon()));
-	X x_(x);
+
+	std::vector<X> sample_points(2 * n + 1);
 	X h(n);
 
 	for (size_type i = 0; i < n; ++i)
@@ -47,12 +47,12 @@ central_difference::gradient(F f, const X& x)
 		const value_type hx = hmin * (1 + fabs(xi));
 		h[i] = hx;
 
-		x_[i] = xi + hx;
-		sample_points[i] = x_;
-		x_[i] = xi - hx;
-		sample_points[i+n] = x_;
+		x[i] = xi + hx;
+		sample_points[i] = x;
+		x[i] = xi - hx;
+		sample_points[i+n] = x;
 		
-		x_[i] = xi;
+		x[i] = xi;
 	}
 	sample_points[2 * n] = x;
 	// evaluate function at each point
@@ -79,12 +79,12 @@ central_difference::hessian(F f, const X& x)
 	const double eps = std::numeric_limits<value_type>::epsilon();
 	auto hmin(std::pow(eps, 1.0/3.0));
 
-	const size_type dim = x.size();
+	const size_type n = std::distance(x.begin(), x.end());
 	const value_type fx = f(x);
 
 	X local_x(x);
-	M H(dim, dim);
-	for (size_type i = 0; i < dim; ++i){
+	M H(n, n);
+	for (size_type i = 0; i < n; ++i){
 		// Work out diagonal term first
 
 		const value_type hi = hmin * (1.0 + fabs(local_x[i]));
