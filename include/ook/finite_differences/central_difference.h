@@ -15,13 +15,13 @@ namespace finite_differences{
 struct central_difference{
 	/// \brief Calculate the central difference approximation to the gradient of f.
 	template <typename F, typename X>
-	static 
+	static
 	std::tuple<typename X::value_type, X>
 	gradient(F f, X x);
 
 	/// \brief Calculate the central difference approximation to the hessian of f.
 	template <typename F, typename X, typename M>
-	static 
+	static
 	std::tuple<typename X::value_type, M>
 	hessian(F f, const X& x);
 };
@@ -51,17 +51,17 @@ central_difference::gradient(F f, X x)
 		sample_points[i] = x;
 		x[i] = xi - hx;
 		sample_points[i+n] = x;
-		
+
 		x[i] = xi;
 	}
 	sample_points[2 * n] = x;
 	// evaluate function at each point
 	std::vector<value_type> function_values(sample_points.size());
-	ook::finite_differences::detail::transform(sample_points.begin(), sample_points.end(), function_values.begin(), f);
+	detail::transform(sample_points.begin(), sample_points.end(), function_values.begin(), f);
 
 	// assemble
 	X df(n);
-	const value_type fx = function_values[2 * n];	
+	const value_type fx = function_values[2 * n];
 	for (size_type i = 0; i < n; ++i){
 		df[i] = (function_values[i] - function_values[i + n]) / (2.0 * h[i]);
 	}

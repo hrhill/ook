@@ -54,7 +54,7 @@ forward_difference::gradient(F f, X x)
 
 	// evaluate function at each point
 	std::vector<value_type> function_values(sample_points.size());
-	ook::finite_differences::detail::transform(sample_points.begin(), sample_points.end(), function_values.begin(), f);
+	detail::transform(sample_points.begin(), sample_points.end(), function_values.begin(), f);
 
 	// assemble
 	X df(n);
