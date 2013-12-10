@@ -10,7 +10,7 @@ include(CTest)
 
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${OOK_SOURCE_DIR}/modules/")
-set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=gnu++0x")
+set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=gnu++0x -D__STRICT_ANSI__ -fopenmp")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.50 COMPONENTS test_exec_monitor program_options REQUIRED)
@@ -18,7 +18,11 @@ find_package(Doxygen)
 find_package(OpenMP)
 find_package(ATLAS)
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include" ${ATLAS_INCLUDE_DIR})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
+                    "/usr/local/include/c++/4.8"
+                    "/usr/local/include/c++/4.8/x86_64-unknown-linux-gnu"
+                    "/home/harry/builds/gcc_build/x86_64-unknown-linux-gnu/libgomp"
+                     ${ATLAS_INCLUDE_DIR})
 add_subdirectory(examples)
 add_subdirectory(benchmarks)
 add_subdirectory(tests)
