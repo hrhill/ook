@@ -82,10 +82,6 @@ forward_difference::hessian(F f, const X& x)
 	const value_type fx = f(x);
 	M H(n, n);
 
-#pragma omp parallel for default(none)\
-	shared(H, hmin, x)\
-	firstprivate(xi, xj, f)
-
 	for (size_type i = 0; i < n; ++i){
 	    const value_type xii = xi[i];
 	    const value_type hi = hmin * (1 + fabs(xii));
@@ -106,7 +102,6 @@ forward_difference::hessian(F f, const X& x)
 		    xj[i] += hi;
 		    const value_type fxij = f(xj);
 
-#pragma omp critical
 		    H(i, j) = H(j, i) = (fxij - fxi - fxj + fx)/(hi * hj);
 
 		    xj[i] = xii;
