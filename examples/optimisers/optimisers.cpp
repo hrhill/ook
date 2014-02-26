@@ -14,14 +14,14 @@
 
 #include "ook/norms.h"
 #include "ook/options.h"
-#include "ook/line_search_methods/message.h"
+#include "ook/message.h"
 
 #include "ook/test_functions/more_garbow_hillstrom/rosenbrock.h"
 
-#include "ook/line_search_methods/steepest_descent.h"
-#include "ook/line_search_methods/fletcher_reeves.h"
-#include "ook/line_search_methods/bfgs.h"
-#include "ook/line_search_methods/newton.h"
+#include "ook/steepest_descent.h"
+#include "ook/fletcher_reeves.h"
+#include "ook/bfgs.h"
+#include "ook/newton.h"
 
 namespace ublas = boost::numeric::ublas;
 typedef ublas::vector<double> vector_t;
@@ -51,7 +51,7 @@ gradient_only_wrapper{
 
 int main(){
 
-    const double epsilon = std::numeric_limits<double>::epsilon();    
+    const double epsilon = std::numeric_limits<double>::epsilon();
     ook::options opts{1e-03, 9e-01, epsilon, 0.0, 4.0 * std::max(1.0, 1e-03)};
 
     typedef ook::test_functions::rosenbrock<vector_t, matrix_t> test_function;

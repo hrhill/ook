@@ -2,7 +2,7 @@
 #define MCSTEP_H_
 
 #include <stdexcept>
-#include "../more_thuente/safe_step.h"
+#include "../line_search/more_thuente/safe_step.h"
 
 template <typename T>
 T
@@ -60,7 +60,7 @@ mcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, T stp, const T& fp, const T& 
     /*     ELSE THE AVERAGE OF THE CUBIC AND QUADRATIC STEPS IS TAKEN. */
     if (fp > fx) {
         std::tie(stpf, brackt) = ook::line_search::case1(fx, dx, stx, fp, dp, stp);
-        bound = true;        
+        bound = true;
         //brackt = true;
     /*     SECOND CASE. A LOWER FUNCTION VALUE AND DERIVATIVES OF */
     /*     OPPOSITE SIGN. THE MINIMUM IS BRACKETED. IF THE CUBIC */
@@ -79,7 +79,7 @@ mcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, T stp, const T& fp, const T& 
     /*     CLOSEST TO STX IS TAKEN, ELSE THE STEP FARTHEST AWAY IS TAKEN. */
     } else if (fabs(dp) < fabs(dx)) {
         bound = true;
-        stpf = ook::line_search::case3(stx, fx, dx, sty, fy, dy, stp, fp, dp, brackt, stpmin, stpmax);        
+        stpf = ook::line_search::case3(stx, fx, dx, sty, fy, dy, stp, fp, dp, brackt, stpmin, stpmax);
     /*     FOURTH CASE. A LOWER FUNCTION VALUE, DERIVATIVES OF THE */
     /*     SAME SIGN, AND THE MAGNITUDE OF THE DERIVATIVE DOES */
     /*     NOT DECREASE. IF THE MINIMUM IS NOT BRACKETED, THE STEP */

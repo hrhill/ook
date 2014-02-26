@@ -1,7 +1,7 @@
 #ifndef OOK_LINE_SEARCH_METHODS_LBFGS_H_
 #define OOK_LINE_SEARCH_METHODS_LBFGS_H_
 
-#include "ook/line_search_methods/lbfgs/lbfgs.h"
+#include "ook/lbfgs/lbfgs.h"
 
 namespace ook{
 
@@ -39,8 +39,8 @@ lbfgs(F objective_function, X x, const Options& opts, Stream& stream)
         }
     }
     return std::make_tuple(ook::message::convergence, x);
-} 
+}
 
 } // ns ook
 
-#endif 
+#endif
