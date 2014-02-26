@@ -1,7 +1,7 @@
 #ifndef MCSRCH_H_
 #define MCSRCH_H_
 
-#include "../more_thuente/safe_step.h"
+#include "../line_search/more_thuente/safe_step.h"
 
 struct lb3_1_ {
     int mp, lp;
@@ -246,7 +246,7 @@ int mcsrch(int n, T *x, T f, T dg, T *s, T& stp, T ftol, T xtol, int maxfev, int
             width1 = width;
             width = fabs(sty - stx);
         }
-        
+
     }
 }
 
