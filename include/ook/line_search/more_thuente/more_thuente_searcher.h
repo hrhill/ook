@@ -4,7 +4,7 @@
 #include <cmath>
 #include <tuple>
 
-#include "ook/line_search_methods/message.h"
+#include "ook/message.h"
 
 #include "line_search_conditions.h"
 #include "safe_step.h"
@@ -18,11 +18,11 @@ struct more_thuente_searcher{
 
     more_thuente_searcher(T f0_, T g0_, T stp, T width0, const Options& opts_)
     :
-        f0(f0_), g0(g0_), 
-        xtrapl(1.1), xtrapu(4.0), 
+        f0(f0_), g0(g0_),
+        xtrapl(1.1), xtrapu(4.0),
         brackt(false), stage(1), width(width0),
-        width1(2.0 * width0), 
-        stx(0), fx(f0), gx(g0), 
+        width1(2.0 * width0),
+        stx(0), fx(f0), gx(g0),
         sty(0), fy(0), gy(0),
         stmin(0), stmax(stp + xtrapu * stp),
         opts(opts_)
@@ -42,7 +42,7 @@ struct more_thuente_searcher{
             return std::make_pair(message::warning_rounding_error_prevents_progress, stp);
         }
         if (brackt && (stmax - stmin <= opts.xtol * stmax)) {
-            return std::make_pair(message::warning_xtol_satisfied, stp);        
+            return std::make_pair(message::warning_xtol_satisfied, stp);
         }
         if (stp >= opts.stpmax && sufficient_decrease && curvature) {
             return std::make_pair(message::warning_stp_eq_stpmax, stp);
@@ -52,20 +52,20 @@ struct more_thuente_searcher{
         }
         if (stage == 1 && sufficient_decrease && g >= T(0.0)){
             stage = 2;
-        }        
+        }
         /* A modified function is used to predict the step during the
         first stage if a lower function value has been obtained but
         the decrease is not sufficient. */
         if (stage == 1 && f <= fx && !sufficient_decrease) {
-            // Define the modified function and derivative values. 
-            const T gtest = opts.ftol * g0;                
+            // Define the modified function and derivative values.
+            const T gtest = opts.ftol * g0;
             const T fm = f - stp * gtest;
             T fxm = fx - stx * gtest;
             T fym = fy - sty * gtest;
             const T gm = g - gtest;
             T gxm = gx - gtest;
             T gym = gy - gtest;
-            // Call safe_step to update stx, sty, and to compute the new step. 
+            // Call safe_step to update stx, sty, and to compute the new step.
             stp = safe_step(stx, fxm, gxm, sty, fym, gym, stp, fm, gm, brackt, stmin, stmax);
             // Reset the function and derivative values for f.
             fx = fxm + stx * gtest;
@@ -76,7 +76,7 @@ struct more_thuente_searcher{
             // Call safe_step to update stx, sty, and to compute the new step.
             stp = safe_step(stx, fx, gx, sty, fy, gy, stp, f, g, brackt, stmin, stmax);
         }
-        // Decide if a bisection step is needed. 
+        // Decide if a bisection step is needed.
         if (brackt) {
             if (fabs(sty - stx) >= T(0.66) * width1) {
                 stp = stx + T(0.5) * (sty - stx);
@@ -99,21 +99,21 @@ struct more_thuente_searcher{
         {
             stp = stx;
         }
-        return std::make_pair(message::update, stp);        
+        return std::make_pair(message::update, stp);
     }
 
     const T f0;
     const T g0;
-    const T xtrapl;    
+    const T xtrapl;
     const T xtrapu;
-    bool brackt;    
-    int stage;    
+    bool brackt;
+    int stage;
     T width;
     T width1;
-    T stx;    
+    T stx;
     T fx;
     T gx;
-    T sty;    
+    T sty;
     T fy;
     T gy;
     T stmin;

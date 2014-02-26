@@ -6,9 +6,9 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include "ook/norms.h"
-#include "ook/line_search_methods/message.h"
+#include "ook/message.h"
 
-#include "ook/line_search_methods/more_thuente/more_thuente.h"
+#include "ook/line_search/more_thuente/more_thuente.h"
 
 namespace ook{
 
@@ -129,8 +129,6 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
     const real_type epsilon = std::numeric_limits<real_type>::epsilon();
     const real_type dx_eps = sqrt(epsilon);
     const real_type df_eps = exp(log(epsilon)/3);
-    //const real_type fx_max = std::numeric_limits<real_type>::max();
-    //const real_type fx_min = std::numeric_limits<real_type>::min();
 
     state_type s = Scheme::initialise(objective_function, x);
     X dx(x.size());

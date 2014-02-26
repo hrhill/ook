@@ -13,9 +13,8 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/line_search_methods/more_thuente/more_thuente.h"
+#include "ook/line_search/more_thuente/more_thuente.h"
 #include "ook/options.h"
-
 
 std::tuple<double, double>
 constant(double x){

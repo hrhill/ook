@@ -3,7 +3,7 @@
 
 #include <tuple>
 
-#include "ook/line_search_methods/message.h"
+#include "ook/message.h"
 
 #include "line_search_conditions.h"
 #include "more_thuente_searcher.h"
@@ -48,7 +48,7 @@ more_thuente_v2(F phi, T phi0, T dphi0, T a, const Options& opts)
 
     T phia, dphia, phial, dphial;
     do{
-        std::tie(phia, dphia) = phi(a);        
+        std::tie(phia, dphia) = phi(a);
 
         if(strong_wolfe_conditions(phi0, phia, dphi0, dphia, a, opts.ftol, opts.gtol))
         {
@@ -99,16 +99,16 @@ more_thuente(F phi, T phi0, T dphi0, T a, const Options& opts)
         if (a <= opts.stpmin){
             a = opts.stpmin;
             std::tie(phia, dphia) = phi(a);
-            msg = message::convergence;            
+            msg = message::convergence;
             //msg = message::error_step_less_than_stpmin;
             break;
         }
         if (a >= opts.stpmax){
             a = opts.stpmax;
-            std::tie(phia, dphia) = phi(a);        
-            msg = message::convergence;            
+            std::tie(phia, dphia) = phi(a);
+            msg = message::convergence;
             //msg = message::error_step_greater_than_stpmax;
-            break;            
+            break;
         }
 
         std::tie(phia, dphia) = phi(a);

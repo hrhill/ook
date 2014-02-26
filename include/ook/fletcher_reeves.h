@@ -4,7 +4,7 @@
 #include <tuple>
 #include <algorithm>
 
-#include "ook/line_search_methods/line_search_method.h"
+#include "ook/line_search_method.h"
 
 namespace ook{
 
@@ -16,7 +16,7 @@ template <typename X>
 struct fletcher_reeves{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef state<X> state_type;    
+    typedef state<X> state_type;
 
     template <typename F>
     static
@@ -28,7 +28,7 @@ struct fletcher_reeves{
         s.dfx0 = s.dfx;
         return s;
     }
-    
+
     static
     vector_type
     descent_direction(state_type& s)
