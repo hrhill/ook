@@ -24,7 +24,7 @@ void pretty_print(matrix_t m){
 
 int main(){
 
-    std::cout << 
+    std::cout <<
         "\nThis is code to check that the implementation of gmw81\n"
         "gives the same numbers as the example on page 111 of\n"
         "\"Practical Optimization\" by Gill, Murray and Wright, which takes\n"
@@ -36,10 +36,10 @@ int main(){
 
     const int n = 3;
     matrix_t G(n, n);
-    matrix_t L(n, n);    
+    matrix_t L(n, n);
     matrix_t D(n, n);
 
-    G <<= 1.0, 1.0,         2.0, 
+    G <<= 1.0, 1.0,         2.0,
           1.0, nextafter(1.0, 2), 3.0,
           2.0, 3.0,         1.0;
 
@@ -54,8 +54,8 @@ int main(){
 
     std::cout << "L = \n";
     pretty_print(L);
-    std::cout << "D = \n";    
-    pretty_print(D);    
+    std::cout << "D = \n";
+    pretty_print(D);
 
     std::cout << "Output from gmw81\n";
     matrix_t LD = ook::factorisations::gmw81(G);
@@ -64,9 +64,9 @@ int main(){
         d(i, i) = LD(i, i);
         LD(i, i) = 1.0;
     }
-    std::cout << "L = \n";    
+    std::cout << "L = \n";
     pretty_print(LD);
-    std::cout << "D = \n";    
+    std::cout << "D = \n";
     pretty_print(d);
 }
 

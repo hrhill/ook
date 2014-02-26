@@ -13,7 +13,7 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include "ook/line_search_methods/line_search_method.h"
+#include "ook/line_search_method.h"
 #include "ook/factorisations/gmw81.h"
 
 namespace ook{
@@ -42,7 +42,7 @@ solve(Matrix A, const Vector& b)
     Matrix LD = ook::factorisations::gmw81(A);
     Matrix L = convert_to_cholesky(LD);
 
-    boost::numeric::ublas::symmetric_adaptor<Matrix, boost::numeric::ublas::lower> sa(L);    
+    boost::numeric::ublas::symmetric_adaptor<Matrix, boost::numeric::ublas::lower> sa(L);
     Matrix b1(b.size(), 1);
 
     boost::numeric::ublas::column(b1, 0) = b;
@@ -68,7 +68,7 @@ struct newton{
         std::tie(s.fx, s.dfx, s.H) = objective_function(x0);
         return s;
     }
-    
+
     static
     vector_type
     descent_direction(state_type& s)
@@ -80,7 +80,7 @@ struct newton{
     state_type
     update(state_type s){
         return s;
-    }    
+    }
 };
 
 } // ns detail
