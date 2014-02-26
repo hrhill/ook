@@ -2,7 +2,7 @@
 #define OOK_LINE_SEARCH_METHODS_STEEPEST_DESCENT_H_
 
 #include <tuple>
-#include "ook/line_search_methods/line_search_method.h"
+#include "ook/line_search_method.h"
 
 namespace ook{
 
@@ -25,7 +25,7 @@ struct steepest_descent{
         std::tie(s.fx, s.dfx) = objective_function(x0);
         return s;
     }
-    
+
     static
     vector_type
     descent_direction(state_type& s)
@@ -37,11 +37,10 @@ struct steepest_descent{
     state_type
     update(state_type s){
         return s;
-    }    
+    }
 };
 
 } // ns detail
-
 
 /// \brief The Steepest descent algorithm.
 /** \details Implementation of the Steepest descent algorithm using the generic line search function.

@@ -15,11 +15,11 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/line_search_methods/steepest_descent.h"
-#include "ook/line_search_methods/fletcher_reeves.h"
-#include "ook/line_search_methods/bfgs.h"
-#include "ook/line_search_methods/newton.h"
-#include "ook/line_search_methods/lbfgs.h"
+#include "ook/steepest_descent.h"
+#include "ook/fletcher_reeves.h"
+#include "ook/bfgs.h"
+#include "ook/newton.h"
+#include "ook/lbfgs.h"
 #include "ook/options.h"
 
 #include "ook/test_functions/more_garbow_hillstrom.h"
@@ -64,7 +64,7 @@ template <typename Function, typename Optimiser>
 void
 run_gradient_based_optimiser(Function, Optimiser optimiser)
 {
-    const double epsilon = std::numeric_limits<double>::epsilon();    
+    const double epsilon = std::numeric_limits<double>::epsilon();
     ook::options opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
 
     typedef Function test_function;
@@ -80,13 +80,13 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
     auto soln = optimiser(wrapper, x, opts, std::cout);
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
 
-    // Evaluate function at minima, check proximity 
+    // Evaluate function at minima, check proximity
     /*auto x_min = std::get<1>(soln);
     double f_min;
     vector_t df;
     std::tie(f_min, df) = wrapper(x_min);
     BOOST_CHECK(fabs(f_min - test_function::f_min) <=  1e-08);
-    BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);        
+    BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);
     */
 }
 
@@ -96,18 +96,17 @@ test_gradient_based_optimisers()
 {
     typedef typename Function::vector_type vector_type;
 
-
     std::cout << "steepest_descent" << std::endl;
-    run_gradient_based_optimiser(Function(), 
+    run_gradient_based_optimiser(Function(),
             ook::steepest_descent<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
-    std::cout << "fletcher_reeves" << std::endl;    
-    run_gradient_based_optimiser(Function(), 
+    std::cout << "fletcher_reeves" << std::endl;
+    run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
     std::cout << "lbfgs" << std::endl;
-    run_gradient_based_optimiser(Function(), 
+    run_gradient_based_optimiser(Function(),
             ook::lbfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
-    std::cout << "bfgs" << std::endl;        
-    run_gradient_based_optimiser(Function(), 
+    std::cout << "bfgs" << std::endl;
+    run_gradient_based_optimiser(Function(),
             ook::bfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
     return 0;
 }
@@ -120,7 +119,7 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
     typedef typename Function::vector_type vector_type;
     typedef typename Function::matrix_type matrix_type;
 
-    const double epsilon = std::numeric_limits<double>::epsilon();    
+    const double epsilon = std::numeric_limits<double>::epsilon();
     ook::options opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
 
     test_function objective_function;
@@ -133,7 +132,7 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
 
     auto soln = optimiser(objective_function, x, opts, std::cout);
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
-    // Evaluate function at minima, check proximity 
+    // Evaluate function at minima, check proximity
     auto x_min = std::get<1>(soln);
     double f_min;
     vector_type df(test_function::n);
@@ -141,7 +140,7 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
 
     std::tie(f_min, df, d2f) = objective_function(x_min);
     //BOOST_CHECK(fabs(f_min - test_function::f_min) <= 1e-08);
-    BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);        
+    BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);
 }
 
 template <typename Function>
@@ -149,9 +148,9 @@ int test_hessian_based_optimisers()
 {
     typedef typename Function::vector_type vector_type;
     std::cout << "newton" << std::endl;
-    run_hessian_based_optimiser(Function(), 
+    run_hessian_based_optimiser(Function(),
             ook::newton<Function, vector_type, ook::options, std::ostream>);
-    return 0;   
+    return 0;
 }
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(gradient_based_optimisers, T, ublas_function_types){
