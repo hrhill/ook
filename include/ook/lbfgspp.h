@@ -4,7 +4,7 @@
 #include <tuple>
 #include <boost/numeric/ublas/matrix.hpp>
 
-#include "ook/line_search_methods/line_search_method.h"
+#include "ook/line_search_method.h"
 
 namespace ook{
 
@@ -28,7 +28,7 @@ struct lbfgspp{
         s.dfx0 = s.dfx;
         return s;
     }
-    
+
     static
     vector_type
     descent_direction(state_type& s)
@@ -60,7 +60,7 @@ struct lbfgspp{
         s.H = ublas::prod(Z, matrix_type(ublas::prod(s.H, ublas::trans(Z)))) + ss;
         s.dfx0 = s.dfx;
         return s;
-    }    
+    }
 };
 
 } // ns detail
