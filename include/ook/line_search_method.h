@@ -19,8 +19,8 @@ struct
 state{
     typedef X vector_type;
     typedef typename X::value_type value_type;
+    typedef boost::numeric::ublas::matrix<value_type, boost::numeric::ublas::column_major> matrix_type;
 
-    typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
     state(const int n, const bool with_matrix = false)
     :
          dfx(n),
@@ -40,6 +40,35 @@ state{
                 }
             }
         }
+    }
+
+
+    friend
+    std::ostream&
+    operator<<(std::ostream& out, const state& s){
+      /*
+        if (s.tag == state::init){
+          stream << std::endl;
+          stream << std::setw(6) << "n"
+                 << std::setw(6) << "nfev"
+                 << std::scientific
+                 << std::setw(14) << "a"
+                 << std::setw(14) << "fx"
+                 << std::setw(14) << "max ||dfx||"
+                 << std::setw(14) << "max ||dx||" << std::endl;
+          stream << s;
+        }
+
+        if (s.tag == iteration)
+        out << std::setw(6) << s.iteration
+            << std::setw(6) << s.nfev_total
+            << std::scientific
+            << std::setw(14) << s.a
+            << std::setw(14) << s.fx
+            << std::setw(14) << ook::norm_infinity(s.dfx)
+            << std::setw(14) << ook::norm_infinity(s.dx);
+        */
+        return out;
     }
 
     value_type fx;
@@ -140,7 +169,7 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
         const bool u2 = ook::norm_infinity(dx) <=  dx_eps * (1.0 + ook::norm_infinity(x));
         const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
 
-        //observer();
+        observer(s);
         if ((u1 & u2) || u3){
             msg = ook::message::convergence;
             break;
@@ -150,7 +179,7 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
 
     } while(true);
 
-    //observer();
+    observer(s);
     return std::make_pair(msg, x);
 }
 

@@ -67,18 +67,21 @@ int main(){
         auto soln = ook::steepest_descent(wrapper, x, opts, obs);
         std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
     }
+
     {
         std::cout << "fletcher_reeves\n";
         ook::stream_observer<std::ostream> obs(std::cout);
         auto soln = ook::fletcher_reeves(wrapper, x, opts, obs);
         std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
     }
+
     {
         std::cout << "bfgs\n";
         ook::stream_observer<std::ostream> obs(std::cout);
         auto soln = ook::bfgs(wrapper, x, opts, obs);
         std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
     }
+
     {
         std::cout << "newton\n";
         ook::stream_observer<std::ostream> obs(std::cout);
