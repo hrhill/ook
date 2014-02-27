@@ -2,35 +2,39 @@
 #define OOK_TEST_FUNCTIONS_LINE_SEARCH_FUNCTIONS_H_
 
 #include <tuple>
+#include <cmath>
 #include <boost/math/constants/constants.hpp>
 
 namespace ook{
 
 namespace test_functions{
 
-std::tuple<double, double>
-phi51(double a, double b){
+template <typename T>
+std::tuple<T, T>
+phi51(T a, T b){
     return std::make_tuple(-a/(a * a + b),
                           (a * a - b)/((a * a + b) * (a * a + b)));
 }
 
-std::tuple<double, double>
-phi52(double a, double b){
-    double t = a + b;
-    double t2 = std::pow(t, 2);
-    double t3 = std::pow(t, 3);
-    double t4 = std::pow(t2, 2);
-    double f = t * t4 - 2 * t4;
-    double g = 5 * t4 - 8 * t3;
+template <typename T>
+std::tuple<T, T>
+phi52(T a, T b){
+    T t = a + b;
+    T t2 = std::pow(t, 2);
+    T t3 = std::pow(t, 3);
+    T t4 = std::pow(t2, 2);
+    T f = t * t4 - 2 * t4;
+    T g = 5 * t4 - 8 * t3;
     return std::make_tuple(f, g);
 }
 
-std::tuple<double, double>
-phi53(double a, double b, double c){
-    const double pi = boost::math::constants::pi<double>();
+template <typename T>
+std::tuple<T, T>
+phi53(T a, T b, T c){
+    const T pi = boost::math::constants::pi<T>();
 
-    double phi0;
-    double dphi0;
+    T phi0;
+    T dphi0;
     if (a <= 1 - b){
         phi0 = 1 - a;
         dphi0 = -1;
@@ -45,18 +49,18 @@ phi53(double a, double b, double c){
                            dphi0 + (1 - b) * cos(0.5 * c * pi * a));
 }
 
-std::tuple<double, double>
-phi54(double a, double b1, double b2){
+template <typename T>
+std::tuple<T, T>
+phi54(T a, T b1, T b2){
 
-    auto gamma = [](const double b) -> double {
-        return sqrt(1.0 + std::pow(b, 2)) - b;
-    };
-
-    const double t1 = sqrt(std::pow(1 - a, 2) + pow(b2, 2));
-    const double t2 = sqrt(std::pow(a, 2) + std::pow(b1, 2));
-    return std::make_tuple(
-            gamma(b1) * t1 + gamma(b2) * t2,
-          - gamma(b1) * (1 - a)/t1 + gamma(b2) * a/t2);
+    using std::pow;
+    T t1 = sqrt(pow(b1, 2) + 1) - b1;
+    T t2 = sqrt(pow(b2, 2) + 1) - b2;
+    T k1 = sqrt(pow(1 - a, 2) + b2 * b2);
+    T k2 = sqrt(pow(a, 2) + pow(b1, 2));
+    T f = t1 * k1 + t2 * k2;
+    T g = -t1 * (1 - a) / k1 + t2 * a /k2;
+    return std::make_tuple(f, g);
 }
 
 } // ns test_functions
