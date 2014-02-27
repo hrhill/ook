@@ -59,37 +59,6 @@ inner_product(const T& x, const T& y){
     return std::inner_product(x.begin(), x.end(), y.begin(), value_type(0.0));
 }
 
-template <typename Stream, typename X>
-void
-report(Stream& stream, message msg, int iteration, int nfev_total, int nfev, double a, double fx, const X& dfx, const X& dx)
-{
-    stream << std::setw(6) << iteration
-              << std::setw(6) << nfev_total
-              << std::scientific
-              << std::setw(14) << a
-              << std::setw(14) << fx
-              << std::setw(14) << ook::norm_infinity(dfx)
-              << std::setw(14) << ook::norm_infinity(dx) << std::endl;
-}
-
-template <typename Stream, typename X>
-void
-final_report(Stream& stream, message msg, int iteration, int nfev_total,double fx, const X& dfx, const X& dx)
-{
-    stream << "status : " << msg << std::endl;
-    stream << std::setw(8) << "iter"
-           << std::setw(8) << "nfev"
-           << std::setw(16) << "fx"
-           << std::setw(16) << "max ||dfx||"
-           << std::setw(16) << "max ||dx||" << std::endl;
-    stream << std::setw(8) << iteration
-           << std::setw(8) << nfev_total
-           << std::scientific
-           << std::setw(16) << fx
-           << std::setw(16) << ook::norm_infinity(dfx)
-           << std::setw(16) << ook::norm_infinity(dx) << std::endl;
-}
-
 // Meta program to select the right function call
 // based on the properties of the return type.
 template <typename F, typename X, typename State, int dim>
@@ -116,9 +85,9 @@ struct function_caller<F, X, State, 3>{
 
 } // ns detail
 
-template <typename Scheme, typename F, typename X, typename Options, typename Stream>
+template <typename Scheme, typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-line_search_method(F objective_function, X x, const Options& opts, Stream& stream)
+line_search_method(F objective_function, X x, const Options& opts, Observer& observer)
 {
     typedef typename X::value_type real_type;
     typedef typename Scheme::state_type state_type;
@@ -136,14 +105,7 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
     uint nfev_total = 0;
     ook::message msg;
 
-    stream << std::endl;
-    stream << std::setw(6) << "n"
-           << std::setw(6) << "nfev"
-           << std::scientific
-           << std::setw(14) << "a"
-           << std::setw(14) << "fx"
-           << std::setw(14) << "max ||dfx||"
-           << std::setw(14) << "max ||dx||" << std::endl;
+    //observer();
 
     do {
         // Get descent direction and set up line search procedure.
@@ -178,7 +140,7 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
         const bool u2 = ook::norm_infinity(dx) <=  dx_eps * (1.0 + ook::norm_infinity(x));
         const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
 
-        detail::report(stream, msg, s.iteration, nfev_total, nfev, s.a, s.fx, s.dfx, dx);
+        //observer();
         if ((u1 & u2) || u3){
             msg = ook::message::convergence;
             break;
@@ -188,7 +150,7 @@ line_search_method(F objective_function, X x, const Options& opts, Stream& strea
 
     } while(true);
 
-    detail::final_report(stream, msg, s.iteration, nfev_total, s.fx, s.dfx, dx);
+    //observer();
     return std::make_pair(msg, x);
 }
 

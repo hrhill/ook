@@ -21,13 +21,14 @@
 #include "ook/newton.h"
 #include "ook/lbfgs.h"
 #include "ook/options.h"
+#include "ook/stream_observer.h"
 
 #include "ook/test_functions/more_garbow_hillstrom.h"
 
 namespace ublas = boost::numeric::ublas;
 
-typedef ublas::vector<double> vector_t;
-typedef ublas::matrix<double, ublas::column_major> matrix_t;
+typedef ublas::vector<double> vector_type;
+typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
@@ -36,7 +37,7 @@ ook::test_functions::freudenstein_roth<V, M>//,
 //ook::test_functions::powell_badly_scaled<V, M>
 >;
 
-typedef test_function_types<ublas::vector<double>, ublas::matrix<double>> ublas_function_types;
+typedef test_function_types<vector_type, matrix_type> ublas_function_types;
 
 template <typename F, typename X>
 struct
@@ -51,7 +52,7 @@ gradient_only_wrapper{
         const int n = x.size();
         double f;
         X df(n);
-        matrix_t d2f(n, n);
+        matrix_type d2f(n, n);
 
         std::tie(f, df, d2f) = func(x);
         return std::make_tuple(f, df);
@@ -70,20 +71,21 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
     typedef Function test_function;
     test_function objective_function;
 
-    vector_t x(test_function::n, 0.0);
+    vector_type x(test_function::n, 0.0);
     std::copy(test_function::x0.begin(), test_function::x0.end(), x.begin());
 
-    vector_t minima(test_function::n, 0.0);
+    vector_type minima(test_function::n, 0.0);
     std::copy(test_function::minima.begin(), test_function::minima.end(), minima.begin());
 
-    gradient_only_wrapper<Function, vector_t> wrapper(objective_function);
-    auto soln = optimiser(wrapper, x, opts, std::cout);
+    gradient_only_wrapper<Function, vector_type> wrapper(objective_function);
+    ook::stream_observer<std::ostream> obs(std::cout);
+    auto soln = optimiser(wrapper, x, opts, obs);
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
 
     // Evaluate function at minima, check proximity
     /*auto x_min = std::get<1>(soln);
     double f_min;
-    vector_t df;
+    vector_type df;
     std::tie(f_min, df) = wrapper(x_min);
     BOOST_CHECK(fabs(f_min - test_function::f_min) <=  1e-08);
     BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);
@@ -94,20 +96,33 @@ template <typename Function>
 int
 test_gradient_based_optimisers()
 {
-    typedef typename Function::vector_type vector_type;
-
     std::cout << "steepest_descent" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::steepest_descent<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
+            ook::steepest_descent<gradient_only_wrapper<Function, vector_type>,
+                                vector_type,
+                                ook::options,
+                                ook::stream_observer<std::ostream>>);
+
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::fletcher_reeves<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
+            ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,
+                                vector_type,
+                                ook::options,
+                                ook::stream_observer<std::ostream>>);
+
     std::cout << "lbfgs" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::lbfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
+            ook::lbfgs<gradient_only_wrapper<Function, vector_type>,
+                                vector_type,
+                                ook::options,
+                                ook::stream_observer<std::ostream>>);
+
     std::cout << "bfgs" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::bfgs<gradient_only_wrapper<Function, vector_t>, vector_type, ook::options, std::ostream>);
+            ook::bfgs<gradient_only_wrapper<Function, vector_type>,
+                                vector_type,
+                                ook::options,
+                                ook::stream_observer<std::ostream>>);
     return 0;
 }
 
@@ -115,28 +130,25 @@ template <typename Function, typename Optimiser>
 void
 run_hessian_based_optimiser(Function, Optimiser optimiser)
 {
-    typedef Function test_function;
-    typedef typename Function::vector_type vector_type;
-    typedef typename Function::matrix_type matrix_type;
-
     const double epsilon = std::numeric_limits<double>::epsilon();
     ook::options opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
 
-    test_function objective_function;
+    Function objective_function;
 
-    vector_type x(test_function::n, 0.0);
-    std::copy(test_function::x0.begin(), test_function::x0.end(), x.begin());
+    vector_type x(Function::n, 0.0);
+    std::copy(Function::x0.begin(), Function::x0.end(), x.begin());
 
-    vector_type minima(test_function::n, 0.0);
-    std::copy(test_function::local_minima.begin(), test_function::local_minima.end(), minima.begin());
+    vector_type minima(Function::n, 0.0);
+    std::copy(Function::local_minima.begin(), Function::local_minima.end(), minima.begin());
 
-    auto soln = optimiser(objective_function, x, opts, std::cout);
+    ook::stream_observer<std::ostream> obs(std::cout);
+    auto soln = optimiser(objective_function, x, opts, obs);
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
     // Evaluate function at minima, check proximity
     auto x_min = std::get<1>(soln);
     double f_min;
-    vector_type df(test_function::n);
-    matrix_type d2f(test_function::n, test_function::n);
+    vector_type df(Function::n);
+    matrix_type d2f(Function::n, Function::n);
 
     std::tie(f_min, df, d2f) = objective_function(x_min);
     //BOOST_CHECK(fabs(f_min - test_function::f_min) <= 1e-08);
@@ -149,7 +161,7 @@ int test_hessian_based_optimisers()
     typedef typename Function::vector_type vector_type;
     std::cout << "newton" << std::endl;
     run_hessian_based_optimiser(Function(),
-            ook::newton<Function, vector_type, ook::options, std::ostream>);
+            ook::newton<Function, vector_type, ook::options, ook::stream_observer<std::ostream>>);
     return 0;
 }
 
