@@ -65,7 +65,7 @@ void
 run_gradient_based_optimiser(Function, Optimiser optimiser)
 {
     const double epsilon = std::numeric_limits<double>::epsilon();
-    ook::options opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
+    ook::options<double> opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
 
     typedef Function test_function;
     test_function objective_function;
@@ -99,28 +99,28 @@ test_gradient_based_optimisers()
     run_gradient_based_optimiser(Function(),
             ook::steepest_descent<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
-                                ook::options,
+                                ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
 
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
-                                ook::options,
+                                ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
 
     std::cout << "lbfgs" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::lbfgs<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
-                                ook::options,
+                                ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
 
     std::cout << "bfgs" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::bfgs<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
-                                ook::options,
+                                ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
     return 0;
 }
@@ -130,7 +130,7 @@ void
 run_hessian_based_optimiser(Function, Optimiser optimiser)
 {
     const double epsilon = std::numeric_limits<double>::epsilon();
-    ook::options opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
+    ook::options<double> opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
 
     Function objective_function;
 
@@ -160,7 +160,7 @@ int test_hessian_based_optimisers()
     typedef typename Function::vector_type vector_type;
     std::cout << "newton" << std::endl;
     run_hessian_based_optimiser(Function(),
-            ook::newton<Function, vector_type, ook::options, ook::stream_observer<std::ostream>>);
+            ook::newton<Function, vector_type, ook::options<double>, ook::stream_observer<std::ostream>>);
     return 0;
 }
 
