@@ -1,6 +1,6 @@
 set(TESTS more_thuente
           more_thuente_degenerate
-          )
+          backtracking)
 
 foreach(test ${TESTS})
     add_executable(${test}_test ${test}.cpp)

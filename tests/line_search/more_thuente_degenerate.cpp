@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(constant_check){
 
     const double epsilon = std::numeric_limits<double>::epsilon();
     const double stp0 = 1.0;
-    ook::options opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
+    ook::options<double> opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
 
     int nfev = 0;
     double phi0, dphi0, phix, dphix;

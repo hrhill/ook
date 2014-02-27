@@ -5,7 +5,7 @@
 
 #include "ook/message.h"
 
-#include "line_search_conditions.h"
+#include "../conditions.h"
 #include "more_thuente_searcher.h"
 
 namespace ook{
