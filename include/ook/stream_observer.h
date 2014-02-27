@@ -1,6 +1,8 @@
 #ifndef OOK_STREAM_OBSERVER_H_
 #define OOK_STREAM_OBSERVER_H_
 
+#include <iostream>
+
 namespace ook{
 
 template <typename Stream>
@@ -12,15 +14,12 @@ struct stream_observer
     {}
 
     Stream& stream_;
+
+    template <typename State>
+    void operator()(const State& state){
+        stream_ << state << std::endl;
+    }
 /*
-    stream << std::endl;
-    stream << std::setw(6) << "n"
-           << std::setw(6) << "nfev"
-           << std::scientific
-           << std::setw(14) << "a"
-           << std::setw(14) << "fx"
-           << std::setw(14) << "max ||dfx||"
-           << std::setw(14) << "max ||dx||" << std::endl;
 
 template <typename Stream, typename X>
 void
