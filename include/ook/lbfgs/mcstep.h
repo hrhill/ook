@@ -86,8 +86,11 @@ mcstep(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy, T stp, const T& fp, const T& 
     /*     IS EITHER STPMIN OR STPMAX, ELSE THE CUBIC STEP IS TAKEN. */
     } else {
         bound = false;
-
-        stpf = ook::line_search::case4(stx, sty, fy, dy, stp, fp, dp, brackt, stpmin, stpmax);
+        if (brackt) {
+            stpf = cubic_step(sty, fy, dy, stp, fp, dp);
+        } else{
+            stpf = (stp > stx) ? stpmax : stpmin;
+        }
     }
     /*     UPDATE THE INTERVAL OF UNCERTAINTY. THIS UPDATE DOES NOT */
     /*     DEPEND ON THE NEW STEP OR THE CASE ANALYSIS ABOVE. */

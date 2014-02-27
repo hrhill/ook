@@ -9,7 +9,7 @@ namespace detail{
 
 /// \brief State for use with line search method.
 template <typename X>
-struct 
+struct
 state{
     typedef X vector_type;
     typedef typename X::value_type value_type;
@@ -19,13 +19,12 @@ state{
         dfx(n), dfx0(n), p(n), a(1), beta(0)
     {}
 
-
     value_type fx;
     vector_type dfx;
-    vector_type dfx0;        
-    vector_type p;    
-    value_type a;    
-    value_type beta;      
+    vector_type dfx0;
+    vector_type p;
+    value_type a;
+    value_type beta;
 };
 
 } // ns detail
