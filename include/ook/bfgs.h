@@ -68,11 +68,11 @@ struct bfgs{
 /// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
 /** \details Implementation of the BFGS algorithm using the generic line search function.
 **/
-template <typename F, typename X, typename Options, typename Stream>
+template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-bfgs(F objective_function, const X& x0, const Options& opts, Stream& stream)
+bfgs(F objective_function, const X& x0, const Options& opts, Observer& observer)
 {
-    return line_search_method<detail::bfgs<X>>(objective_function, x0, opts, stream);
+    return line_search_method<detail::bfgs<X>>(objective_function, x0, opts, observer);
 }
 
 } //ns ook

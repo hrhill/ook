@@ -15,6 +15,7 @@
 #include "ook/norms.h"
 #include "ook/options.h"
 #include "ook/message.h"
+#include "ook/stream_observer.h"
 
 #include "ook/test_functions/more_garbow_hillstrom/rosenbrock.h"
 
@@ -60,21 +61,29 @@ int main(){
 
     vector_t x(test_function::n, 0.0);
     std::copy(test_function::x0.begin(), test_function::x0.end(), x.begin());
-
-    std::cout << "steepest_descent\n";
-    auto soln = ook::steepest_descent(wrapper, x, opts, std::cout);
-    std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
-
-    std::cout << "fletcher_reeves\n";
-    soln = ook::fletcher_reeves(wrapper, x, opts, std::cout);
-    std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
-
-    std::cout << "bfgs\n";
-    soln = ook::bfgs(wrapper, x, opts, std::cout);
-    std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
-
-    std::cout << "newton\n";
-    soln = ook::newton(objective_function, x, opts, std::cout);
-    std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
+    {
+        std::cout << "steepest_descent\n";
+        ook::stream_observer<std::ostream> obs(std::cout);
+        auto soln = ook::steepest_descent(wrapper, x, opts, obs);
+        std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
+    }
+    {
+        std::cout << "fletcher_reeves\n";
+        ook::stream_observer<std::ostream> obs(std::cout);
+        auto soln = ook::fletcher_reeves(wrapper, x, opts, obs);
+        std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
+    }
+    {
+        std::cout << "bfgs\n";
+        ook::stream_observer<std::ostream> obs(std::cout);
+        auto soln = ook::bfgs(wrapper, x, opts, obs);
+        std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
+    }
+    {
+        std::cout << "newton\n";
+        ook::stream_observer<std::ostream> obs(std::cout);
+        auto soln = ook::newton(objective_function, x, opts, obs);
+        std::cout << std::get<0>(soln) << "\n" << std::get<1>(soln) << std::endl;
+    }
 }
 
