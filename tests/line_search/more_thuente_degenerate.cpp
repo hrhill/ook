@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(constant_check){
 
     auto phi = [&nfev, &phix, &dphix, a, b](const double x){
                         ++nfev;
-                        std::tie(phix, dphix) = linear(x, a, b);
+                        std::tie(phix, dphix) = ook::test_functions::linear(x, a, b);
                         return std::make_tuple(phix, dphix);
                     };
 
