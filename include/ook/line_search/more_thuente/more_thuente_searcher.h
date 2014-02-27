@@ -6,7 +6,7 @@
 
 #include "ook/message.h"
 
-#include "line_search_conditions.h"
+#include "../conditions.h"
 #include "safe_step.h"
 
 namespace ook{
