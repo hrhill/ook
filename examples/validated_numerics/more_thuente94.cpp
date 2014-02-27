@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         ook::options opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi51, std::placeholders::_1, 2.0);
+        auto objective_function = std::bind(phi51<double>, std::placeholders::_1, 2.0);
         do_search(objective_function, stp0, opts);
     }
 
@@ -53,7 +53,7 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         ook::options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi52, std::placeholders::_1, 0.004);
+        auto objective_function = std::bind(phi52<double>, std::placeholders::_1, 0.004);
         do_search(objective_function, stp0, opts);
     }
 
@@ -61,14 +61,14 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         ook::options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi53, std::placeholders::_1, 0.01, 39);
+        auto objective_function = std::bind(phi53<double>, std::placeholders::_1, 0.01, 39);
         do_search(objective_function, stp0, opts);
     }
     std::cout << std::endl << "Table 5.4" << std::endl;
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         ook::options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54, std::placeholders::_1, 0.001, 0.001);
+        auto objective_function = std::bind(phi54<double>, std::placeholders::_1, 0.001, 0.001);
         do_search(objective_function, stp0, opts);
     }
 
@@ -76,7 +76,7 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         ook::options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54, std::placeholders::_1, 0.01, 0.001);
+        auto objective_function = std::bind(phi54<double>, std::placeholders::_1, 0.01, 0.001);
         do_search(objective_function, stp0, opts);
     }
 
@@ -84,7 +84,7 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; ++i){
         const double stp0 = std::pow(factor, i) * a0;
         ook::options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54, std::placeholders::_1, 0.001, 0.01);
+        auto objective_function = std::bind(phi54<double>, std::placeholders::_1, 0.001, 0.01);
         do_search(objective_function, stp0, opts);
     }
     return 0;
