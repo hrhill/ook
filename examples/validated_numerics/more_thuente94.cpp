@@ -6,7 +6,7 @@
 
 #include "ook/options.h"
 #include "ook/line_search/more_thuente/more_thuente.h"
-#include "ook/test_functions/line_search_functions.h"
+#include "ook/test_functions/line_search.h"
 
 template <typename ObjectiveFunction, typename Options>
 void
