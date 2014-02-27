@@ -1,8 +1,8 @@
 #ifndef OOK_LINE_SEARCH_METHOD_H_
 #define OOK_LINE_SEARCH_METHOD_H_
 
+#include <iostream>
 #include <iomanip>
-
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include "ook/norms.h"
@@ -14,21 +14,26 @@ namespace ook{
 
 namespace detail{
 
+enum class state_tag{init, iterate, final};
+
 template <typename X>
 struct
 state{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef boost::numeric::ublas::matrix<value_type, boost::numeric::ublas::column_major> matrix_type;
+    typedef boost::numeric::ublas::matrix<value_type,
+              boost::numeric::ublas::column_major> matrix_type;
 
     state(const int n, const bool with_matrix = false)
     :
          dfx(n),
          dfx0(n),
          p(n),
+         dx(n),
          a(1),
          beta(0),
-         iteration(0)
+         iteration(0),
+         tag(state_tag::init)
     {
         if (with_matrix){
             H.resize(n, n);
@@ -46,28 +51,43 @@ state{
     friend
     std::ostream&
     operator<<(std::ostream& out, const state& s){
-      /*
-        if (s.tag == state::init){
-          stream << std::endl;
-          stream << std::setw(6) << "n"
-                 << std::setw(6) << "nfev"
-                 << std::scientific
-                 << std::setw(14) << "a"
-                 << std::setw(14) << "fx"
-                 << std::setw(14) << "max ||dfx||"
-                 << std::setw(14) << "max ||dx||" << std::endl;
-          stream << s;
+        if (s.tag == state_tag::init){
+            out << std::endl
+                << std::setw(6) << "n"
+                << std::setw(6) << "nfev"
+                << std::scientific
+                << std::setw(14) << "a"
+                << std::setw(14) << "fx"
+                << std::setw(14) << "max ||dfx||"
+                << std::setw(14) << "max ||dx||" << std::endl;
         }
 
-        if (s.tag == iteration)
-        out << std::setw(6) << s.iteration
-            << std::setw(6) << s.nfev_total
-            << std::scientific
-            << std::setw(14) << s.a
-            << std::setw(14) << s.fx
-            << std::setw(14) << ook::norm_infinity(s.dfx)
-            << std::setw(14) << ook::norm_infinity(s.dx);
-        */
+        if (s.tag == state_tag::iterate){
+            out << std::setw(6) << s.iteration
+                << std::setw(6) << 0//s.nfev_total
+                << std::scientific
+                << std::setw(14) << s.a
+                << std::setw(14) << s.fx
+                << std::setw(14) << ook::norm_infinity(s.dfx)
+                << std::setw(14) << ook::norm_infinity(s.dx);
+        }
+
+        if (s.tag == state_tag::final)
+        {
+            out << "\nstatus : " << s.msg << std::endl;
+            out << std::setw(8) << "iter"
+                << std::setw(8) << "nfev"
+                << std::setw(16) << "fx"
+                << std::setw(16) << "max ||dfx||"
+                << std::setw(16) << "max ||dx||" << std::endl;
+
+            out << std::setw(8) << s.iteration
+                << std::setw(8) << 0//s.nfev_total
+                << std::scientific
+                << std::setw(16) << s.fx
+                << std::setw(16) << ook::norm_infinity(s.dfx)
+                << std::setw(16) << ook::norm_infinity(s.dx) << std::endl;
+        }
         return out;
     }
 
@@ -75,10 +95,13 @@ state{
     vector_type dfx;
     vector_type dfx0;
     vector_type p;
+    vector_type dx;
     matrix_type H;
     value_type a;
     value_type beta;
     int iteration;
+    state_tag tag;
+    message msg;
 };
 
 template <typename T>
@@ -132,11 +155,10 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
     X dx(x.size());
     s.iteration = 0;
     uint nfev_total = 0;
-    ook::message msg;
 
-    //observer();
-
+    observer(s);
     do {
+        s.tag = detail::state_tag::iterate;
         // Get descent direction and set up line search procedure.
         X p = Scheme::descent_direction(s);
         real_type dfx_dot_p = detail::inner_product(s.dfx, p);
@@ -153,9 +175,9 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
 
         // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
-        std::tie(msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
+        std::tie(s.msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
-        if (msg != ook::message::convergence){
+        if (s.msg != ook::message::convergence){
             break;
         }
         dx = s.a * p;
@@ -171,7 +193,7 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
 
         observer(s);
         if ((u1 & u2) || u3){
-            msg = ook::message::convergence;
+            s.msg = ook::message::convergence;
             break;
         }
 
@@ -179,8 +201,9 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
 
     } while(true);
 
+    s.tag = detail::state_tag::final;
     observer(s);
-    return std::make_pair(msg, x);
+    return std::make_pair(s.msg, x);
 }
 
 } // ns ook

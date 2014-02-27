@@ -1,4 +1,3 @@
-/// \file more_thuente_test.cpp
 #include <iostream>
 #include <string>
 #include <limits>
