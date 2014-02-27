@@ -7,3 +7,5 @@ Testing
 DartConfiguration.tcl
 Doxyfile
 bin
+*.o
+*.hi
