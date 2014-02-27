@@ -15,19 +15,7 @@
 
 #include "ook/line_search/more_thuente/more_thuente.h"
 #include "ook/options.h"
-
-std::tuple<double, double>
-constant(double x){
-    return std::make_tuple(-1.0, 0.0);
-}
-
-std::tuple<double, double>
-linear(double x){
-    const double a = -1.0;
-    const double b = 10.0;
-    return std::make_tuple(a * x + b, a);
-}
-
+#include "ook/test_functions/line_search.h"
 
 BOOST_AUTO_TEST_CASE(constant_check){
 
@@ -38,9 +26,12 @@ BOOST_AUTO_TEST_CASE(constant_check){
     int nfev = 0;
     double phi0, dphi0, phix, dphix;
 
-    auto phi = [&nfev, &phix, &dphix](const double x){
+    const double a =-1.0;
+    const double b = 10.0;
+
+    auto phi = [&nfev, &phix, &dphix, a, b](const double x){
                         ++nfev;
-                        std::tie(phix, dphix) = linear(x);
+                        std::tie(phix, dphix) = linear(x, a, b);
                         return std::make_tuple(phix, dphix);
                     };
 

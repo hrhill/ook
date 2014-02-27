@@ -11,6 +11,19 @@ namespace test_functions{
 
 template <typename T>
 std::tuple<T, T>
+constant(T x){
+    return std::make_tuple(-1.0, 0.0);
+}
+
+template <typename T>
+std::tuple<T, T>
+linear(T x, T a, T b){
+    return std::make_tuple(a * x + b, a);
+}
+
+
+template <typename T>
+std::tuple<T, T>
 phi51(T a, T b){
     return std::make_tuple(-a/(a * a + b),
                           (a * a - b)/((a * a + b) * (a * a + b)));

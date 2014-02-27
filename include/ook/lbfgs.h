@@ -5,9 +5,9 @@
 
 namespace ook{
 
-template <typename F, typename X, typename Options, typename Stream>
+template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-lbfgs(F objective_function, X x, const Options& opts, Stream& stream)
+lbfgs(F objective_function, X x, const Options& opts, Observer& observer)
 {
     const int n = x.size();
     int m = 5;
