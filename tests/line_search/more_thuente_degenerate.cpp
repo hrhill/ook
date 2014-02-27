@@ -1,4 +1,3 @@
-/// \file optimise_test.cpp
 #include <iostream>
 #include <string>
 #include <limits>

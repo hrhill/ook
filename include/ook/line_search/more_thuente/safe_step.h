@@ -7,7 +7,6 @@
 #include <tuple>
 
 namespace ook{
-
 namespace line_search {
 
 /// \brief Sign function
