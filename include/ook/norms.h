@@ -25,6 +25,16 @@ norm_2(const T& x){
     return sqrt(r);
 }
 
+/// \brief \f$ l_p  \f$ norm.
+template <typename T>
+typename T::value_type
+norm_p(const T& x, int p){
+    typename T::value_type r(0.0);
+    for (const auto& xi : x)
+        r += std::pow(xi, p);
+    return exp(log(r)/p);
+}
+
 /// \brief \f$ l_{\infty} \f$ norm.
 template <typename T>
 typename T::value_type
