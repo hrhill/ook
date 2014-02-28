@@ -24,11 +24,11 @@ struct options
     :
         ftol(ftol_), gtol(gtol_), xtol(xtol_), stpmin(stpmin_), stpmax(stpmax_)
     {
-        assert(ftol > T(0) && "ftol < 0.");
-        assert(gtol > T(0) && "gtol < 0.");
-        assert(xtol > T(0) && "xtol < 0.");
+        assert(ftol > T(0) && "ftol <= 0.");
+        assert(gtol > T(0) && "gtol <= 0.");
+        assert(xtol > T(0) && "xtol <= 0.");
         assert(stpmin >= T(0.0) && "stpmin < 0.");
-        assert(stpmax > stpmin && "stpmax < stpmin.");
+        assert(stpmax > stpmin && "stpmax <= stpmin.");
     }
 
     // tolerance for the sufficient decrease condition.
