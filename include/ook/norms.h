@@ -9,7 +9,7 @@ namespace ook{
 template <typename T>
 typename T::value_type
 norm_1(const T& x){
-    T r(0.0);
+    typename T::value_type r(0.0);
     for (const auto& xi : x)
         r += fabs(xi);
     return r;
@@ -19,7 +19,7 @@ norm_1(const T& x){
 template <typename T>
 typename T::value_type
 norm_2(const T& x){
-    T r(0.0);
+    typename T::value_type r(0.0);
     for (const auto& xi : x)
         r += xi * xi;
     return sqrt(r);
@@ -29,14 +29,15 @@ norm_2(const T& x){
 template <typename T>
 typename T::value_type
 norm_infinity(const T& x){
-    T r(0.0);
+    typename T::value_type r(0.0);
     for (const auto& xi : x){
-        const T fxi = fabs(xi);
-        if(fxi > r)
+        const typename T::value_type fxi = fabs(xi);
+        if (fxi > r)
             r = fxi;
     }
     return r;
 }
 
-}
+} // ns ook
+
 #endif
