@@ -2,8 +2,7 @@
 #define OOK_OPTIONS_H_
 
 #include <cassert>
-#include <string>
-#include <stdexcept>
+#include <limits>
 
 namespace ook{
 

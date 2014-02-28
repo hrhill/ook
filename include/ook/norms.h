@@ -1,7 +1,6 @@
 #ifndef OOK_NORMS_H_
 #define OOK_NORMS_H_
 
-#include <algorithm>
 #include <cmath>
 
 namespace ook{
