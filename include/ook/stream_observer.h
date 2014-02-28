@@ -2,6 +2,7 @@
 #define OOK_STREAM_OBSERVER_H_
 
 #include <iostream>
+#include <fstream>
 
 namespace ook{
 
