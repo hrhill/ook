@@ -30,23 +30,18 @@ state{
          dfx0(n),
          p(n),
          dx(n),
+         H(n * with_matrix, n * with_matrix, 0.0),
          a(1),
          beta(0),
          iteration(0),
          tag(state_tag::init)
     {
         if (with_matrix){
-            H.resize(n, n);
             for (int i = 0; i < n; ++i){
                 H(i, i) = 1.0;
-                for (int j = 0; j < i; ++j){
-                    H(i, j) = 0.0;
-                    H(j, i) = 0.0;
-                }
             }
         }
     }
-
 
     friend
     std::ostream&
