@@ -12,7 +12,7 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/line_search/more_thuente/more_thuente.h"
+#include "ook/line_search/more_thuente.h"
 #include "ook/options.h"
 #include "ook/test_functions/line_search.h"
 
@@ -28,16 +28,15 @@ BOOST_AUTO_TEST_CASE(constant_check){
     const double a =-1.0;
     const double b = 10.0;
 
-    auto phi = [&nfev, &phix, &dphix, a, b](const double x){
-                        ++nfev;
-                        std::tie(phix, dphix) = ook::test_functions::linear(x, a, b);
-                        return std::make_tuple(phix, dphix);
-                    };
+    auto phi = [&nfev, a, b](const double x){
+        ++nfev;
+        return ook::test_functions::linear(x, a, b);
+    };
 
     std::tie(phi0, dphi0) = phi(0.0);
     std::tie(phix, dphix) = phi(1.0);
 
-    auto soln = ook::line_search::more_thuente(phi, phi0, dphi0, stp0, opts);
+    auto soln = ook::line_search::more_thuente()(phi, phi0, dphi0, stp0, opts);
 
     std::cout << phix << std::endl;
     std::cout << dphix << std::endl;

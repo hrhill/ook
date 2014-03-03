@@ -73,6 +73,8 @@ int main()
         double g0, f0;
         vector<algo_result> results;
 
+        ook::line_search::more_thuente mtsearch;
+
         for (int ntry = 0; ntry < ntries; ++ntry) {
             // Initialize the search.
             std::tie(f0, g0) = ook::test_functions::mtfcn(0.0, nprob);
@@ -86,7 +88,7 @@ int main()
             ook::options<double> opts(ftol, gtol, xtol, 0, 4.0 * std::max(1.0, stp));
             ook::message msg;
             double f, g;
-            std::tie(msg, stp, f, g) = ook::line_search::more_thuente(phi_trace, f0, g0, stp, opts);
+            std::tie(msg, stp, f, g) = mtsearch(phi_trace, f0, g0, stp, opts);
 
             // Record information on the algorithm.
             results.push_back({msg, nfev, ntry + 1, nprob, factor * stp0, stp, f, g});
