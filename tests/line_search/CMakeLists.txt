@@ -1,5 +1,4 @@
 set(TESTS more_thuente
-          more_thuente_degenerate
           backtracking)
 
 foreach(test ${TESTS})

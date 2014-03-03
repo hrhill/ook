@@ -1,7 +1,8 @@
 #ifndef MCSRCH_H_
 #define MCSRCH_H_
 
-#include "../line_search/more_thuente/safe_step.h"
+//#include "../line_search/more_thuente/safe_step.h"
+#include "../line_search/more_thuente/step.h"
 
 struct lb3_1_ {
     int mp, lp;
@@ -227,7 +228,7 @@ int mcsrch(int n, T *x, T f, T dg, T *s, T& stp, T ftol, T xtol, int maxfev, int
             double dgym = dgy - dgtest;
             /* CALL CSTEP TO UPDATE THE INTERVAL OF UNCERTAINTY AND TO COMPUTE THE NEW STEP. */
             //stp = mcstep(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
-            stp = ook::line_search::safe_step(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
+            stp = ook::line_search::detail::step(stx, fxm, dgxm, sty, fym, dgym, stp, fm, dgm, brackt, stmin, stmax);
             /* RESET THE FUNCTION AND GRADIENT VALUES FOR F. */
             fx = fxm + stx * dgtest;
             fy = fym + sty * dgtest;
@@ -236,7 +237,7 @@ int mcsrch(int n, T *x, T f, T dg, T *s, T& stp, T ftol, T xtol, int maxfev, int
         } else {
             /* CALL MCSTEP TO UPDATE THE INTERVAL OF UNCERTAINTY AND TO COMPUTE THE NEW STEP. */
             //stp = mcstep(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
-            stp = ook::line_search::safe_step(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
+            stp = ook::line_search::detail::step(stx, fx, dgx, sty, fy, dgy, stp, f, dg, brackt, stmin, stmax);
         }
         /* FORCE A SUFFICIENT DECREASE IN THE SIZE OF THE INTERVAL OF UNCERTAINTY. */
         if (brackt) {
