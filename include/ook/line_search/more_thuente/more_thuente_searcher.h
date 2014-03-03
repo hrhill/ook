@@ -35,8 +35,8 @@ struct more_thuente_searcher{
     std::tuple<message, T>
     operator()(T stp, T f, T g)
     {
-        const bool sufficient_decrease = sufficient_decrease_condition(f0, f, g0, stp, opts.ftol);
-        const bool curvature = curvature_condition(g0, g, opts.gtol);
+        const bool sufficient_decrease = sufficient_decrease_condition(f, f0, opts.ftol, stp, g0);
+        const bool curvature = curvature_condition(g, opts.gtol, g0);
         /*     Test for warnings. */
         if (brackt && (stp <= stmin || stp >= stmax)) {
             return std::make_pair(message::warning_rounding_error_prevents_progress, stp);
