@@ -31,8 +31,10 @@ freudenstein_roth<V, M>//,
 //powell_badly_scaled<V, M>
 >;
 
-typedef test_function_types<boost::numeric::ublas::vector<double>,
-                            boost::numeric::ublas::matrix<double>> ublas_function_types;
+typedef test_function_types<
+    boost::numeric::ublas::vector<double>,
+    boost::numeric::ublas::matrix<double>
+    > ublas_function_types;
 
 template <typename Vector>
 std::ostream& operator<<(std::ostream& out, const std::tuple<typename Vector::value_type, Vector>& t)
@@ -45,7 +47,7 @@ int
 test_function_specification()
 {
     typedef typename Function::vector_type vector_type;
-    typedef typename Function::matrix_type matrix_type;    
+    typedef typename Function::matrix_type matrix_type;
     typedef typename vector_type::value_type real_type;
 
     typedef Function test_function;
@@ -56,7 +58,7 @@ test_function_specification()
     vector_type minima(test_function::n);
 
     std::copy(test_function::x0.begin(), test_function::x0.end(), x0.begin());
-    std::copy(test_function::minima.begin(), test_function::minima.end(), minima.begin());    
+    std::copy(test_function::minima.begin(), test_function::minima.end(), minima.begin());
 
     real_type f_min;
     vector_type df(test_function::n);
@@ -64,7 +66,7 @@ test_function_specification()
     std::tie(f_min, df, d2f) = objective_function(minima);
 
     BOOST_CHECK(abs(f_min - test_function::f_min) <= test_function::tolerance);
-    BOOST_CHECK(ook::norm_infinity(df) <= test_function::tolerance);    
+    BOOST_CHECK(ook::norm_infinity(df) <= test_function::tolerance);
     return 0;
 }
 

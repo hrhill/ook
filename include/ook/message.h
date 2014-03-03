@@ -31,7 +31,7 @@ const char* message_string[] = {"start",
     "search_direction_is_not_a_descent_direction",
     "error_step_less_than_stpmin",
     "error_step_greater_than_stpmax"
-}; 
+};
 
 std::ostream&
 operator<<(std::ostream& os, const message& tv)

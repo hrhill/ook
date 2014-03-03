@@ -17,102 +17,27 @@
 #include <boost/test/test_tools.hpp>
 
 #include "ook/options.h"
-#include "ook/line_search/more_thuente/more_thuente.h"
+#include "ook/message.h"
+#include "ook/line_search/more_thuente.h"
 #include "ook/test_functions/line_search.h"
-/*
-template <typename ObjectiveFunction, typename Options>
-void
-do_search(ObjectiveFunction obj, const double stp0, const Options& opts)
-{
-    int nfev = 0;
-    double phi0, dphi0, phix, dphix;
 
-    auto phi = [&nfev, &phix, &dphix, obj](const double x){
-                        ++nfev;
-                        std::tie(phix, dphix) = obj(x);
-                        return std::make_tuple(phix, dphix);
-                    };
-
-    std::tie(phi0, dphi0) = obj(0.0);
-
-    auto soln = ook::line_search::more_thuente(phi, phi0, dphi0, stp0, opts);
-    std::cout << std::scientific
-              << std::setw(16) << stp0
-              << std::setw(16) << std::get<0>(soln)
-              << std::setw(4) << nfev
-              << std::setw(16) << std::get<1>(soln)
-              << std::setw(16) << dphix << std::endl;
-}
-
-int main(int argc, char** argv){
-
-    const double a0 = 1e-03;
-    const double factor = 100;
-    const int n = 4;
-    const double epsilon = std::numeric_limits<double>::epsilon();
-
-    using namespace ook::test_functions;
-
-    std::cout << std::endl << "Table 5.1" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi51, std::placeholders::_1, 2.0);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.2" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi52, std::placeholders::_1, 0.004);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.3" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi53, std::placeholders::_1, 0.01, 39);
-        do_search(objective_function, stp0, opts);
-    }
-    std::cout << std::endl << "Table 5.4" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54, std::placeholders::_1, 0.001, 0.001);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.5" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54, std::placeholders::_1, 0.01, 0.001);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.6" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54, std::placeholders::_1, 0.001, 0.01);
-        do_search(objective_function, stp0, opts);
-    }
-    return 0;
-}
-*/
 
 BOOST_AUTO_TEST_CASE(safe_guarded_value)
 {
-    const double a0 = 0.0;
+    auto linear = [](const double& x){
+        std::cout << x << std::endl;
+        return ook::test_functions::linear(x, -1.0, 0.0);
+    };
+
+    ook::options<double> opts;
+    double phi0, dphi0;
+    std::tie(phi0, dphi0) = linear(0.0);
+
     double a = 1.0;
-    const double amax = 5.0;
-    const double delta = 1.1;
-    while(true){
-        a = ook::line_search::safeguarded(a, a0, delta, amax);
-        if (a >= amax)
-            break;
-    }
-    BOOST_CHECK_CLOSE(a, amax, 0.01);
+    double phia, dphia;
+    ook::message msg;
+    std::tie(msg, a, phia, dphia) = ook::line_search::more_thuente()(linear, phi0, dphi0, a, opts);
+    BOOST_CHECK_EQUAL(a, 1.0);
+    BOOST_CHECK_EQUAL(phia, -1.0);
+    BOOST_CHECK_EQUAL(dphia, -1.0);
 }
