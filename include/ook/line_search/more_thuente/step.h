@@ -99,7 +99,7 @@ is_closer(T a, T b, T c)
 template <typename T>
 T
 step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy,
-    const T& stp, const T& fp, const T& dp, bool& brackt, const T& stpmin, const T& stpmax)
+    const T stp, const T fp, const T dp, bool& brackt, const T stpmin, const T stpmax)
 {
     T stpf;
 

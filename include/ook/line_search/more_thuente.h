@@ -58,8 +58,7 @@ struct more_thuente{
             if (s.brackt && s.stmax - s.stmin <= opts.xtol * s.stmax) {
                 return std::make_tuple(message::warning_xtol_satisfied, a, phia, dphia);
             }
-            if (a == opts.stpmax && (sufficient_decrease || curvature)) {
-            //if (a == opts.stpmax && sufficient_decrease && curvature) {
+            if (a == opts.stpmax && sufficient_decrease && curvature) {
                 return std::make_tuple(message::warning_stp_eq_stpmax, a, phia, dphia);
             }
             if (a == opts.stpmin && (!sufficient_decrease || !curvature)) {

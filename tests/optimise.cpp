@@ -82,13 +82,12 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
 
     // Evaluate function at minima, check proximity
-    /*auto x_min = std::get<1>(soln);
+    auto x_min = std::get<1>(soln);
     double f_min;
     vector_type df;
     std::tie(f_min, df) = wrapper(x_min);
     BOOST_CHECK(fabs(f_min - test_function::f_min) <=  1e-08);
     BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);
-    */
 }
 
 template <typename Function>
@@ -101,7 +100,7 @@ test_gradient_based_optimisers()
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-/*
+
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,
@@ -122,7 +121,7 @@ test_gradient_based_optimisers()
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-*/
+
     return 0;
 }
 
