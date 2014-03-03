@@ -11,27 +11,27 @@ namespace test_functions{
 
 template <typename T>
 std::tuple<T, T>
-constant(T x){
+constant(const T& x){
     return std::make_tuple(-1.0, 0.0);
 }
 
 template <typename T>
 std::tuple<T, T>
-linear(T x, T a, T b){
+linear(const T& x, const T& a, const T& b){
     return std::make_tuple(a * x + b, a);
 }
 
 
 template <typename T>
 std::tuple<T, T>
-phi51(T a, T b){
+phi51(const T& a, const T& b){
     return std::make_tuple(-a/(a * a + b),
                           (a * a - b)/((a * a + b) * (a * a + b)));
 }
 
 template <typename T>
 std::tuple<T, T>
-phi52(T a, T b){
+phi52(const T& a, const T& b){
     T t = a + b;
     T t2 = std::pow(t, 2);
     T t3 = std::pow(t, 3);
@@ -43,7 +43,7 @@ phi52(T a, T b){
 
 template <typename T>
 std::tuple<T, T>
-phi53(T a, T b, T c){
+phi53(const T& a, const T& b, const T& c){
     const T pi = boost::math::constants::pi<T>();
 
     T phi0;
@@ -64,7 +64,7 @@ phi53(T a, T b, T c){
 
 template <typename T>
 std::tuple<T, T>
-phi54(T a, T b1, T b2){
+phi54(const T& a, const T& b1, const T& b2){
 
     using std::pow;
     T t1 = sqrt(pow(b1, 2) + 1) - b1;
@@ -76,8 +76,28 @@ phi54(T a, T b1, T b2){
     return std::make_tuple(f, g);
 }
 
-} // ns test_functions
+template <typename T>
+std::tuple<T, T>
+mtfcn(const T& x, int nprob)
+{
+    std::tuple<T, T> f;
+    if (nprob == 1) {
+        f = phi51(x, 2.0);
+    } else if (nprob == 2) {
+        f = phi52(x, 0.004);
+    } else if (nprob == 3) {
+        f = phi53(x, 0.01, 39.0);
+    } else if (nprob == 4) {
+        f = phi54(x, 1e-3, 1e-3);
+    } else if (nprob == 5) {
+        f = phi54(x, 1e-2, 1e-3);
+    } else if (nprob == 6) {
+        f = phi54(x, 1e-3, 1e-2);
+    }
+    return f;
+}
 
+} // ns test_functions
 } // ns ook
 
 #endif

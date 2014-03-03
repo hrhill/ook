@@ -9,7 +9,7 @@
 #include "ook/message.h"
 #include "ook/state.h"
 #include "ook/call_selector.h"
-#include "ook/line_search/more_thuente/more_thuente.h"
+#include "ook/line_search/more_thuente.h"
 
 namespace ook{
 
@@ -48,21 +48,20 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
         s.tag = detail::state_tag::iterate;
         // Get descent direction and set up line search procedure.
         X p = Scheme::descent_direction(s);
-        real_type dfx_dot_p = detail::inner_product(s.dfx, p);
         // do line search
         uint nfev = 0;
         s.a = 1.0;
         // take a reference to the state variable, ensuring that fx and dfx get updated
-        auto phi = [&nfev, &s, &dfx_dot_p, &x, &p, objective_function](const real_type& a){
+        auto phi = [&nfev, &s, &x, &p, objective_function](const real_type& a){
             ++nfev;
             fcaller_type::call(objective_function, x + a * p, s);
-            dfx_dot_p = detail::inner_product(s.dfx, p);
-            return std::make_pair(s.fx, dfx_dot_p);
+            return std::make_pair(s.fx, detail::inner_product(s.dfx, p));
         };
 
         // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
-        std::tie(s.msg, s.a) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
+        real_type dfx_dot_p = detail::inner_product(s.dfx, p);
+        std::tie(s.msg, s.a, s.fx, dfx_dot_p) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
 
         if (s.msg != ook::message::convergence){
             break;

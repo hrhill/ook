@@ -13,7 +13,7 @@ struct options
     :
         ftol(T(1e-03)),
         gtol(T(1e-01)),
-        xtol(std::numeric_limits<T>::epsilon()),
+        xtol(T(1e-08)),
         stpmin(std::numeric_limits<T>::epsilon()),
         stpmax(T(5.0)),
         max_function_evaluations(2000)
