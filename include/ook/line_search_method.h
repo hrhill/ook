@@ -32,7 +32,7 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
     typedef typename Scheme::state_type state_type;
 
     typedef decltype(objective_function(x)) result_type;
-    typedef detail::call_selector<F, X, state_type, std::tuple_size<result_type>::value> fcaller_type;
+    typedef detail::call_selector<F, X, state_type, std::tuple_size<result_type>::value> caller_type;
 
     const real_type epsilon = std::numeric_limits<real_type>::epsilon();
     const real_type dx_eps = sqrt(epsilon);
@@ -54,14 +54,14 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
         // take a reference to the state variable, ensuring that fx and dfx get updated
         auto phi = [&nfev, &s, &x, &p, objective_function](const real_type& a){
             ++nfev;
-            fcaller_type::call(objective_function, x + a * p, s);
+            caller_type::call(objective_function, x + a * p, s);
             return std::make_pair(s.fx, detail::inner_product(s.dfx, p));
         };
 
         // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
         real_type dfx_dot_p = detail::inner_product(s.dfx, p);
-        std::tie(s.msg, s.a, s.fx, dfx_dot_p) = ook::line_search::more_thuente(phi, s.fx, dfx_dot_p, s.a, opts);
+        std::tie(s.msg, s.a, s.fx, dfx_dot_p) = ook::line_search::more_thuente()(phi, s.fx, dfx_dot_p, s.a, opts);
 
         if (s.msg != ook::message::convergence){
             break;
