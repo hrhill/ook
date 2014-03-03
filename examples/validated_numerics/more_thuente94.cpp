@@ -1,90 +1,108 @@
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <string>
-#include <limits>
-#include <tuple>
+#include <cmath>
+#include <algorithm>
+#include <vector>
+#include <iterator>
 
+#include "ook/line_search/more_thuente.h"
 #include "ook/options.h"
-#include "ook/line_search/more_thuente/more_thuente.h"
 #include "ook/test_functions/line_search.h"
+#include "ook/message.h"
 
-template <typename ObjectiveFunction, typename Options>
-void
-do_search(ObjectiveFunction obj, const double stp0, const Options& opts)
+using namespace std;
+
+struct problem{
+    int nprob;
+    int ntries;
+    double stp0;
+    double ftol;
+    double gtol;
+    double xtol;
+};
+
+struct algo_result{
+    ook::message info;
+    int nfev;
+    int ntry;
+    int nprob;
+    double stp0;
+    double stp;
+    double f;
+    double g;
+
+    friend
+    std::ostream&
+    operator<<(std::ostream& out, const algo_result& r)
+    {
+        out << setw(6) << r.nprob
+            << setw(6) << r.ntry
+            << setw(6) << r.nfev
+            << setw(6) << (r.info == ook::message::convergence)
+            << setw(11) << scientific << r.stp0
+            << setw(10) << scientific << r.stp
+            << setw(10) << scientific << r.f
+            << setw(10) << scientific << r.g;
+        return out;
+    }
+};
+
+problem probs[] = {
+    {1,    4,     1.e-3,    1.e-03,    1.e-01,    1.e-10},
+    {2,    4,     1.e-3,    1.e-01,    1.e-01,    1.e-10},
+    {3,    4,     1.e-3,    1.e-01,    1.e-01,    1.e-10},
+    {4,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10},
+    {5,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10},
+    {6,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10}};
+
+int main()
 {
-    int nfev = 0;
-    double phi0, dphi0, phix, dphix;
+    cout.precision(2);
+    for (const auto& p : probs){
+        // Read in problem parameters.
+        const int nprob = p.nprob;
+        const int ntries = p.ntries;
+        const double stp0 = p.stp0;
+        const double ftol = p.ftol;
+        const double gtol = p.gtol;
+        const double xtol = p.xtol;
 
-    auto phi = [&nfev, &phix, &dphix, obj](const double x){
-                        ++nfev;
-                        std::tie(phix, dphix) = obj(x);
-                        return std::make_tuple(phix, dphix);
-                    };
+        double factor = 1.0;
+        double g0, f0;
+        vector<algo_result> results;
 
-    std::tie(phi0, dphi0) = obj(0.0);
+        for (int ntry = 0; ntry < ntries; ++ntry) {
+            // Initialize the search.
+            std::tie(f0, g0) = ook::test_functions::mtfcn(0.0, nprob);
+            int nfev = 0;
+            auto phi_trace = [&nfev, nprob](const double& x){
+                ++nfev;
+                return ook::test_functions::mtfcn(x, nprob);
+            };
 
-    auto soln = ook::line_search::more_thuente(phi, phi0, dphi0, stp0, opts);
-    std::cout << std::scientific
-              << std::setw(16) << stp0
-              << std::setw(16) << std::get<0>(soln)
-              << std::setw(4) << nfev
-              << std::setw(16) << std::get<1>(soln)
-              << std::setw(16) << dphix << std::endl;
-}
+            double stp = factor * stp0;
+            ook::options<double> opts(ftol, gtol, xtol, 0, 4.0 * std::max(1.0, stp));
+            ook::message msg;
+            double f, g;
+            std::tie(msg, stp, f, g) = ook::line_search::more_thuente(phi_trace, f0, g0, stp, opts);
 
-int main(int argc, char** argv){
+            // Record information on the algorithm.
+            results.push_back({msg, nfev, ntry + 1, nprob, factor * stp0, stp, f, g});
+            factor *= 100.;
+        }
+        cout << "\n\n Summary of  " << ntries << " calls to dcsrch\n"
+                "\n  xtol = " <<  scientific << xtol <<
+                "   ftol = " <<  scientific << ftol <<
+                "   gtol = " <<  scientific << gtol <<
+                "   g0 = " <<  scientific << g0 << "\n\n";
+        cout << setw(7)  << "nprob" << setw(6) << "ntry"
+             << setw(6)  << "nfev"  << setw(6) << "info"
+             << setw(7)  << "x0"    << setw(10) << "x"
+             << setw(10) << "f"     << setw(12) << "g\n\n";
 
-    using namespace ook::test_functions;
-
-    const double a0 = 1e-03;
-    const double factor = 100;
-    const int n = 4;
-    const double epsilon = std::numeric_limits<double>::epsilon();
-
-    std::cout << std::endl << "Table 5.1" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options<double> opts{1e-03, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi51<double>, std::placeholders::_1, 2.0);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.2" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options<double> opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi52<double>, std::placeholders::_1, 0.004);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.3" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options<double> opts{1e-01, 1e-01, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi53<double>, std::placeholders::_1, 0.01, 39);
-        do_search(objective_function, stp0, opts);
-    }
-    std::cout << std::endl << "Table 5.4" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options<double> opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54<double>, std::placeholders::_1, 0.001, 0.001);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.5" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options<double> opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54<double>, std::placeholders::_1, 0.01, 0.001);
-        do_search(objective_function, stp0, opts);
-    }
-
-    std::cout << std::endl << "Table 5.6" << std::endl;
-    for (int i = 0; i < n; ++i){
-        const double stp0 = std::pow(factor, i) * a0;
-        ook::options<double> opts{1e-03, 1e-03, epsilon, 0.0, 4.0 * std::max(1.0, stp0)};
-        auto objective_function = std::bind(phi54<double>, std::placeholders::_1, 0.001, 0.01);
-        do_search(objective_function, stp0, opts);
+        for (const auto& x : results) std::cout << x << "\n";
     }
     return 0;
 }

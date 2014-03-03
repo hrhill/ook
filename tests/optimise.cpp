@@ -31,8 +31,8 @@ typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-ook::test_functions::rosenbrock<V, M>,
-ook::test_functions::freudenstein_roth<V, M>//,
+ook::test_functions::rosenbrock<V, M>//,
+//ook::test_functions::freudenstein_roth<V, M>//,
 //ook::test_functions::powell_badly_scaled<V, M>
 >;
 
@@ -101,7 +101,7 @@ test_gradient_based_optimisers()
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-
+/*
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,
@@ -122,6 +122,7 @@ test_gradient_based_optimisers()
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
+*/
     return 0;
 }
 
