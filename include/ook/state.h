@@ -98,7 +98,6 @@ state{
     message msg;
 };
 
-
 } // ns detail
 
 } // ns ook
