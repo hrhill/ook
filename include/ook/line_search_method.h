@@ -8,7 +8,7 @@
 #include "ook/norms.h"
 #include "ook/message.h"
 #include "ook/state.h"
-
+#include "ook/call_selector.h"
 #include "ook/line_search/more_thuente/more_thuente.h"
 
 namespace ook{
@@ -22,30 +22,6 @@ inner_product(const T& x, const T& y){
     return std::inner_product(x.begin(), x.end(), y.begin(), value_type(0.0));
 }
 
-// Meta program to select the right function call
-// based on the properties of the return type.
-template <typename F, typename X, typename State, int dim>
-struct function_caller{};
-
-template <typename F, typename X, typename State>
-struct function_caller<F, X, State, 2>{
-    static
-    void
-    call(F objective_function, const X& x, State& s){
-        std::tie(s.fx, s.dfx) = objective_function(x);
-    }
-};
-
-template <typename F, typename X, typename State>
-struct function_caller<F, X, State, 3>{
-    static
-    void
-    call(F objective_function, const X& x, State& s){
-        std::tie(s.fx, s.dfx, s.H) =  objective_function(x);
-    }
-};
-
-
 } // ns detail
 
 template <typename Scheme, typename F, typename X, typename Options, typename Observer>
@@ -56,7 +32,7 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
     typedef typename Scheme::state_type state_type;
 
     typedef decltype(objective_function(x)) result_type;
-    typedef detail::function_caller<F, X, state_type, std::tuple_size<result_type>::value> fcaller_type;
+    typedef detail::call_selector<F, X, state_type, std::tuple_size<result_type>::value> fcaller_type;
 
     const real_type epsilon = std::numeric_limits<real_type>::epsilon();
     const real_type dx_eps = sqrt(epsilon);
