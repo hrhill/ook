@@ -18,7 +18,6 @@
 #include "ook/fletcher_reeves.h"
 #include "ook/bfgs.h"
 #include "ook/newton.h"
-#include "ook/lbfgs.h"
 #include "ook/options.h"
 #include "ook/stream_observer.h"
 
@@ -104,13 +103,6 @@ test_gradient_based_optimisers()
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,
-                                vector_type,
-                                ook::options<double>,
-                                ook::stream_observer<std::ostream>>);
-
-    std::cout << "lbfgs" << std::endl;
-    run_gradient_based_optimiser(Function(),
-            ook::lbfgs<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
