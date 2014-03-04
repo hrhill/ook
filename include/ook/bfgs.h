@@ -4,10 +4,13 @@
 #include <tuple>
 #include <boost/numeric/ublas/matrix.hpp>
 
+#include "ook/norms.h"
+#include "ook/line_search_method.h"
+
+#include "ook/state.h"
 #include "ook/line_search_method.h"
 
 namespace ook{
-
 namespace detail{
 
 /// \brief Implementation of the required steps of line_search_method
@@ -47,12 +50,12 @@ struct bfgs{
         X y(s.dfx - s.dfx0);
         const int n = s.dfx.size();
 
-        const value_type rho = 1.0/detail::inner_product(y, dx);
+        const value_type rho = 1.0/inner_product(y, dx);
         matrix_type Z(ublas::identity_matrix<double>(n) - rho * ublas::outer_prod(dx, y));
         matrix_type ss = rho * ublas::outer_prod(dx, dx);
 
         if (s.iteration == 1){
-            const value_type hii = detail::inner_product(dx, dx);
+            const value_type hii = inner_product(dx, dx);
             for (int i = 0; i < n; ++i){
                 s.H(i, i) = hii;
             }

@@ -10,7 +10,8 @@ namespace detail{
 // based on the properties of the return type.
 template <typename F, typename X, typename State, int dim>
 struct call_selector{};
-/*
+
+
 template <typename F, typename X, typename State>
 struct call_selector<F, X, State, 1>{
     static
@@ -19,7 +20,6 @@ struct call_selector<F, X, State, 1>{
         std::tie(s.fx) = f(x);
     }
 };
-*/
 template <typename F, typename X, typename State>
 struct call_selector<F, X, State, 2>{
     static
