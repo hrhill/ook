@@ -4,6 +4,7 @@
 #include <tuple>
 #include <algorithm>
 
+#include "ook/state.h"
 #include "ook/line_search_method.h"
 
 namespace ook{
@@ -41,7 +42,7 @@ struct fletcher_reeves{
     state_type
     update(state_type s)
     {
-        s.beta = detail::inner_product(s.dfx, s.dfx)/detail::inner_product(s.dfx0, s.dfx0);
+        s.beta = inner_product(s.dfx, s.dfx)/inner_product(s.dfx0, s.dfx0);
         s.dfx0 = s.dfx;
         return s;
     }

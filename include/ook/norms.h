@@ -2,8 +2,17 @@
 #define OOK_NORMS_H_
 
 #include <cmath>
+#include <numeric>
 
 namespace ook{
+
+/// \brief Inner product
+template <typename T>
+typename T::value_type
+inner_product(const T& x, const T& y){
+    typedef typename T::value_type value_type;
+    return std::inner_product(x.begin(), x.end(), y.begin(), value_type(0.0));
+}
 
 /// \brief \f$ l_1 \f$ norm.
 template <typename T>
@@ -19,10 +28,7 @@ norm_1(const T& x){
 template <typename T>
 typename T::value_type
 norm_2(const T& x){
-    typename T::value_type r(0.0);
-    for (const auto& xi : x)
-        r += xi * xi;
-    return sqrt(r);
+    return sqrt(inner_product(x, x));
 }
 
 /// \brief \f$ l_p  \f$ norm.
