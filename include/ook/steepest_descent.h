@@ -31,6 +31,7 @@ struct steepest_descent{
     vector_type
     descent_direction(state_type& s)
     {
+        ++s.iteration;
         return -s.dfx;
     }
 
@@ -44,13 +45,13 @@ struct steepest_descent{
 } // ns detail
 
 /// \brief The Steepest descent algorithm.
-/** \details Implementation of the Steepest descent algorithm using the generic line search function.
-**/
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-steepest_descent(F objective_function, const X& x0, const Options& opts, Observer& observer)
+steepest_descent(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
-    return line_search_method<detail::steepest_descent<X>>(objective_function, x0, opts, observer);
+    typedef detail::steepest_descent<X> scheme;
+    line_search_method<scheme, ook::line_search::more_thuente> method;
+    return method.run(obj_fun, x0, opts, observer);
 }
 
 } //ns ook

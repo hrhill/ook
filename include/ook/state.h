@@ -25,15 +25,18 @@ state{
 
     state(const int n, const bool with_matrix = false)
     :
-         dfx(n),
-         dfx0(n),
-         p(n),
-         dx(n),
-         H(n * with_matrix, n * with_matrix, 0.0),
-         a(1),
-         beta(0),
-         iteration(0),
-         tag(state_tag::init)
+        fx(0),
+        dfx_dot_p(0),
+        dfx(n),
+        dfx0(n),
+        p(n),
+        dx(n),
+        H(n * with_matrix, n * with_matrix, 0.0),
+        a(1),
+        beta(0),
+        iteration(0),
+        nfev(0),
+        tag(state_tag::init)
     {
         if (with_matrix){
             for (int i = 0; i < n; ++i){
@@ -58,7 +61,7 @@ state{
 
         if (s.tag == state_tag::iterate){
             out << std::setw(6) << s.iteration
-                << std::setw(6) << 0//s.nfev_total
+                << std::setw(6) << s.nfev
                 << std::scientific
                 << std::setw(14) << s.a
                 << std::setw(14) << s.fx
@@ -76,7 +79,7 @@ state{
                 << std::setw(16) << "max ||dx||" << std::endl;
 
             out << std::setw(8) << s.iteration
-                << std::setw(8) << 0//s.nfev_total
+                << std::setw(8) << s.nfev
                 << std::scientific
                 << std::setw(16) << s.fx
                 << std::setw(16) << ook::norm_infinity(s.dfx)
@@ -86,6 +89,7 @@ state{
     }
 
     value_type fx;
+    value_type dfx_dot_p;
     vector_type dfx;
     vector_type dfx0;
     vector_type p;
@@ -94,6 +98,7 @@ state{
     value_type a;
     value_type beta;
     int iteration;
+    int nfev;
     state_tag tag;
     message msg;
 };
