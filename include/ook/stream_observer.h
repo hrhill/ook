@@ -6,6 +6,7 @@
 
 namespace ook{
 
+/// \brief Observer that outputs the state to the given stream.
 template <typename Stream>
 struct stream_observer
 {
