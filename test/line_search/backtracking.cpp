@@ -26,13 +26,12 @@ BOOST_AUTO_TEST_CASE(check_positive)
     };
 
     ook::options<double> opts;
-    ook::line_search::backtracking search;
     double phi0, dphi0;
     std::tie(phi0, dphi0) = linear(0.0);
 
     double a = 1.0;
     double phia, dphia;
-    std::tie(a, phia, dphia) = search(linear, phi0, dphi0, a, opts);
+    std::tie(a, phia, dphia) = ook::line_search::backtracking::search(linear, phi0, dphi0, a, opts);
     BOOST_CHECK_EQUAL(a, 1.0);
     BOOST_CHECK_EQUAL(phia, -1.0);
     BOOST_CHECK_EQUAL(dphia, -1.0);
