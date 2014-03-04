@@ -7,22 +7,10 @@
 
 #include "ook/norms.h"
 #include "ook/message.h"
-#include "ook/state.h"
 #include "ook/call_selector.h"
 #include "ook/line_search/more_thuente.h"
 
 namespace ook{
-
-namespace detail{
-
-template <typename T>
-typename T::value_type
-inner_product(const T& x, const T& y){
-    typedef typename T::value_type value_type;
-    return std::inner_product(x.begin(), x.end(), y.begin(), value_type(0.0));
-}
-
-} // ns detail
 
 template <typename Scheme, typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
@@ -55,17 +43,19 @@ line_search_method(F objective_function, X x, const Options& opts, Observer& obs
         auto phi = [&nfev, &s, &x, &p, objective_function](const real_type& a){
             ++nfev;
             caller_type::call(objective_function, x + a * p, s);
-            return std::make_pair(s.fx, detail::inner_product(s.dfx, p));
+            return std::make_pair(s.fx, inner_product(s.dfx, p));
         };
 
         // Store current fx value since line search overwrites the state values.
         const real_type fxk = s.fx;
-        real_type dfx_dot_p = detail::inner_product(s.dfx, p);
-        std::tie(s.msg, s.a, s.fx, dfx_dot_p) = ook::line_search::more_thuente()(phi, s.fx, dfx_dot_p, s.a, opts);
+        real_type dfx_dot_p = inner_product(s.dfx, p);
+        std::tie(s.msg, s.a, s.fx, dfx_dot_p) = ook::line_search::more_thuente::search(phi, s.fx, dfx_dot_p, s.a, opts);
 
         if (s.msg != ook::message::convergence){
             break;
         }
+        // check for warnings here too, perhaps contninuing if a descent direction can be found
+
         dx = s.a * p;
         x += dx;
         nfev_total += nfev;
