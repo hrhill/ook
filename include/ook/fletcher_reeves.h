@@ -6,6 +6,7 @@
 
 #include "ook/state.h"
 #include "ook/line_search_method.h"
+#include "ook/line_search/more_thuente.h"
 
 namespace ook{
 
@@ -34,6 +35,7 @@ struct fletcher_reeves{
     vector_type
     descent_direction(state_type& s)
     {
+        ++s.iteration;
         s.p = -s.dfx + s.beta * s.p;
         return s.p;
     }
@@ -51,13 +53,13 @@ struct fletcher_reeves{
 } // ns detail
 
 /// \brief The Fletcher-Reeves algorithm.
-/** \details Implementation of the Fletcher-Reeves algorithm using the generic line search function.
-**/
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-fletcher_reeves(F objective_function, const X& x0, const Options& opts, Observer& observer)
+fletcher_reeves(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
-    return line_search_method<detail::fletcher_reeves<X>>(objective_function, x0, opts, observer);
+    typedef detail::fletcher_reeves<X> scheme;
+    line_search_method<scheme, ook::line_search::more_thuente> method;
+    return method.run(obj_fun, x0, opts, observer);
 }
 
 } //ns ook
