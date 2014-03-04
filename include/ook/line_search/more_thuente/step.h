@@ -1,5 +1,5 @@
-#ifndef OOK_LINESEARCH_MORE_THUENTE_STEP_H_
-#define OOK_LINESEARCH_MORE_THUENTE_STEP_H_
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_STEP_H_
+#define OOK_LINE_SEARCH_MORE_THUENTE_STEP_H_
 
 #include <cmath>
 #include <algorithm>
