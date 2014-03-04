@@ -2,10 +2,11 @@
 #define OOK_LINE_SEARCH_METHODS_STEEPEST_DESCENT_H_
 
 #include <tuple>
+
+#include "ook/state.h"
 #include "ook/line_search_method.h"
 
 namespace ook{
-
 namespace detail{
 
 /// \brief Implementation of the required steps of line_search_method

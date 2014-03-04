@@ -1,5 +1,5 @@
-#ifndef OOK_LINE_SEARCH_METHODS_NEWTON_H_
-#define OOK_LINE_SEARCH_METHODS_NEWTON_H_
+#ifndef OOK_NEWTON_H_
+#define OOK_NEWTON_H_
 
 #include <tuple>
 
@@ -13,6 +13,7 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
+#include "ook/state.h"
 #include "ook/line_search_method.h"
 #include "ook/factorisations/gmw81.h"
 

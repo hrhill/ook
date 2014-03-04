@@ -1,5 +1,5 @@
-#ifndef OOK_LINE_SEARCH_METHODS_STATE_H_
-#define OOK_LINE_SEARCH_METHODS_STATE_H_
+#ifndef OOK_STATE_H_
+#define OOK_STATE_H_
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -7,9 +7,9 @@
 #include <iomanip>
 
 #include "ook/message.h"
+#include "ook/norms.h"
 
 namespace ook{
-
 namespace detail{
 
 /// \brief State for use with line search method.
