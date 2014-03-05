@@ -1,4 +1,3 @@
-/// \file more_thuente_test.cpp
 #include <iostream>
 #include <string>
 #include <limits>
@@ -11,7 +10,7 @@
 
 #include <boost/mpl/list.hpp>
 
-#define BOOST_TEST_MODULE more_thuente
+#define BOOST_TEST_MODULE line_search
 #include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
@@ -21,7 +20,6 @@
 #include "ook/line_search/more_thuente.h"
 #include "ook/line_search/backtracking.h"
 
-
 typedef boost::mpl::list<
     ook::line_search::more_thuente,
     ook::line_search::backtracking
@@ -30,8 +28,8 @@ typedef boost::mpl::list<
 std::tuple<double, double>
 quadratic(double x)
 {
-    return std::make_tuple(4 * std::pow(x - 0.5, 2),
-                           8 * (x - 0.5));
+    const double t = x - 0.5;
+    return std::make_tuple(4 * std::pow(t, 2), 8 * t);
 }
 
 template <typename LineSearch>
