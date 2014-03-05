@@ -1,4 +1,5 @@
-set(TESTS optimise
+set(TESTS line_search
+          optimise
           factorisation
           test_functions)
 
@@ -8,5 +9,4 @@ foreach(test ${TESTS})
     add_test(${test} ${EXECUTABLE_OUTPUT_PATH}/${test}_test)    
 endforeach(test)
 
-add_subdirectory(line_search)
 add_subdirectory(finite_differences)
