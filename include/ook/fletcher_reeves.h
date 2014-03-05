@@ -26,7 +26,6 @@
 #include "ook/line_search/more_thuente.h"
 
 namespace ook{
-
 namespace detail{
 
 /// \brief Implementation of the required steps of line_search_method
@@ -75,7 +74,8 @@ std::tuple<ook::message, X>
 fletcher_reeves(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::fletcher_reeves<X> scheme;
-    line_search_method<scheme, ook::line_search::more_thuente> method;
+    typedef ook::line_search::more_thuente search;
+    line_search_method<scheme, search> method;
     return method.run(obj_fun, x0, opts, observer);
 }
 

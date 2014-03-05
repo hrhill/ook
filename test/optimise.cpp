@@ -30,8 +30,8 @@ typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-ook::test_functions::rosenbrock<V, M>//,
-//ook::test_functions::freudenstein_roth<V, M>//,
+ook::test_functions::rosenbrock<V, M>,
+ook::test_functions::freudenstein_roth<V, M>//,
 //ook::test_functions::powell_badly_scaled<V, M>
 >;
 
@@ -63,8 +63,7 @@ template <typename Function, typename Optimiser>
 void
 run_gradient_based_optimiser(Function, Optimiser optimiser)
 {
-    const double epsilon = std::numeric_limits<double>::epsilon();
-    ook::options<double> opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
+    ook::options<double> opts;
 
     typedef Function test_function;
     test_function objective_function;
@@ -121,8 +120,7 @@ template <typename Function, typename Optimiser>
 void
 run_hessian_based_optimiser(Function, Optimiser optimiser)
 {
-    const double epsilon = std::numeric_limits<double>::epsilon();
-    ook::options<double> opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
+    ook::options<double> opts;
 
     Function objective_function;
 
