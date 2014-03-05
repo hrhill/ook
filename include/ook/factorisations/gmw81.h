@@ -1,3 +1,20 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_FACTORISATIONS_GMW81_H_
 #define OOK_FACTORISATIONS_GMW81_H_
 
@@ -29,7 +46,7 @@ calculate_theta(const Matrix& c, const int j){
         for (int i = j + 1; i < n; ++i){
             theta = std::max(theta, jth_col(i));
         }
-    return theta;        
+    return theta;
 }
 
 } // ns detail
@@ -58,14 +75,14 @@ gmw81(Matrix G)
     using namespace boost::numeric::ublas;
 
     typedef typename Matrix::value_type real_type;
-    typedef typename Matrix::size_type size_type;    
+    typedef typename Matrix::size_type size_type;
 
     // MC1
     const size_type n = G.size1();
     const real_type eps = std::numeric_limits<real_type>::epsilon();
     const real_type nu = std::max(1.0, sqrt(std::pow(n, 2) - 1.0));
     const real_type gamma = std::get<1>(tools::max_magnitude_diagonal(G));
-    const real_type eta = tools::max_magnitude_off_diagonal(G);    
+    const real_type eta = tools::max_magnitude_off_diagonal(G);
     const real_type beta2 = std::max({gamma, eta/nu, eps});
     const real_type delta = sqrt(eps);
 
@@ -77,7 +94,7 @@ gmw81(Matrix G)
         c(i, i) = G(i, i);
     }
     for (size_type j = 0; j < n; ++j){
-        // MC3 
+        // MC3
         real_type cqq;
         size_type q;
         std::tie(q, cqq) = tools::max_magnitude_diagonal(matrix_range<Matrix>(c, range(j, n), range(j, n)));

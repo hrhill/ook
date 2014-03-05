@@ -1,3 +1,20 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_LINE_SEARCH_MORE_THUENTE_SEARCH_H_
 #define OOK_LINE_SEARCH_MORE_THUENTE_SEARCH_H_
 
@@ -10,32 +27,33 @@
 
 // This subroutine finds a step that satisfies a sufficient
 // decrease condition and a curvature condition.
-
+//
 // Each call of the subroutine updates an interval with
 // endpoints stx and sty. The interval is initially chosen
 // so that it contains a minimizer of the modified function
-
+//
 //       psi(stp) = f(stp) - f(0) - ftolstp*f'(0).
-
+//
 // If psi(stp) <= 0 and f'(stp) >= 0 for some step, then the
 // interval is chosen so that it contains a minimizer of f.
-
+//
 // The algorithm is designed to find a step that satisfies
 // the sufficient decrease condition
-
+//
 //       f(stp) <= f(0) + ftolstp*f'(0),
-
+//
 // and the curvature condition
-
+//
 //       fabs(f'(stp)) <= gtol*fabs(f'(0)).
-
+//
 // If ftol is less than gtol and if, for example, the function
 // is bounded below, then there is always a step which satisfies
 // both conditions.
-
+//
 // If no step can be found that satisfies both conditions, then
 // the algorithm stops with a warning. In this case stp only
 // satisfies the sufficient decrease condition.
+
 namespace ook{
 namespace line_search{
 namespace detail{
