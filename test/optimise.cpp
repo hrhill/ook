@@ -112,7 +112,6 @@ test_gradient_based_optimisers()
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-
     return 0;
 }
 
@@ -120,10 +119,6 @@ template <typename Function, typename Optimiser>
 void
 run_hessian_based_optimiser(Function, Optimiser optimiser)
 {
-    ook::options<double> opts;
-
-    Function objective_function;
-
     vector_type x(Function::n, 0.0);
     std::copy(Function::x0.begin(), Function::x0.end(), x.begin());
 
@@ -131,8 +126,12 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
     std::copy(Function::local_minima.begin(), Function::local_minima.end(), minima.begin());
 
     ook::stream_observer<std::ostream> obs(std::cout);
+
+    ook::options<double> opts;
+    Function objective_function;
     auto soln = optimiser(objective_function, x, opts, obs);
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
+
     // Evaluate function at minima, check proximity
     auto x_min = std::get<1>(soln);
     double f_min;

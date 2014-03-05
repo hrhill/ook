@@ -59,7 +59,6 @@ struct call_selector<F, X, State, 3>{
 };
 
 } // ns detail
-
 } // ns ook
 
 #endif
