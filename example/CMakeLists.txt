@@ -2,7 +2,7 @@ set(PROGRAMS version)
 
 foreach(ex ${PROGRAMS})
     add_executable(${ex} ${ex}.cpp)
-endforeach(prog)
+endforeach(ex)
 
 
 add_subdirectory(validated_numerics)
