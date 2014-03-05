@@ -1,3 +1,20 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_TEST_FUNCTIONS_LINE_SEARCH_FUNCTIONS_H_
 #define OOK_TEST_FUNCTIONS_LINE_SEARCH_FUNCTIONS_H_
 
@@ -11,27 +28,31 @@ namespace test_functions{
 
 template <typename T>
 std::tuple<T, T>
-constant(const T& x){
+constant(const T& x)
+{
     return std::make_tuple(-1.0, 0.0);
 }
 
 template <typename T>
 std::tuple<T, T>
-linear(const T& x, const T& a, const T& b){
+linear(const T& x, const T& a, const T& b)
+{
     return std::make_tuple(a * x + b, a);
 }
 
 
 template <typename T>
 std::tuple<T, T>
-phi51(const T& a, const T& b){
+phi51(const T& a, const T& b)
+{
     return std::make_tuple(-a/(a * a + b),
                           (a * a - b)/((a * a + b) * (a * a + b)));
 }
 
 template <typename T>
 std::tuple<T, T>
-phi52(const T& a, const T& b){
+phi52(const T& a, const T& b)
+{
     T t = a + b;
     T t2 = std::pow(t, 2);
     T t3 = std::pow(t, 3);
@@ -43,7 +64,8 @@ phi52(const T& a, const T& b){
 
 template <typename T>
 std::tuple<T, T>
-phi53(const T& a, const T& b, const T& c){
+phi53(const T& a, const T& b, const T& c)
+{
     const T pi = boost::math::constants::pi<T>();
 
     T phi0;
@@ -64,8 +86,8 @@ phi53(const T& a, const T& b, const T& c){
 
 template <typename T>
 std::tuple<T, T>
-phi54(const T& a, const T& b1, const T& b2){
-
+phi54(const T& a, const T& b1, const T& b2)
+{
     using std::pow;
     T t1 = sqrt(pow(b1, 2) + 1) - b1;
     T t2 = sqrt(pow(b2, 2) + 1) - b2;
