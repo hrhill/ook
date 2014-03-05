@@ -1,5 +1,22 @@
-#ifndef OOK_FACTORISATIONS_H_
-#define OOK_FACTORISATIONS_H_
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef OOK_FACTORISATIONS_TOOLS_H_
+#define OOK_FACTORISATIONS_TOOLS_H_
 
 #include <algorithm>
 
@@ -36,7 +53,7 @@ select_upper_triangular(const Matrix& m){
     const int ncols = m.size2();
 
     const int dim = std::min(nrows, ncols);
-    const int col_offset = std::max(0, ncols - nrows);    
+    const int col_offset = std::max(0, ncols - nrows);
     Matrix upper(dim, dim, 0.0);
 
     for (int i = 0; i < dim; ++i){
@@ -53,7 +70,7 @@ std::tuple<typename Matrix::size_type, typename Matrix::value_type>
 max_magnitude_diagonal(const Matrix& m){
 
     typedef typename Matrix::size_type size_type;
-    typedef typename Matrix::size_type value_type;  
+    typedef typename Matrix::size_type value_type;
 
     const size_type n = m.size1();
 
@@ -76,7 +93,7 @@ typename Matrix::value_type
 max_magnitude_off_diagonal(const Matrix& m){
 
     typedef typename Matrix::size_type size_type;
-    typedef typename Matrix::value_type value_type;  
+    typedef typename Matrix::value_type value_type;
 
     const size_type n = m.size1();
 
