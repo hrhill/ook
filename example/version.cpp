@@ -19,5 +19,5 @@
 
 int main(int argc, char** argv){
 
-    std::cout << ook::version::string() << std::endl;
+    std::cout << "ook " << ook::version::string() << std::endl;
 }

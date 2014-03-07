@@ -74,7 +74,27 @@ problem probs[] = {
 
 int main()
 {
+    cout <<
+        "\nThis program validates that the translation of the More Thuente\n"
+        "line search algorithm remains faithful to the implementation described\n"
+        "in the paper\n"
+        "author = {Jorge J. More and David J. Thuente and Preprint Mcs-p},\n"
+        "title = {Line Search Algorithms With Guaranteed Sufficient Decrease},\n"
+        "journal = {ACM Trans. Math. Software},\n"
+        "year = {1992},\n"
+        "volume = {20},\n"
+        "pages = {286--307}\n"
+        "Press enter to continue\n\n";
+    cin.get();
+
     cout.precision(2);
+    vector<string> table{"Table 5.1, ftol = 0.001, gtol = 0.1\n",
+                         "Table 5.2, ftol = 0.1,   gtol = 0.1\n",
+                         "Table 5.3, ftol = 0.1,   gtol = 0.1\n",
+                         "Table 5.4, ftol = 0.001, gtol = 0.001\n",
+                         "Table 5.5, ftol = 0.001, gtol = 0.001\n",
+                         "Table 5.6, ftol = 0.001, gtol = 0.001\n"};
+    string line(80, '-');
     for (const auto& p : probs){
         // Read in problem parameters.
         const int nprob = p.nprob;
@@ -107,8 +127,9 @@ int main()
             results.push_back({msg, nfev, ntry + 1, nprob, factor * stp0, stp, f, g});
             factor *= 100.;
         }
-        cout << "\n\n Summary of  " << ntries << " calls to dcsrch\n"
-                "\n  xtol = " <<  scientific << xtol <<
+        cout << line << "\n" << table[p.nprob - 1] << endl;
+        cout << " Summary of  " << ntries << " calls to dcsrch\n"
+                "   xtol = " <<  scientific << xtol <<
                 "   ftol = " <<  scientific << ftol <<
                 "   gtol = " <<  scientific << gtol <<
                 "   g0 = " <<  scientific << g0 << "\n\n";
@@ -117,7 +138,7 @@ int main()
              << setw(7)  << "x0"    << setw(10) << "x"
              << setw(10) << "f"     << setw(12) << "g\n\n";
 
-        for (const auto& x : results) std::cout << x << "\n";
+        for (const auto& x : results) cout << x << "\n";
     }
     return 0;
 }
