@@ -22,25 +22,27 @@
 
 #include "ook/factorisations/gmw81.h"
 
+using namespace std;
+
 typedef boost::numeric::ublas::matrix<double> matrix_t;
 typedef boost::numeric::ublas::vector<double> vector_t;
 
 void pretty_print(matrix_t m){
 
     for (matrix_t::size_type i = 0; i < m.size1(); ++i){
-        std::cout << "|";
+        cout << "|";
         for (matrix_t::size_type j = 0; j < m.size2(); ++j){
-            std::cout << std::setprecision(4) << std::setw(8) << m(i, j);
+            cout << std::setprecision(4) << std::setw(8) << m(i, j);
         }
-        std::cout << "|" << std::endl;
+        cout << "|\n";
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 int main(){
 
-    std::cout <<
-        "\nThis is code to check that the implementation of gmw81\n"
+    cout <<
+        "\nThis program validates that the implementation of gmw81\n"
         "gives the same numbers as the example on page 111 of\n"
         "\"Practical Optimization\" by Gill, Murray and Wright, which takes\n"
         "the matrix from example 4.7 (p109) and applies gmw81 to it. The\n"
@@ -58,7 +60,7 @@ int main(){
           1.0, nextafter(1.0, 2), 3.0,
           2.0, 3.0,         1.0;
 
-    std::cout << "\nThe result of the algorithm is a lower triangular matrix L and a\n"
+    cout << "\nThe result of the algorithm is a lower triangular matrix L and a\n"
                  "diagonal matrix D, given by,\n\n";
     L <<= 1.0,    0.0,    0.0,
           0.2652, 1.0,    0.0,
@@ -67,21 +69,24 @@ int main(){
           0.0,   5.750, 0.0,
           0.0,     0.0, 1.121;
 
-    std::cout << "L = \n";
+    cout << "L = \n";
     pretty_print(L);
-    std::cout << "D = \n";
+    cout << "D = \n";
     pretty_print(D);
 
-    std::cout << "Output from gmw81\n";
+    cout << "Press enter to continue" << endl;
+    cin.get();
+
+    cout << "Output from gmw81\n\n";
     matrix_t LD = ook::factorisations::gmw81(G);
     matrix_t d(n, n, 0.0);
     for (int i = 0; i < n; ++i){
         d(i, i) = LD(i, i);
         LD(i, i) = 1.0;
     }
-    std::cout << "L = \n";
+    cout << "L = \n";
     pretty_print(LD);
-    std::cout << "D = \n";
+    cout << "D = \n";
     pretty_print(d);
 }
 
