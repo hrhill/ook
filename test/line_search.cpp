@@ -43,7 +43,8 @@ test_quadratic()
     double a = 1.0;
     double phia, dphia;
     ook::message msg;
-    std::tie(msg, a, phia, dphia) = LineSearch::search(quadratic, phi0, dphi0, a, opts);
+    std::tie(msg, a, phia, dphia)
+        = LineSearch::search(quadratic, phi0, dphi0, a, opts);
     BOOST_CHECK_EQUAL(msg, ook::message::convergence);
     BOOST_CHECK(a < 1.0 && a > 0);
     return 0;

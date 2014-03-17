@@ -108,7 +108,6 @@ step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy,
     // Some checks (they were documented).
     if (bracket)
         assert(stp > std::min(stx, sty) && stp < std::max(stx, sty));
-    assert(dx < 0);
 
     T stpf(0);
     const T sgnd = dp * (dx / fabs(dx));
