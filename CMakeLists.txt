@@ -7,7 +7,7 @@ include(CheckLibraryExists)
 include(CTest)
 
 set(BUILD_SHARED_LIBS ON)
-set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=gnu++0x -D__STRICT_ANSI__")
+set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=c++11 -D__STRICT_ANSI__")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
