@@ -10,7 +10,7 @@ before_install:
     - sudo apt-get install cmake
     - sudo apt-get install git
     - git clone https://github.com/hrhill/numeric-bindings.git
-    - sudo cp -r numeric_bindings/boost/numeric/bindings /usr/include/boost/numeric
+    - sudo cp -r numeric-bindings/boost/numeric/bindings /usr/include/boost/numeric
 script:
     - cmake -DCMAKE_BUILD_TYPE=Release . && make && make test
 
