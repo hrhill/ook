@@ -1,0 +1,15 @@
+language: cpp
+compiler:
+    - gcc
+    - clang
+#before_install:
+#    - sudo apt-get update -qq
+#    - sudo apt-get install -qq libboost-all-dev
+#    - sudo apt-get install -qq libatlas-dev
+#    - sudo apt-get install -qq liblapack-dev
+#    - sudo apt-get install -qq cmake
+#    - git clone https://github.com/hthill/numeric-bindings.git
+#    - sudo cp -r numeric_bindings/boost/numeric/bindings /usr/include/boost/numeric
+script:
+    - cmake -DCMAKE_BUILD_TYPE=Release . && make && make test
+
