@@ -7,7 +7,6 @@ include(CheckLibraryExists)
 include(CTest)
 
 set(BUILD_SHARED_LIBS ON)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${OOK_SOURCE_DIR}/modules/")
 set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=gnu++0x -D__STRICT_ANSI__")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
