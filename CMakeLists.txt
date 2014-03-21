@@ -10,7 +10,7 @@ set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=gnu++0x -D__STRICT_ANSI__")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-find_package(Boost 1.50 COMPONENTS test_exec_monitor program_options REQUIRED)
+find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
 find_package(BLAS)
