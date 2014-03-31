@@ -18,22 +18,32 @@
 #ifndef OOK_H_
 #define OOK_H_
 
-#include <string>
+#include "ook/norms.h"
+#include "ook/message.h"
+#include "ook/version.h"
+#include "ook/options.h"
+#include "ook/state.h"
 
-namespace ook{
-struct version{
-    static constexpr int major = 0;
-    static constexpr int minor = 4;
-    static constexpr int patch = 0;
+#include "ook/stream_observer.h"
 
-    static std::string
-    string(){
-        return "v" + std::to_string(major) +
-               "." + std::to_string(minor) +
-               "." + std::to_string(patch);
-    }
-};
+#include "ook/factorisations/cholesky.h"
+#include "ook/factorisations/ldlt.h"
+#include "ook/factorisations/gmw81.h"
+#include "ook/factorisations/tools.h"
 
-}
+#include "ook/line_search_method.h"
+#include "ook/newton.h"
+#include "ook/steepest_descent.h"
+#include "ook/bfgs.h"
+#include "ook/fletcher_reeves.h"
+
+#include "ook/line_search/conditions.h"
+#include "ook/line_search/more_thuente.h"
+#include "ook/line_search/backtracking.h"
+
+#include "ook/finite_differences/central_difference.h"
+#include "ook/finite_differences/finite_differences.h"
+#include "ook/finite_differences/forward_difference.h"
+#include "ook/finite_differences/backward_difference.h"
 
 #endif
