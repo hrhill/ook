@@ -45,13 +45,14 @@ convert_to_cholesky(const Matrix& LD)
 {
     int n = LD.size1();
     Matrix L(LD);
-    Matrix D(n, n, 0);
-
-    for (int i = 0; i < n; ++i){
-        D(i, i) = sqrt(L(i, i));
-        L(i, i) = 1.0;
+    for (int j = 0; j < n; ++j){
+        const double di = sqrt(L(j, j));
+        L(j, j) = di;
+        for (int i = j + 1; i < n; ++i){
+            L(i, j) *= di;
+        }
     }
-    return boost::numeric::ublas::prod(L, D);
+    return L;
 }
 
 /// \brief Solve the system Ax = b where A is a
