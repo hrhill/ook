@@ -15,8 +15,6 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-#include <omp.h>
-
 #include "test_functions.h"
 
 #include "ook/finite_differences/forward_difference.h"
