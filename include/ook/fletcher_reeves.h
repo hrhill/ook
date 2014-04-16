@@ -1,13 +1,31 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_H_
 #define OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_H_
 
 #include <tuple>
 #include <algorithm>
 
+#include "ook/state.h"
 #include "ook/line_search_method.h"
+#include "ook/line_search/more_thuente.h"
 
 namespace ook{
-
 namespace detail{
 
 /// \brief Implementation of the required steps of line_search_method
@@ -33,6 +51,7 @@ struct fletcher_reeves{
     vector_type
     descent_direction(state_type& s)
     {
+        ++s.iteration;
         s.p = -s.dfx + s.beta * s.p;
         return s.p;
     }
@@ -41,7 +60,7 @@ struct fletcher_reeves{
     state_type
     update(state_type s)
     {
-        s.beta = detail::inner_product(s.dfx, s.dfx)/detail::inner_product(s.dfx0, s.dfx0);
+        s.beta = inner_product(s.dfx, s.dfx)/inner_product(s.dfx0, s.dfx0);
         s.dfx0 = s.dfx;
         return s;
     }
@@ -50,13 +69,14 @@ struct fletcher_reeves{
 } // ns detail
 
 /// \brief The Fletcher-Reeves algorithm.
-/** \details Implementation of the Fletcher-Reeves algorithm using the generic line search function.
-**/
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-fletcher_reeves(F objective_function, const X& x0, const Options& opts, Observer& observer)
+fletcher_reeves(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
-    return line_search_method<detail::fletcher_reeves<X>>(objective_function, x0, opts, observer);
+    typedef detail::fletcher_reeves<X> scheme;
+    typedef ook::line_search::more_thuente search;
+    line_search_method<scheme, search> method;
+    return method.run(obj_fun, x0, opts, observer);
 }
 
 } //ns ook

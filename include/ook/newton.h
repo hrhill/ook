@@ -1,5 +1,22 @@
-#ifndef OOK_LINE_SEARCH_METHODS_NEWTON_H_
-#define OOK_LINE_SEARCH_METHODS_NEWTON_H_
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef OOK_NEWTON_H_
+#define OOK_NEWTON_H_
 
 #include <tuple>
 
@@ -13,13 +30,15 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
+#include "ook/state.h"
 #include "ook/line_search_method.h"
 #include "ook/factorisations/gmw81.h"
 
 namespace ook{
-
 namespace detail{
 
+/// \brief Take a matrix in LD format and convert
+/// it to a lower cholesky matrix.
 template <typename Matrix>
 Matrix
 convert_to_cholesky(const Matrix& LD)
@@ -36,6 +55,8 @@ convert_to_cholesky(const Matrix& LD)
     return L;
 }
 
+/// \brief Solve the system Ax = b where A is a
+/// symmetric positive definite matrix.
 template <typename Matrix, typename Vector>
 Vector
 solve(Matrix A, const Vector& b)
@@ -43,7 +64,8 @@ solve(Matrix A, const Vector& b)
     Matrix LD = ook::factorisations::gmw81(A);
     Matrix L = convert_to_cholesky(LD);
 
-    boost::numeric::ublas::symmetric_adaptor<Matrix, boost::numeric::ublas::lower> sa(L);
+    boost::numeric::ublas::symmetric_adaptor<Matrix,
+                            boost::numeric::ublas::lower> sa(L);
     Matrix b1(b.size(), 1);
 
     boost::numeric::ublas::column(b1, 0) = b;
@@ -74,6 +96,7 @@ struct newton{
     vector_type
     descent_direction(state_type& s)
     {
+        ++s.iteration;
         return -detail::solve(s.H, s.dfx);
     }
 
@@ -87,13 +110,16 @@ struct newton{
 } // ns detail
 
 /// \brief The Newton algorithm.
-/** \details Implementation of the Newton algorithm using the generic line search function.
-**/
+/// \details Implementation of the Newton algorithm using the generic line
+/// search function.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-newton(F objective_function, const X& x0, const Options& opts, Observer& observer)
+newton(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
-    return line_search_method<detail::newton<X>>(objective_function, x0, opts, observer);
+    typedef detail::newton<X> scheme;
+    line_search_method<scheme, ook::line_search::more_thuente> method;
+    return method.run(obj_fun, x0, opts, observer);
+
 }
 
 } //ns ook

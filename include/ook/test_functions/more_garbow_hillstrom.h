@@ -1,5 +1,23 @@
-/// \brief Implementation of the functions described in 
-/// "Testing unconstrained optimization software", 
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
+
+/// \brief Implementation of the functions described in
+/// "Testing unconstrained optimization software",
 /// More JJ, Garbow BS, Hillstrom KE
 #ifndef OOK_MORE_GARBOW_HILLSTROM_TEST_FUNCTIONS_H_
 #define OOK_MORE_GARBOW_HILLSTROM_TEST_FUNCTIONS_H_

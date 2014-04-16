@@ -18,7 +18,6 @@
 #include "ook/fletcher_reeves.h"
 #include "ook/bfgs.h"
 #include "ook/newton.h"
-#include "ook/lbfgs.h"
 #include "ook/options.h"
 #include "ook/stream_observer.h"
 
@@ -31,8 +30,8 @@ typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-ook::test_functions::rosenbrock<V, M>//,
-//ook::test_functions::freudenstein_roth<V, M>//,
+ook::test_functions::rosenbrock<V, M>,
+ook::test_functions::freudenstein_roth<V, M>//,
 //ook::test_functions::powell_badly_scaled<V, M>
 >;
 
@@ -64,8 +63,7 @@ template <typename Function, typename Optimiser>
 void
 run_gradient_based_optimiser(Function, Optimiser optimiser)
 {
-    const double epsilon = std::numeric_limits<double>::epsilon();
-    ook::options<double> opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
+    ook::options<double> opts;
 
     typedef Function test_function;
     test_function objective_function;
@@ -108,20 +106,12 @@ test_gradient_based_optimisers()
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
 
-    std::cout << "lbfgs" << std::endl;
-    run_gradient_based_optimiser(Function(),
-            ook::lbfgs<gradient_only_wrapper<Function, vector_type>,
-                                vector_type,
-                                ook::options<double>,
-                                ook::stream_observer<std::ostream>>);
-
     std::cout << "bfgs" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::bfgs<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-
     return 0;
 }
 
@@ -129,11 +119,6 @@ template <typename Function, typename Optimiser>
 void
 run_hessian_based_optimiser(Function, Optimiser optimiser)
 {
-    const double epsilon = std::numeric_limits<double>::epsilon();
-    ook::options<double> opts{1e-03, 9e-01, epsilon, 0.0, 4.0};
-
-    Function objective_function;
-
     vector_type x(Function::n, 0.0);
     std::copy(Function::x0.begin(), Function::x0.end(), x.begin());
 
@@ -141,8 +126,12 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
     std::copy(Function::local_minima.begin(), Function::local_minima.end(), minima.begin());
 
     ook::stream_observer<std::ostream> obs(std::cout);
+
+    ook::options<double> opts;
+    Function objective_function;
     auto soln = optimiser(objective_function, x, opts, obs);
     BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
+
     // Evaluate function at minima, check proximity
     auto x_min = std::get<1>(soln);
     double f_min;
