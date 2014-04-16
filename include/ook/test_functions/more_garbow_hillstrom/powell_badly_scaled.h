@@ -58,7 +58,7 @@ struct powell_badly_scaled
     static real_type f_min;
     static real_type tolerance;
     static std::vector<real_type> minima;
-    static std::vector<real_type> local_minima;    
+    static std::vector<real_type> local_minima;
     static std::vector<real_type> x0;
 };
 

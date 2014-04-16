@@ -1,3 +1,18 @@
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -60,6 +75,27 @@ problem probs[] = {
 int main()
 {
     cout.precision(2);
+    cout <<
+        "\nThis program validates that the translation of the More Thuente\n"
+        "line search algorithm remains faithful to the implementation described\n"
+        "in the paper\n"
+        "author = {Jorge J. More and David J. Thuente and Preprint Mcs-p},\n"
+        "title = {Line Search Algorithms With Guaranteed Sufficient Decrease},\n"
+        "journal = {ACM Trans. Math. Software},\n"
+        "year = {1992},\n"
+        "volume = {20},\n"
+        "pages = {286--307}\n"
+        "Press enter to continue\n\n";
+    cin.get();
+
+    cout.precision(2);
+    vector<string> table{"Table 5.1, ftol = 0.001, gtol = 0.1\n",
+                         "Table 5.2, ftol = 0.1,   gtol = 0.1\n",
+                         "Table 5.3, ftol = 0.1,   gtol = 0.1\n",
+                         "Table 5.4, ftol = 0.001, gtol = 0.001\n",
+                         "Table 5.5, ftol = 0.001, gtol = 0.001\n",
+                         "Table 5.6, ftol = 0.001, gtol = 0.001\n"};
+    string line(80, '-');
     for (const auto& p : probs){
         // Read in problem parameters.
         const int nprob = p.nprob;
@@ -72,8 +108,6 @@ int main()
         double factor = 1.0;
         double g0, f0;
         vector<algo_result> results;
-
-        ook::line_search::more_thuente mtsearch;
 
         for (int ntry = 0; ntry < ntries; ++ntry) {
             // Initialize the search.
@@ -88,14 +122,15 @@ int main()
             ook::options<double> opts(ftol, gtol, xtol, 0, 4.0 * std::max(1.0, stp));
             ook::message msg;
             double f, g;
-            std::tie(msg, stp, f, g) = mtsearch(phi_trace, f0, g0, stp, opts);
+            tie(msg, stp, f, g) = ook::line_search::more_thuente::search(phi_trace, f0, g0, stp, opts);
 
             // Record information on the algorithm.
             results.push_back({msg, nfev, ntry + 1, nprob, factor * stp0, stp, f, g});
             factor *= 100.;
         }
-        cout << "\n\n Summary of  " << ntries << " calls to dcsrch\n"
-                "\n  xtol = " <<  scientific << xtol <<
+        cout << line << "\n" << table[p.nprob - 1] << endl;
+        cout << " Summary of  " << ntries << " calls to dcsrch\n"
+                "   xtol = " <<  scientific << xtol <<
                 "   ftol = " <<  scientific << ftol <<
                 "   gtol = " <<  scientific << gtol <<
                 "   g0 = " <<  scientific << g0 << "\n\n";
@@ -104,7 +139,7 @@ int main()
              << setw(7)  << "x0"    << setw(10) << "x"
              << setw(10) << "f"     << setw(12) << "g\n\n";
 
-        for (const auto& x : results) std::cout << x << "\n";
+        for (const auto& x : results) cout << x << "\n";
     }
     return 0;
 }

@@ -1,3 +1,20 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_LINE_SEARCH_BACKTRACKING_H_
 #define OOK_LINE_SEARCH_BACKTRACKING_H_
 
@@ -5,7 +22,8 @@
 #include <exception>
 #include <cassert>
 
-#include "./conditions.h"
+#include "ook/message.h"
+#include "ook/line_search/conditions.h"
 
 namespace ook{
 namespace line_search{
@@ -13,21 +31,31 @@ namespace line_search{
 struct backtracking{
 
     template <typename F, typename T, typename Options>
-    std::tuple<T, T, T>
-    operator()(F phi, const T& phi0, const T& dphi0, T a, const Options& opts)
+    static
+    std::tuple<message, T, T, T>
+    search(F phi, const T& phi0, const T& dphi0, T a, const Options& opts)
     {
         T phia, dphia;
         T rho(0.9); // Need to pass this as an option.
-
+        ook::message msg;
         while(true){
-            if (fabs(a) <= std::numeric_limits<T>::epsilon())
+            if(a < opts.stpmin){
+                msg = message::warning_stp_eq_stpmin;
                 break;
+            }
+            if(a > opts.stpmax){
+                msg = message::warning_stp_eq_stpmax;
+                break;
+            }
+
             std::tie(phia, dphia) = phi(a);
-            if (sufficient_decrease_condition(phia, phi0, opts.ftol, a, dphi0))
+            if (sufficient_decrease_condition(phia, phi0, opts.ftol, a, dphi0)){
+                msg = message::convergence;
                 break;
+            }
             a *= rho;
         }
-        return std::make_tuple(a, phia, dphia);
+        return std::make_tuple(msg, a, phia, dphia);
     }
 };
 
