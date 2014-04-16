@@ -2,7 +2,11 @@
 #define OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_H_
 
 #include <algorithm>
+#include <boost/config.hpp>
+
+#if BOOST_GCC
 #include <parallel/algorithm>
+#endif
 
 namespace ook{
 namespace finite_differences{
