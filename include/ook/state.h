@@ -25,6 +25,7 @@
 
 #include "ook/message.h"
 #include "ook/norms.h"
+#include "ook/type_traits.h"
 
 namespace ook{
 namespace detail{
@@ -40,7 +41,7 @@ state{
     typedef boost::numeric::ublas::matrix<value_type,
               boost::numeric::ublas::column_major> matrix_type;
 
-    state(const int n, const bool with_matrix = false)
+    state(const int n = 0, const bool with_matrix = false)
     :
         fx(0),
         dfx_dot_p(0),
@@ -55,10 +56,8 @@ state{
         nfev(0),
         tag(state_tag::init)
     {
-        if (with_matrix){
-            for (int i = 0; i < n; ++i){
-                H(i, i) = 1.0;
-            }
+        for (int i = 0; i < n * with_matrix; ++i){
+            H(i, i) = 1.0;
         }
     }
 
@@ -119,6 +118,8 @@ state{
     state_tag tag;
     message msg;
 };
+
+static_assert(is_regular<state<boost::numeric::ublas::vector<double>>>::value, "state not regular");
 
 } // ns detail
 
