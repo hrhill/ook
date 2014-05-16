@@ -84,7 +84,6 @@ struct newton{
     typedef state<X> state_type;
 
     template <typename F>
-    static
     state_type
     initialise(F objective_function, const X& x0)
     {
@@ -93,7 +92,6 @@ struct newton{
         return s;
     }
 
-    static
     state_type
     descent_direction(state_type s)
     {
@@ -102,11 +100,11 @@ struct newton{
         return s;
     }
 
-    static
     state_type
     update(state_type s){
         return s;
     }
+
 };
 
 } // ns detail
