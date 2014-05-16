@@ -32,12 +32,13 @@ struct stream_observer
         stream_(stream)
     {}
 
-    Stream& stream_;
-
     template <typename State>
     void operator()(const State& state){
         stream_ << state << std::endl;
     }
+
+private:
+    Stream& stream_;
 };
 
 } // ns ook
