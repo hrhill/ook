@@ -48,12 +48,12 @@ struct fletcher_reeves{
     }
 
     static
-    vector_type
-    descent_direction(state_type& s)
+    state_type
+    descent_direction(state_type s)
     {
         ++s.iteration;
         s.p = -s.dfx + s.beta * s.p;
-        return s.p;
+        return s;
     }
 
     static
