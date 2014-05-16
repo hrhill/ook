@@ -119,7 +119,9 @@ state{
     message msg;
 };
 
-static_assert(is_regular<state<boost::numeric::ublas::vector<double>>>::value, "state not regular");
+static_assert(
+    is_regular<state<boost::numeric::ublas::vector<double>>>::value,
+        "state not regular");
 
 } // ns detail
 

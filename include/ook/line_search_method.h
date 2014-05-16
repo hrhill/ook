@@ -25,7 +25,6 @@
 #include "ook/norms.h"
 #include "ook/message.h"
 #include "ook/call_selector.h"
-#include "ook/line_search/more_thuente.h"
 
 namespace ook{
 
@@ -36,8 +35,8 @@ struct line_search_method{
 
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
-    run(F obj_fun, X x, const Options& opts, Observer& observer){
-
+    operator()(F obj_fun, X x, const Options& opts, Observer& observer)
+    {
         typedef typename X::value_type real_type;
         typedef decltype(obj_fun(x)) result_type;
         typedef detail::call_selector<F, X, state_type,
@@ -97,4 +96,5 @@ struct line_search_method{
 };
 
 } // ns ook
+
 #endif

@@ -31,6 +31,7 @@
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
 #include "ook/state.h"
+#include "ook/line_search/more_thuente.h"
 #include "ook/line_search_method.h"
 #include "ook/factorisations/gmw81.h"
 
@@ -119,7 +120,7 @@ newton(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::newton<X> scheme;
     line_search_method<scheme, ook::line_search::more_thuente> method;
-    return method.run(obj_fun, x0, opts, observer);
+    return method(obj_fun, x0, opts, observer);
 
 }
 
