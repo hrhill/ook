@@ -38,7 +38,6 @@ struct bfgs{
     typedef state<X> state_type;
 
     template <typename F>
-    static
     state_type
     initialise(F objective_function, const X& x0)
     {
@@ -48,7 +47,6 @@ struct bfgs{
         return s;
     }
 
-    static
     state_type
     descent_direction(state_type s)
     {
@@ -57,7 +55,6 @@ struct bfgs{
         return s;
     }
 
-    static
     state_type
     update(state_type s){
         namespace ublas = boost::numeric::ublas;

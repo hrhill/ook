@@ -37,7 +37,6 @@ struct fletcher_reeves{
     typedef state<X> state_type;
 
     template <typename F>
-    static
     state_type
     initialise(F objective_function, const X& x0)
     {
@@ -47,7 +46,6 @@ struct fletcher_reeves{
         return s;
     }
 
-    static
     state_type
     descent_direction(state_type s)
     {
@@ -56,7 +54,6 @@ struct fletcher_reeves{
         return s;
     }
 
-    static
     state_type
     update(state_type s)
     {

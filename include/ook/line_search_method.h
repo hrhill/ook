@@ -46,12 +46,12 @@ struct line_search_method{
         const real_type dx_eps = sqrt(epsilon);
         const real_type df_eps = exp(log(epsilon)/real_type(3.0));
 
-        state_type s = Scheme::initialise(obj_fun, x);
+        state_type s = scheme.initialise(obj_fun, x);
 
         observer(s);
         do {
             // Get descent direction and set up line search procedure.
-            s = Scheme::descent_direction(s);
+            s = scheme.descent_direction(s);
 
             // Create line search function
             auto phi = [&s, &x, obj_fun](const real_type& a){
@@ -85,7 +85,7 @@ struct line_search_method{
                 break;
             }
 
-            s = Scheme::update(s);
+            s = scheme.update(s);
 
         } while(true);
 
@@ -93,6 +93,8 @@ struct line_search_method{
         observer(s);
         return std::make_pair(s.msg, x);
     }
+
+    Scheme scheme;
 };
 
 } // ns ook
