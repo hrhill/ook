@@ -29,7 +29,8 @@ namespace detail{
 /// \brief Implementation of the required steps of line_search_method
 /// for the steepes descent method.
 template <typename X>
-struct steepest_descent{
+struct steepest_descent
+{
     typedef X vector_type;
     typedef typename X::value_type value_type;
     typedef state<X> state_type;
@@ -45,11 +46,12 @@ struct steepest_descent{
     }
 
     static
-    vector_type
-    descent_direction(state_type& s)
+    state_type
+    descent_direction(state_type s)
     {
         ++s.iteration;
-        return -s.dfx;
+        s.p = -s.dfx;
+        return s;
     }
 
     static
