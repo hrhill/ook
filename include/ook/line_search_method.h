@@ -52,17 +52,17 @@ struct line_search_method{
         observer(s);
         do {
             // Get descent direction and set up line search procedure.
-            X p = Scheme::descent_direction(s);
+            s = Scheme::descent_direction(s);
 
             // Create line search function
-            auto phi = [&s, &x, &p, obj_fun](const real_type& a){
-                caller_type::call(obj_fun, x + a * p, s);
-                return std::make_pair(s.fx, inner_product(s.dfx, p));
+            auto phi = [&s, &x, obj_fun](const real_type& a){
+                caller_type::call(obj_fun, x + a * s.p, s);
+                return std::make_pair(s.fx, inner_product(s.dfx, s.p));
             };
 
             // Store current fx value since line search overwrites the state values.
             const real_type fxk = s.fx;
-            real_type dfx_dot_p = inner_product(s.dfx, p);
+            real_type dfx_dot_p = inner_product(s.dfx, s.p);
             std::tie(s.msg, s.a, s.fx, dfx_dot_p) = Step::search(phi, s.fx, dfx_dot_p, 1.0, opts);
 
             if (s.msg != ook::message::convergence){
@@ -70,7 +70,7 @@ struct line_search_method{
             }
             // check for warnings here too, perhaps contninuing if a descent direction can be found
 
-            s.dx = s.a * p;
+            s.dx = s.a * s.p;
             x += s.dx;
 
             // Convergence criteria assessment base on p306 in Gill, Murray and Wright.

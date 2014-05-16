@@ -93,11 +93,12 @@ struct newton{
     }
 
     static
-    vector_type
-    descent_direction(state_type& s)
+    state_type
+    descent_direction(state_type s)
     {
         ++s.iteration;
-        return -detail::solve(s.H, s.dfx);
+        s.p = -detail::solve(s.H, s.dfx);
+        return s;
     }
 
     static

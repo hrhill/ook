@@ -49,12 +49,12 @@ struct bfgs{
     }
 
     static
-    vector_type
-    descent_direction(state_type& s)
+    state_type
+    descent_direction(state_type s)
     {
         ++s.iteration;
         s.p = -boost::numeric::ublas::prod(s.H, s.dfx);
-        return s.p;
+        return s;
     }
 
     static
