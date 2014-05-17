@@ -38,6 +38,45 @@
 namespace ook{
 namespace detail{
 
+template <typename X>
+struct
+n_state{
+    typedef X vector_type;
+    typedef typename X::value_type value_type;
+    typedef boost::numeric::ublas::matrix<value_type,
+              boost::numeric::ublas::column_major> matrix_type;
+
+    n_state(const int n = 0)
+    :
+        fx(0),
+        dfx(n),
+        dfx0(n),
+        p(n),
+        dx(n),
+        H(n, n, 0.0),
+        a(1),
+        iteration(0),
+        nfev(0),
+        tag(state_tag::init)
+    {
+        for (int i = 0; i < n; ++i){
+            H(i, i) = 1.0;
+        }
+    }
+
+    value_type fx;
+    vector_type dfx;
+    vector_type dfx0;
+    vector_type p;
+    vector_type dx;
+    matrix_type H;
+    value_type a;
+    int iteration;
+    int nfev;
+    state_tag tag;
+    message msg;
+};
+
 /// \brief Take a matrix in LD format and convert
 /// it to a lower cholesky matrix.
 template <typename Matrix>
@@ -81,13 +120,13 @@ template <typename X>
 struct newton{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef state<X> state_type;
+    typedef n_state<X> state_type;
 
     template <typename F>
     state_type
     initialise(F objective_function, const X& x0)
     {
-        state_type s(x0.size(), true);
+        state_type s(x0.size());
         std::tie(s.fx, s.dfx, s.H) = objective_function(x0);
         return s;
     }
@@ -101,7 +140,8 @@ struct newton{
     }
 
     state_type
-    update(state_type s){
+    update(const state_type& s)
+    {
         return s;
     }
 
@@ -115,11 +155,11 @@ struct newton{
 /// search function.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-newton(F obj_fun, const X& x0, const Options& opts, Observer& observer)
+newton(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::newton<X> scheme;
     line_search_method<scheme> method;
-    return method(obj_fun, x0, opts, observer);
+    return method(f, x0, opts, observer);
 
 }
 

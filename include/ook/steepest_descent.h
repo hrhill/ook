@@ -25,7 +25,41 @@
 #include "ook/line_search/more_thuente.h"
 
 namespace ook{
+
 namespace detail{
+
+template <typename X>
+struct
+sd_state{
+    typedef X vector_type;
+    typedef typename X::value_type value_type;
+
+    sd_state(const int n = 0)
+    :
+        fx(0),
+        dfx(n),
+        dfx0(n),
+        p(n),
+        dx(n),
+        a(1),
+        beta(0),
+        iteration(0),
+        nfev(0),
+        tag(state_tag::init)
+    {}
+
+    value_type fx;
+    vector_type dfx;
+    vector_type dfx0;
+    vector_type p;
+    vector_type dx;
+    value_type a;
+    value_type beta;
+    int iteration;
+    int nfev;
+    state_tag tag;
+    message msg;
+};
 
 /// \brief Implementation of the required steps of line_search_method
 /// for the steepes descent method.
@@ -34,7 +68,7 @@ struct steepest_descent
 {
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef state<X> state_type;
+    typedef sd_state<X> state_type;
 
     template <typename F>
     state_type
@@ -54,7 +88,8 @@ struct steepest_descent
     }
 
     state_type
-    update(state_type s){
+    update(const state_type& s)
+    {
         return s;
     }
 
@@ -66,14 +101,13 @@ struct steepest_descent
 /// \brief The Steepest descent algorithm.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-steepest_descent(F obj_fun, const X& x0, const Options& opts, Observer& observer)
+steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::steepest_descent<X> scheme;
     line_search_method<scheme> method;
-    return method(obj_fun, x0, opts, observer);
+    return method(f, x0, opts, observer);
 }
 
 } //ns ook
-
 
 #endif

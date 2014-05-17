@@ -28,13 +28,46 @@
 namespace ook{
 namespace detail{
 
+template <typename X>
+struct
+fr_state{
+    typedef X vector_type;
+    typedef typename X::value_type value_type;
+
+    fr_state(const int n = 0)
+    :
+        fx(0),
+        dfx(n),
+        dfx0(n),
+        p(n),
+        dx(n),
+        a(1),
+        beta(0),
+        iteration(0),
+        nfev(0),
+        tag(state_tag::init)
+    {}
+
+    value_type fx;
+    vector_type dfx;
+    vector_type dfx0;
+    vector_type p;
+    vector_type dx;
+    value_type a;
+    value_type beta;
+    int iteration;
+    int nfev;
+    state_tag tag;
+    message msg;
+};
+
 /// \brief Implementation of the required steps of line_search_method
 /// for Fletcher-Reeves method.
 template <typename X>
 struct fletcher_reeves{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef state<X> state_type;
+    typedef fr_state<X> state_type;
 
     template <typename F>
     state_type
@@ -63,7 +96,6 @@ struct fletcher_reeves{
     }
 
     ook::line_search::more_thuente search;
-
 };
 
 } // ns detail
@@ -71,11 +103,11 @@ struct fletcher_reeves{
 /// \brief The Fletcher-Reeves algorithm.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-fletcher_reeves(F obj_fun, const X& x0, const Options& opts, Observer& observer)
+fletcher_reeves(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::fletcher_reeves<X> scheme;
     line_search_method<scheme> method;
-    return method(obj_fun, x0, opts, observer);
+    return method(f, x0, opts, observer);
 }
 
 } //ns ook

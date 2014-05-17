@@ -20,7 +20,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <boost/numeric/ublas/matrix.hpp>
 
 #include "ook/norms.h"
 #include "ook/message.h"
@@ -35,9 +34,9 @@ struct line_search_method{
     std::tuple<ook::message, X>
     operator()(F obj_fun, X x, const Options& opts, Observer& observer)
     {
-        typedef typename X::value_type real_type;
         typedef detail::call_selector<
                     std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
+        typedef typename X::value_type real_type;
 
         const real_type epsilon = std::numeric_limits<real_type>::epsilon();
         const real_type dx_eps = sqrt(epsilon);
@@ -46,13 +45,15 @@ struct line_search_method{
         auto s = scheme.initialise(obj_fun, x);
 
         observer(s);
-        while(true) {
+        while(true){
             // Get descent direction and set up line search procedure.
             s = scheme.descent_direction(s);
 
             // Create line search function
-            auto phi = [&s, &x, obj_fun](const real_type& a){
-                caller_type::call(obj_fun, x + a * s.p, s);
+            auto phi = [&s, &x, obj_fun](real_type a)
+            {
+                s = caller_type::call(obj_fun, x + a * s.p, s);
+                ++s.nfev;
                 return std::make_pair(s.fx, inner_product(s.dfx, s.p));
             };
 
@@ -61,12 +62,12 @@ struct line_search_method{
             real_type dfx_dot_p = inner_product(s.dfx, s.p);
             std::tie(s.msg, s.a, s.fx, dfx_dot_p) = scheme.search(phi, s.fx, dfx_dot_p, 1.0, opts);
 
+            s.dx = s.a * s.p;
+            x += s.dx;
+
             if (s.msg != ook::message::convergence){
                 break;
             }
-            // check for warnings here too, perhaps contninuing if a descent direction can be found
-            s.dx = s.a * s.p;
-            x += s.dx;
 
             // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
             const real_type theta = epsilon * (1.0 + fabs(s.fx));
@@ -74,7 +75,7 @@ struct line_search_method{
             const bool u2 = ook::norm_infinity(s.dx) <=  dx_eps * (1.0 + ook::norm_infinity(x));
             const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
 
-            s.tag = detail::state_tag::iterate;
+            s.tag = state_tag::iterate;
             observer(s);
             if ((u1 and u2) or u3){
                 s.msg = ook::message::convergence;
@@ -82,8 +83,7 @@ struct line_search_method{
             }
             s = scheme.update(s);
         }
-
-        s.tag = detail::state_tag::final;
+        s.tag = state_tag::final;
         observer(s);
         return std::make_pair(s.msg, x);
     }
