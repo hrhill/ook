@@ -21,13 +21,52 @@
 #include <tuple>
 #include <boost/numeric/ublas/matrix.hpp>
 
-#include "ook/norms.h"
 #include "ook/state.h"
+#include "ook/norms.h"
 #include "ook/line_search_method.h"
 #include "ook/line_search/more_thuente.h"
 
 namespace ook{
 namespace detail{
+
+template <typename X>
+struct
+bfgs_state{
+    typedef X vector_type;
+    typedef typename X::value_type value_type;
+    typedef boost::numeric::ublas::matrix<value_type,
+              boost::numeric::ublas::column_major> matrix_type;
+
+    bfgs_state(const int n = 0)
+    :
+        fx(0),
+        dfx(n),
+        dfx0(n),
+        p(n),
+        dx(n),
+        H(n, n, 0.0),
+        a(1),
+        iteration(0),
+        nfev(0),
+        tag(state_tag::init)
+    {
+        for (int i = 0; i < n; ++i){
+            H(i, i) = 1.0;
+        }
+    }
+
+    value_type fx;
+    vector_type dfx;
+    vector_type dfx0;
+    vector_type p;
+    vector_type dx;
+    matrix_type H;
+    value_type a;
+    int iteration;
+    int nfev;
+    state_tag tag;
+    message msg;
+};
 
 /// \brief Implementation of the required steps of line_search_method
 /// for BFGS method.
@@ -35,13 +74,13 @@ template <typename X>
 struct bfgs{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef state<X> state_type;
+    typedef bfgs_state<X> state_type;
 
     template <typename F>
     state_type
     initialise(F objective_function, const X& x0)
     {
-        state_type s(x0.size(), true);
+        state_type s(x0.size());
         std::tie(s.fx, s.dfx) = objective_function(x0);
         s.dfx0 = s.dfx;
         return s;
@@ -60,16 +99,16 @@ struct bfgs{
         namespace ublas = boost::numeric::ublas;
         typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
-        X dx = s.a * s.p;
         X y(s.dfx - s.dfx0);
-        const int n = s.dfx.size();
+        const value_type rho = 1.0/inner_product(y, s.dx);
 
-        const value_type rho = 1.0/inner_product(y, dx);
-        matrix_type Z(ublas::identity_matrix<double>(n) - rho * ublas::outer_prod(dx, y));
-        matrix_type ss = rho * ublas::outer_prod(dx, dx);
+        const int n = s.dfx.size();
+        matrix_type Z(ublas::identity_matrix<double>(n)
+                        - rho * ublas::outer_prod(s.dx, y));
+        matrix_type ss = rho * ublas::outer_prod(s.dx, s.dx);
 
         if (s.iteration == 1){
-            const value_type hii = inner_product(dx, dx);
+            const value_type hii = inner_product(s.dx, s.dx);
             for (int i = 0; i < n; ++i){
                 s.H(i, i) = hii;
             }
@@ -87,11 +126,11 @@ struct bfgs{
 /// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-bfgs(F obj_fun, const X& x0, const Options& opts, Observer& observer)
+bfgs(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::bfgs<X> scheme;
     line_search_method<scheme> method;
-    return method(obj_fun, x0, opts, observer);
+    return method(f, x0, opts, observer);
 }
 
 } //ns ook

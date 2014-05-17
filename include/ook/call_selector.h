@@ -33,10 +33,10 @@ struct call_selector<1>
 {
     template <typename F, typename X, typename State>
     static
-    void
-    call(F f, const X& x, State& s){
-        ++s.nfev;
+    State
+    call(F f, const X& x, State&& s){
         std::tie(s.fx) = f(x);
+        return s;
     }
 };
 
@@ -45,10 +45,10 @@ struct call_selector<2>
 {
     template <typename F, typename X, typename State>
     static
-    void
-    call(F f, const X& x, State& s){
-        ++s.nfev;
+    State
+    call(F f, const X& x, State&& s){
         std::tie(s.fx, s.dfx) = f(x);
+        return s;
     }
 };
 
@@ -56,10 +56,10 @@ template <>
 struct call_selector<3>{
     template <typename F, typename X, typename State>
     static
-    void
-    call(F f, const X& x, State& s){
-        ++s.nfev;
+    State
+    call(F f, const X& x, State&& s){
         std::tie(s.fx, s.dfx, s.H) =  f(x);
+        return s;
     }
 };
 
