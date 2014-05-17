@@ -105,6 +105,7 @@ struct newton{
         return s;
     }
 
+    ook::line_search::more_thuente search;
 };
 
 } // ns detail
@@ -117,7 +118,7 @@ std::tuple<ook::message, X>
 newton(F obj_fun, const X& x0, const Options& opts, Observer& observer)
 {
     typedef detail::newton<X> scheme;
-    line_search_method<scheme, ook::line_search::more_thuente> method;
+    line_search_method<scheme> method;
     return method(obj_fun, x0, opts, observer);
 
 }

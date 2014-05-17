@@ -28,7 +28,7 @@
 
 namespace ook{
 
-template <typename Scheme, typename Step>
+template <typename Scheme>
 struct line_search_method{
 
     typedef typename Scheme::state_type state_type;
@@ -62,7 +62,7 @@ struct line_search_method{
             // Store current fx value since line search overwrites the state values.
             const real_type fxk = s.fx;
             real_type dfx_dot_p = inner_product(s.dfx, s.p);
-            std::tie(s.msg, s.a, s.fx, dfx_dot_p) = Step::search(phi, s.fx, dfx_dot_p, 1.0, opts);
+            std::tie(s.msg, s.a, s.fx, dfx_dot_p) = scheme.search(phi, s.fx, dfx_dot_p, 1.0, opts);
 
             if (s.msg != ook::message::convergence){
                 break;
