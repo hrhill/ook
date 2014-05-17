@@ -96,6 +96,9 @@ int main()
                          "Table 5.5, ftol = 0.001, gtol = 0.001\n",
                          "Table 5.6, ftol = 0.001, gtol = 0.001\n"};
     string line(80, '-');
+
+    ook::line_search::more_thuente search;
+
     for (const auto& p : probs){
         // Read in problem parameters.
         const int nprob = p.nprob;
@@ -122,7 +125,7 @@ int main()
             ook::options<double> opts(ftol, gtol, xtol, 0, 4.0 * std::max(1.0, stp));
             ook::message msg;
             double f, g;
-            tie(msg, stp, f, g) = ook::line_search::more_thuente::search(phi_trace, f0, g0, stp, opts);
+            tie(msg, stp, f, g) = search(phi_trace, f0, g0, stp, opts);
 
             // Record information on the algorithm.
             results.push_back({msg, nfev, ntry + 1, nprob, factor * stp0, stp, f, g});

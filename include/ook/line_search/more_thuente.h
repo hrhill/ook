@@ -32,9 +32,8 @@ namespace line_search{
 struct more_thuente{
 
     template <typename F, typename T, typename Options>
-    static
     std::tuple<message, T, T, T>
-    search(F phi, T phi0, T dphi0, T a, const Options& opts)
+    operator()(F phi, T phi0, T dphi0, T a, const Options& opts)
     {
         if(a <= opts.stpmin)
             return std::make_tuple(
