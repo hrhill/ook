@@ -49,7 +49,7 @@ struct line_search_method{
         state_type s = scheme.initialise(obj_fun, x);
 
         observer(s);
-        do {
+        while(true) {
             // Get descent direction and set up line search procedure.
             s = scheme.descent_direction(s);
 
@@ -68,7 +68,6 @@ struct line_search_method{
                 break;
             }
             // check for warnings here too, perhaps contninuing if a descent direction can be found
-
             s.dx = s.a * s.p;
             x += s.dx;
 
@@ -80,14 +79,12 @@ struct line_search_method{
 
             s.tag = detail::state_tag::iterate;
             observer(s);
-            if ((u1 & u2) || u3){
+            if ((u1 and u2) or u3){
                 s.msg = ook::message::convergence;
                 break;
             }
-
             s = scheme.update(s);
-
-        } while(true);
+        }
 
         s.tag = detail::state_tag::final;
         observer(s);

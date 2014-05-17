@@ -36,8 +36,7 @@ struct options
         max_function_evaluations(2000)
     {}
 
-    options(const T& ftol_, const T& gtol_, const T& xtol_,
-            const T& stpmin_, const T& stpmax_)
+    options(T ftol_, T gtol_, T xtol_, T stpmin_, T stpmax_)
     :
         ftol(ftol_), gtol(gtol_), xtol(xtol_), stpmin(stpmin_), stpmax(stpmax_)
     {
