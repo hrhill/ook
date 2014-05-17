@@ -31,22 +31,19 @@ namespace ook{
 template <typename Scheme>
 struct line_search_method{
 
-    typedef typename Scheme::state_type state_type;
-
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
     operator()(F obj_fun, X x, const Options& opts, Observer& observer)
     {
         typedef typename X::value_type real_type;
-        typedef decltype(obj_fun(x)) result_type;
-        typedef detail::call_selector<F, X, state_type,
-                    std::tuple_size<result_type>::value> caller_type;
+        typedef detail::call_selector<
+                    std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
 
         const real_type epsilon = std::numeric_limits<real_type>::epsilon();
         const real_type dx_eps = sqrt(epsilon);
         const real_type df_eps = exp(log(epsilon)/real_type(3.0));
 
-        state_type s = scheme.initialise(obj_fun, x);
+        auto s = scheme.initialise(obj_fun, x);
 
         observer(s);
         while(true) {
