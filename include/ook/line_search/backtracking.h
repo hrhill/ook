@@ -29,11 +29,9 @@ namespace ook{
 namespace line_search{
 
 struct backtracking{
-
     template <typename F, typename T, typename Options>
-    static
     std::tuple<message, T, T, T>
-    search(F phi, const T& phi0, const T& dphi0, T a, const Options& opts)
+    operator()(F phi, T phi0, T dphi0, T a, const Options& opts)
     {
         T phia, dphia;
         T rho(0.9); // Need to pass this as an option.
