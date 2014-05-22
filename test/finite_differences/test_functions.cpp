@@ -15,15 +15,15 @@ double
 rosenbrock(const vector_t& x, vector_t& g, matrix_t& H)
 {
     sleep(1);
-	const double x02 = pow(x(0), 2);
-	double f = 100.0 * pow(x(1) - x02, 2) + pow(1.0 - x(0), 2);
+    const double x02 = pow(x(0), 2);
+    double f = 100.0 * pow(x(1) - x02, 2) + pow(1.0 - x(0), 2);
 
-	g(0) = -400.0*x(0)*(x(1) - x02) - 2.0*(1.0 - x(0));
-	g(1) = 200*(x(1) - x02);
+    g(0) = -400.0*x(0)*(x(1) - x02) - 2.0*(1.0 - x(0));
+    g(1) = 200*(x(1) - x02);
 
-	H(0, 0) = 1200 * x02 -400 * x(1) + 2;
-	H(1, 0) = H(0, 1) = -400 * x(0);
-	H(1, 1) = 200.0;
+    H(0, 0) = 1200 * x02 -400 * x(1) + 2;
+    H(1, 0) = H(0, 1) = -400 * x(0);
+    H(1, 1) = 200.0;
 
     return f;
 }
@@ -31,17 +31,17 @@ rosenbrock(const vector_t& x, vector_t& g, matrix_t& H)
 /// Apart from a small region around the optimum this function is flat. Minimum is f(100,100)=-10
 double symmetrical_gaussian(const vector_t& x, vector_t& g, matrix_t& H)
 {
-	const double x0 = x(0) - 100.0;
-	const double x1 = x(1) - 100.0;
-	const double s = 1500;
-	double f = - exp( -pow(x0, 2)/s - pow(x1, 2)/s);
+    const double x0 = x(0) - 100.0;
+    const double x1 = x(1) - 100.0;
+    const double s = 1500;
+    double f = - exp( -pow(x0, 2)/s - pow(x1, 2)/s);
 
-	g(0) = 2 * x0 * f / s;
-	g(1) = 2 * x1 * f / s;
+    g(0) = 2 * x0 * f / s;
+    g(1) = 2 * x1 * f / s;
 
-	H(0, 0) = - pow(2 * x0 / s, 2) * f + 2/s * f;
-	H(1, 0) = H(0, 1) = 4 * x0 * x1 * f / (s * s);
-	H(1, 1) = - pow(2 * x1 / s, 2) * f + 2/s * f;
+    H(0, 0) = - pow(2 * x0 / s, 2) * f + 2/s * f;
+    H(1, 0) = H(0, 1) = 4 * x0 * x1 * f / (s * s);
+    H(1, 1) = - pow(2 * x1 / s, 2) * f + 2/s * f;
 
     return f;
 }
@@ -69,9 +69,9 @@ double paraboloid(const vector_t& x, vector_t& g, matrix_t& H)
     g = 2.0 * x;
 
     for (matrix_t::size_type i = 0; i < H.size1(); ++i){
-    	for (matrix_t::size_type j = 0; j < H.size2(); ++j){
-    		H(i, j) = 2.0 * (i == j);
-    	}
+        for (matrix_t::size_type j = 0; j < H.size2(); ++j){
+            H(i, j) = 2.0 * (i == j);
+        }
     }
     return pow(boost::numeric::ublas::norm_2(x), 2);
 }
