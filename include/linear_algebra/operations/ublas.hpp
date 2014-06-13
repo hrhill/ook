@@ -31,12 +31,6 @@ num_rows(const Matrix<T, F, A>& m)
     return m.size1();
 }
 
-template <typename M>
-size_t
-num_rows(const boost::numeric::ublas::matrix_range<M>& m){
-    return m.size1();
-}
-
 template <
     template <typename, typename, typename> class Matrix,
     typename T,
@@ -48,13 +42,6 @@ num_cols(const Matrix<T, F, A>& m)
 {
     return m.size2();
 }
-
-template <typename M>
-size_t
-num_cols(const boost::numeric::ublas::matrix_range<M>& m){
-    return m.size1();
-}
-
 
 template <typename Matrix>
 auto
