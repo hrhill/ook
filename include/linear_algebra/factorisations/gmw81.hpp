@@ -4,12 +4,6 @@
 #include <cassert>
 #include <algorithm>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
-
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-
 #include "linear_algebra/std_traits.hpp"
 #include "linear_algebra/operations.hpp"
 #include "linear_algebra/factorisations/tools.hpp"
@@ -57,7 +51,7 @@ gmw81(Matrix G)
 {
     using namespace boost::numeric::ublas;
 
-    typedef typename Matrix::value_type value_type;
+    typedef  remove_const_reference<decltype(G(0,0))> value_type;
 
     // MC1
     const size_t n = linalg::num_rows(G);
