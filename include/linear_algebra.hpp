@@ -9,6 +9,7 @@
 #include "linear_algebra/blas.hpp"
 #include "linear_algebra/lapack.hpp"
 #include "linear_algebra/operations.hpp"
+#include "linear_algebra/traits.hpp"
 
 #include "linear_algebra/norms.hpp"
 #include "linear_algebra/factorisations/cholesky.hpp"
