@@ -18,6 +18,7 @@
 #include "linear_algebra/factorisations/cholesky.hpp"
 #include "linear_algebra/factorisations/ldlt.hpp"
 #include "linear_algebra/factorisations/gmw81.hpp"
+#include "linear_algebra/factorisations/tools.hpp"
 #include "linear_algebra/special_matrices.hpp"
 
 #include "test_utilities.hpp"
@@ -26,15 +27,33 @@ template <typename Matrix>
 Matrix
 convert_to_cholesky(Matrix LD)
 {
-    int n = LD.size1();
-    Matrix L(LD);
+    int n = linalg::num_rows(LD);
     Matrix D(n, n, 0);
 
     for (int i = 0; i < n; ++i){
-        D(i, i) = sqrt(L(i, i));
-        L(i, i) = 1.0;
+        D(i, i) = sqrt(LD(i, i));
+        LD(i, i) = 1.0;
     }
-    return boost::numeric::ublas::prod(L, D);
+    Matrix L(n, n, 0);
+    linalg::gemm(1.0, LD, D, 0.0, L);
+    return L;
+}
+
+template <typename Matrix>
+int max_magnitude_diagonal_check()
+{
+    const int n = 5;
+    const int max_id = 3;
+    const double max_value = 10;
+
+    Matrix m = linalg::identity_matrix<Matrix>(n);
+    m(max_id, max_id) = max_value;
+
+    auto x = linalg::factorisations::tools::max_magnitude_diagonal(m);
+
+    BOOST_CHECK_EQUAL(std::get<0>(x), max_id);
+    BOOST_CHECK_EQUAL(std::get<1>(x), max_value);
+    return 0;
 }
 
 template <typename Matrix>
@@ -86,8 +105,13 @@ int factorisation_equivalence_test()
     Matrix ldlLD = linalg::factorisations::ldlt(A);
     Matrix gmw81LD = linalg::factorisations::gmw81(A);
 
+    std::cout << cholL << std::endl;
+
     Matrix ldlL = convert_to_cholesky(ldlLD);
     Matrix gmw81L = convert_to_cholesky(gmw81LD);
+
+    std::cout << ldlL << std::endl;
+    std::cout << gmw81L << std::endl;
 
     for (int i = 0; i < ndim; ++i){
         for (int j = 0; j <= i; ++j){
@@ -99,6 +123,16 @@ int factorisation_equivalence_test()
     return 0;
 }
 
+template <typename Matrix>
+int all_tests()
+{
+    max_magnitude_diagonal_check<Matrix>();
+    identity_matrix_check<Matrix>();
+    scaled_identity_matrix_check<Matrix>();
+    factorisation_equivalence_test<Matrix>();
+    return 0;
+}
+
 
 BOOST_AUTO_TEST_CASE(ublas_factorisation_tests)
 {
@@ -106,10 +140,9 @@ BOOST_AUTO_TEST_CASE(ublas_factorisation_tests)
     typedef boost::numeric::ublas::matrix<double,
             boost::numeric::ublas::column_major> matrix_t;
 
-    int flag = factorisation_equivalence_test<matrix_t>();
-    BOOST_CHECK_EQUAL(flag, 0);
+    BOOST_CHECK_EQUAL((all_tests<matrix_t>()), 0);
 }
-/*
+
 #ifdef HAVE_BLAZE
 #include <blaze/Math.h>
 
@@ -118,9 +151,7 @@ BOOST_AUTO_TEST_CASE(blaze_factorisation_tests)
     std::cout << "Testing blaze\n";
     typedef blaze::DynamicMatrix<double, blaze::columnMajor> matrix_t;
 
-    int flag = factorisation_equivalence_test<matrix_t>();
-    BOOST_CHECK_EQUAL(flag, 0);
+    BOOST_CHECK_EQUAL((all_tests<matrix_t>()), 0);
 }
 
 #endif
-*/
