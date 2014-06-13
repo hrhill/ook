@@ -4,15 +4,16 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 
+
 namespace linalg{
 
-template <T>
-struct associated_matrix_type;
+template <typename T>
+struct associated_matrix;
 
-template <T>
-struct associated_matrix_type<boost::numeric::ublas::vector<T>>
+template <typename T>
+struct associated_matrix<boost::numeric::ublas::vector<T>>
 {
-    using matrix_type = boost::numeric::ublas::matrix<T, boost::numeric::column_major>;
+    using type = boost::numeric::ublas::matrix<T, boost::numeric::ublas::column_major>;
 };
 
 

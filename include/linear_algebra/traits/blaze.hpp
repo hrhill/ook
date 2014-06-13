@@ -7,13 +7,13 @@
 
 namespace linalg{
 
-template <T>
-struct associated_matrix_type;
+template <typename T>
+struct associated_matrix;
 
-template <T>
-struct associated_matrix_type<blaze::DynamicVector<double>>
+template <typename T>
+struct associated_matrix<blaze::DynamicVector<double>>
 {
-    using matrix_type = blaze::DynamicMatrix<double, blaze::columnMajor>;
+    using type = blaze::DynamicMatrix<double, blaze::columnMajor>;
 };
 
 } // ns linalg
