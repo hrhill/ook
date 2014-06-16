@@ -1,6 +1,7 @@
 #ifndef LINALG_OPERATIONS_UBLAS_HPP_
 #define LINALG_OPERATIONS_UBLAS_HPP_
 
+#include <boost/numeric/ublas/matrix_expression.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/operation.hpp>
@@ -19,29 +20,20 @@ size(const V<T, A>& v)
     return v.size();
 }
 
-template <
-    template <typename, typename, typename> class Matrix,
-    typename T,
-    typename F,
-    typename A
->
+template <typename MatrixExprT>
 size_t
-num_rows(const Matrix<T, F, A>& m)
+num_rows(const boost::numeric::ublas::matrix_expression<MatrixExprT>& me)
 {
-    return m.size1();
+    return me().size1();
 }
 
-template <
-    template <typename, typename, typename> class Matrix,
-    typename T,
-    typename F,
-    typename A
->
+template <typename MatrixExprT>
 size_t
-num_cols(const Matrix<T, F, A>& m)
+num_cols(const boost::numeric::ublas::matrix_expression<MatrixExprT>& me)
 {
-    return m.size2();
+    return me().size2();
 }
+
 
 template <typename Matrix>
 auto
