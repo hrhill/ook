@@ -13,13 +13,13 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "linear_algebra/blas.hpp"
-#include "linear_algebra/operations.hpp"
-#include "linear_algebra/factorisations/cholesky.hpp"
-#include "linear_algebra/factorisations/ldlt.hpp"
-#include "linear_algebra/factorisations/gmw81.hpp"
-#include "linear_algebra/factorisations/tools.hpp"
-#include "linear_algebra/special_matrices.hpp"
+#include "linalg/blas.hpp"
+#include "linalg/operations.hpp"
+#include "linalg/factorisations/cholesky.hpp"
+#include "linalg/factorisations/ldlt.hpp"
+#include "linalg/factorisations/gmw81.hpp"
+#include "linalg/factorisations/tools.hpp"
+#include "linalg/special_matrices.hpp"
 
 #include "test_utilities.hpp"
 

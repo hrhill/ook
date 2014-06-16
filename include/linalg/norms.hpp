@@ -1,5 +1,5 @@
-#ifndef LINEAR_ALGEBRA_NORMS_HPP_
-#define LINEAR_ALGEBRA_NORMS_HPP_
+#ifndef LINALG_NORMS_HPP_
+#define LINALG_NORMS_HPP_
 
 #include <cmath>
 #include <numeric>

@@ -1,8 +1,8 @@
-# ifndef LINEAR_ALGEBRA_FACTORISATIONS_CHOLESKY_H_
-# define LINEAR_ALGEBRA_FACTORISATIONS_CHOLESKY_H_
+# ifndef LINALG_FACTORISATIONS_CHOLESKY_HPP_
+# define LINALG_FACTORISATIONS_CHOLESKY_HPP_
 
-#include "linear_algebra/lapack.hpp"
-#include "linear_algebra/factorisations/tools.hpp"
+#include "linalg/lapack.hpp"
+#include "linalg/factorisations/tools.hpp"
 
 namespace linalg{
 namespace factorisations{

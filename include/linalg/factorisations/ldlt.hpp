@@ -1,5 +1,5 @@
-# ifndef LINEAR_ALGEBRA_FACTORISATIONS_LDLT_H_
-# define LINEAR_ALGEBRA_FACTORISATIONS_LDLT_H_
+# ifndef LINALG_FACTORISATIONS_LDLT_HPP_
+# define LINALG_FACTORISATIONS_LDLT_HPP_
 
 #include <vector>
 #include <stdexcept>
@@ -12,7 +12,7 @@
 #include <boost/numeric/ublas/assignment.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 
-#include "linear_algebra/factorisations/tools.hpp"
+#include "linalg/factorisations/tools.hpp"
 
 namespace linalg{
 namespace factorisations{

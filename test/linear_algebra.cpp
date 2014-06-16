@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE linear_algebra
+#define BOOST_TEST_MODULE linalg
 
 #include <iostream>
 #include <random>
@@ -9,9 +9,9 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
-#include "linear_algebra.hpp"
-#include "linear_algebra/special_matrices.hpp"
-#include "linear_algebra/norms.hpp"
+#include "linalg.hpp"
+#include "linalg/special_matrices.hpp"
+#include "linalg/norms.hpp"
 
 #include "test_utilities.hpp"
 
