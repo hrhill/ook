@@ -17,6 +17,7 @@ find_package(BLAS)
 find_package(LAPACK)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/deps/linalg/include")
 add_subdirectory(example)
 add_subdirectory(test)
 
