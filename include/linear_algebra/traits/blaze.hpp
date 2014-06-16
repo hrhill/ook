@@ -11,9 +11,9 @@ template <typename T>
 struct associated_matrix;
 
 template <typename T>
-struct associated_matrix<blaze::DynamicVector<double>>
+struct associated_matrix<blaze::DynamicVector<T>>
 {
-    using type = blaze::DynamicMatrix<double, blaze::columnMajor>;
+    using type = blaze::DynamicMatrix<T, blaze::columnMajor>;
 };
 
 } // ns linalg
