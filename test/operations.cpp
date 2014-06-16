@@ -8,8 +8,8 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
-#include "linear_algebra.hpp"
-#include "linear_algebra/operations.hpp"
+#include "linalg.hpp"
+#include "linalg/operations.hpp"
 
 using namespace std;
 using namespace linalg;

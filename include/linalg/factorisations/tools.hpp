@@ -1,9 +1,9 @@
-#ifndef LINEAR_ALGEBRA_FACTORISATIONS_TOOLS_H_
-#define LINEAR_ALGEBRA_FACTORISATIONS_TOOLS_H_
+#ifndef LINALG_FACTORISATIONS_TOOLS_H_
+#define LINALG_FACTORISATIONS_TOOLS_H_
 
 #include <algorithm>
 
-#include "linear_algebra/operations.hpp"
+#include "linalg/operations.hpp"
 
 namespace linalg{
 namespace factorisations{

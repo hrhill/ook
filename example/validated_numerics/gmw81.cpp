@@ -20,8 +20,8 @@
 #include <boost/numeric/ublas/assignment.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-#include "linear_algebra/operations.hpp"
-#include "linear_algebra/factorisations/gmw81.hpp"
+#include "linalg/operations.hpp"
+#include "linalg/factorisations/gmw81.hpp"
 
 using namespace std;
 

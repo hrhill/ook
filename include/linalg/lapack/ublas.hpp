@@ -1,5 +1,5 @@
-#ifndef LINEAR_ALGEBRA_LAPACK_UBLAS_HPP_
-#define LINEAR_ALGEBRA_LAPACK_UBLAS_HPP_
+#ifndef LINALG_LAPACK_UBLAS_HPP_
+#define LINALG_LAPACK_UBLAS_HPP_
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>

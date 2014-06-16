@@ -1,22 +1,22 @@
-# ifndef LINEAR_ALGEBRA_LINEAR_ALGEBRA_HPP_
-# define LINEAR_ALGEBRA_LINEAR_ALGEBRA_HPP_
+# ifndef LINALG_LINALG_HPP_
+# define LINALG_LINALG_HPP_
 
 #include <vector>
 #include <stdexcept>
 
 #include <boost/cast.hpp>
 
-#include "linear_algebra/blas.hpp"
-#include "linear_algebra/lapack.hpp"
-#include "linear_algebra/operations.hpp"
-#include "linear_algebra/traits.hpp"
+#include "linalg/blas.hpp"
+#include "linalg/lapack.hpp"
+#include "linalg/operations.hpp"
+#include "linalg/traits.hpp"
 
-#include "linear_algebra/norms.hpp"
-#include "linear_algebra/factorisations/cholesky.hpp"
-#include "linear_algebra/factorisations/gmw81.hpp"
-#include "linear_algebra/factorisations/ldlt.hpp"
+#include "linalg/norms.hpp"
+#include "linalg/factorisations/cholesky.hpp"
+#include "linalg/factorisations/gmw81.hpp"
+#include "linalg/factorisations/ldlt.hpp"
 
-#include "linear_algebra/special_matrices.hpp"
+#include "linalg/special_matrices.hpp"
 
 namespace linalg{
 

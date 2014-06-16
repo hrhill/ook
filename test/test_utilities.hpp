@@ -1,12 +1,12 @@
-#ifndef LINEAR_ALGEBRA_TEST_UTILITIES_HPP_
-#define LINEAR_ALGEBRA_TEST_UTILITIES_HPP_
+#ifndef LINALG_TEST_UTILITIES_HPP_
+#define LINALG_TEST_UTILITIES_HPP_
 
 #include <random>
 
-#include "linear_algebra/blas/ublas.hpp"
-#include "linear_algebra/blas/blaze.hpp"
-#include "linear_algebra/operations/ublas.hpp"
-#include "linear_algebra/operations/blaze.hpp"
+#include "linalg/blas/ublas.hpp"
+#include "linalg/blas/blaze.hpp"
+#include "linalg/operations/ublas.hpp"
+#include "linalg/operations/blaze.hpp"
 
 namespace linalg{
 

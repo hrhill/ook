@@ -1,12 +1,12 @@
-#ifndef LINEAR_ALGEBRA_FACTORISATIONS_GMW81_H_
-#define LINEAR_ALGEBRA_FACTORISATIONS_GMW81_H_
+#ifndef LINALG_FACTORISATIONS_GMW81_HPP_
+#define LINALG_FACTORISATIONS_GMW81_HPP_
 
 #include <cassert>
 #include <algorithm>
 
-#include "linear_algebra/std_traits.hpp"
-#include "linear_algebra/operations.hpp"
-#include "linear_algebra/factorisations/tools.hpp"
+#include "linalg/std_traits.hpp"
+#include "linalg/operations.hpp"
+#include "linalg/factorisations/tools.hpp"
 
 namespace linalg{
 namespace factorisations{
