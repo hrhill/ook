@@ -75,7 +75,7 @@ potri(Matrix& a)
 
 template <typename Matrix>
 int
-geqrf(Matrix& A, std::vector<int>& tau)
+geqrf(Matrix& A, std::vector<double>& tau)
 {
     return boost::numeric::bindings::lapack::geqrf(A, tau);
 }
