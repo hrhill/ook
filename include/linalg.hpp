@@ -25,8 +25,8 @@ template <typename Matrix>
 Matrix
 select_lower_triangular(const Matrix& m){
 
-    const int nrows = num_rows(m);
-    const int ncols = num_cols(m);
+    const int nrows = linalg::num_rows(m);
+    const int ncols = linalg::num_cols(m);
 
     const int dim = std::min(nrows, ncols);
     const int row_offset = std::max(0, nrows - ncols);
@@ -45,8 +45,8 @@ template <typename Matrix>
 Matrix
 select_upper_triangular(const Matrix& m){
 
-    const int nrows = num_rows(m);
-    const int ncols = num_cols(m);
+    const int nrows = linalg::num_rows(m);
+    const int ncols = linalg::num_cols(m);
 
     const int dim = std::min(nrows, ncols);
     const int col_offset = std::max(0, ncols - nrows);
@@ -87,7 +87,7 @@ cholesky_invert(MatrixType a)
 
     potri(a);
     // make symmetric
-    for (size_t i = 0; i < num_rows(a); ++i){
+    for (size_t i = 0; i < linalg::num_rows(a); ++i){
         for (size_t j = 0; j < i; ++j){
             a(j, i) = a(i, j);
         }
