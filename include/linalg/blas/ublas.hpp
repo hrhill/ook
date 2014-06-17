@@ -39,8 +39,6 @@ gemm(const typename Matrix1::value_type& a,
     boost::numeric::bindings::blas::gemm(a, A, B, b, C);
 }
 
-
-
 } // ns linalg
 
 #endif

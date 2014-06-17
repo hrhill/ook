@@ -15,7 +15,6 @@
 #include "test_utilities.hpp"
 
 using namespace std;
-using namespace linalg;
 
 template <typename Vector, typename Matrix>
 int zero_tests()
@@ -23,10 +22,10 @@ int zero_tests()
     const int n = 5;
     Vector zero(n, 0.0);
 
-    BOOST_CHECK_EQUAL(norm_1(zero), norm_2(zero));
-    BOOST_CHECK_EQUAL(norm_2(zero), norm_p(zero, 2));
-    BOOST_CHECK_EQUAL(norm_1(zero), norm_p(zero, 1));
-    BOOST_CHECK_EQUAL(norm_p(zero, 5), norm_infinity(zero));
+    BOOST_CHECK_EQUAL(linalg::norm_1(zero), linalg::norm_2(zero));
+    BOOST_CHECK_EQUAL(linalg::norm_2(zero), linalg::norm_p(zero, 2));
+    BOOST_CHECK_EQUAL(linalg::norm_1(zero), linalg::norm_p(zero, 1));
+    BOOST_CHECK_EQUAL(linalg::norm_p(zero, 5), linalg::norm_infinity(zero));
 
     return 0;
 }
@@ -37,9 +36,9 @@ int one_tests()
     const int n = 5;
     Vector one(n, 1.0);
 
-    BOOST_CHECK_EQUAL(norm_1(one), n);
-    BOOST_CHECK_EQUAL(norm_2(one), sqrt(n));
-    BOOST_CHECK_EQUAL(norm_infinity(one), 1);
+    BOOST_CHECK_EQUAL(linalg::norm_1(one), n);
+    BOOST_CHECK_EQUAL(linalg::norm_2(one), sqrt(n));
+    BOOST_CHECK_EQUAL(linalg::norm_infinity(one), 1);
 
     return 0;
 }
@@ -50,9 +49,9 @@ int expr_tests()
     const int n = 5;
     Vector one(n, 1.0);
 
-    BOOST_CHECK_EQUAL(norm_1(static_cast<const Vector&>(one - one)), 0);
-    BOOST_CHECK_EQUAL(norm_2(static_cast<const Vector&>(one - one)), 0);
-    BOOST_CHECK_EQUAL(norm_infinity(static_cast<const Vector&>(one - one)), 0);
+    BOOST_CHECK_EQUAL(linalg::norm_1(one - one), 0);
+    BOOST_CHECK_EQUAL(linalg::norm_2(static_cast<const Vector&>(one - one)), 0);
+    BOOST_CHECK_EQUAL(linalg::norm_infinity(static_cast<const Vector&>(one - one)), 0);
 
     return 0;
 }
@@ -69,7 +68,7 @@ BOOST_AUTO_TEST_CASE(ublas_norm_tests)
     BOOST_CHECK_EQUAL((one_tests<vector_t, matrix_t>()), 0);
     BOOST_CHECK_EQUAL((expr_tests<vector_t, matrix_t>()), 0);
 }
-
+/*
 #ifdef HAVE_BLAZE
 #include <blaze/Math.h>
 
@@ -84,4 +83,5 @@ BOOST_AUTO_TEST_CASE(blaze_norm_tests)
 }
 
 #endif
+*/
 

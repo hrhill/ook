@@ -4,6 +4,8 @@
 #include <cmath>
 #include <numeric>
 
+#include <boost/numeric/ublas/vector_expression.hpp>
+
 #include "operations.hpp"
 #include "std_traits.hpp"
 
@@ -20,25 +22,27 @@ auto inner_prod(const T& x, const T& y)
 
 /// \brief \f$ l_1 \f$ norm.
 template <typename T>
-auto norm_1(const T& x)
+auto norm_1(const boost::numeric::ublas::vector_expression<T>& x)
 {
-    typedef remove_const_reference<decltype(x[0])> value_type;
-    return std::accumulate(x.begin(), x.end(), value_type(0.0),
+    typedef remove_const_reference<decltype(x()[0])> value_type;
+    return std::accumulate(x().begin(), x().end(), value_type(0.0),
             [](const value_type& init, const value_type& xi){
                 return init + fabs(xi);
             });
 }
 
+
+
 /// \brief \f$ l_2  \f$ norm.
 template <typename T>
-auto norm_2(const T& x)
+auto norm_2(const boost::numeric::ublas::vector_expression<T>& x)
 {
-    return sqrt(inner_prod(x, x));
+    return sqrt(inner_prod(x(), x()));
 }
 
 /// \brief \f$ l_p  \f$ norm.
 template <typename T>
-auto norm_p(const T& x, int p)
+auto norm_p(const boost::numeric::ublas::vector_expression<T>& x, int p)
 {
     assert(p > 0);
     typedef remove_const_reference<decltype(x[0])> value_type;
@@ -50,7 +54,7 @@ auto norm_p(const T& x, int p)
 
 /// \brief \f$ l_{\infty} \f$ norm.
 template <typename T>
-auto norm_infinity(const T& x)
+auto norm_infinity(const boost::numeric::ublas::vector_expression<T>& x)
 {
     typedef remove_const_reference<decltype(x[0])> value_type;
     value_type r(0.0);
