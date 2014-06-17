@@ -8,9 +8,8 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
-#include "linalg.hpp"
 #include "linalg/special_matrices.hpp"
-#include "linalg/norms.hpp"
+#include "linalg/operations.hpp"
 
 #include "test_utilities.hpp"
 
@@ -68,7 +67,7 @@ BOOST_AUTO_TEST_CASE(ublas_norm_tests)
     BOOST_CHECK_EQUAL((one_tests<vector_t, matrix_t>()), 0);
     BOOST_CHECK_EQUAL((expr_tests<vector_t, matrix_t>()), 0);
 }
-/*
+
 #ifdef HAVE_BLAZE
 #include <blaze/Math.h>
 
@@ -83,5 +82,4 @@ BOOST_AUTO_TEST_CASE(blaze_norm_tests)
 }
 
 #endif
-*/
 
