@@ -65,13 +65,13 @@ VectorType
 cholesky_solve(MatrixType a, const VectorType& y)
 {
     // set up Ax = y
-    MatrixType y1(size(y), 1, 0);
+    MatrixType y1(linalg::size(y), 1, 0);
     column(y1, 0) = y;
 
     // solve
     posv(a, y1);
 
-    return column(y1, 0);
+    return linalg::column(y1, 0);
 }
 
 template <typename MatrixType>
@@ -106,7 +106,7 @@ log_cholesky_determinant(MatrixType a){
             "potrf failed in cholesky_determinant" + std::to_string(info));
 
     double logd(0.0);
-    for (size_t i = 0; i < num_rows(a); ++i){
+    for (size_t i = 0; i < linalg::num_rows(a); ++i){
         logd += log(a(i, i));
     }
     // return the square since |A| = |L|^2
