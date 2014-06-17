@@ -27,17 +27,19 @@ gemv(const typename Vector::value_type& a,
     boost::numeric::bindings::blas::gemv(a, m, v, b, res);
 }
 
-template <typename Matrix>
+template <typename Matrix1, typename Matrix2, typename Matrix3>
 inline
 void
-gemm(const typename Matrix::value_type& a,
-     const Matrix& A,
-     const Matrix& B,
-     const typename Matrix::value_type& b,
-     Matrix& C)
+gemm(const typename Matrix1::value_type& a,
+     const Matrix1& A,
+     const Matrix2& B,
+     const typename Matrix1::value_type& b,
+     Matrix3& C)
 {
     boost::numeric::bindings::blas::gemm(a, A, B, b, C);
 }
+
+
 
 } // ns linalg
 
