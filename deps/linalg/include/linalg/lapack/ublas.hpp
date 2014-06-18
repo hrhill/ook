@@ -73,6 +73,13 @@ potri(Matrix& a)
     return boost::numeric::bindings::lapack::potri(ia);
 }
 
+template <typename Matrix>
+int
+geqrf(Matrix& A, std::vector<double>& tau)
+{
+    return boost::numeric::bindings::lapack::geqrf(A, tau);
+}
+
 } // ns linalg
 
 #endif

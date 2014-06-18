@@ -25,8 +25,8 @@ template <typename Matrix>
 Matrix
 select_lower_triangular(const Matrix& m){
 
-    const int nrows = num_rows(m);
-    const int ncols = num_cols(m);
+    const int nrows = linalg::num_rows(m);
+    const int ncols = linalg::num_cols(m);
 
     const int dim = std::min(nrows, ncols);
     const int row_offset = std::max(0, nrows - ncols);
@@ -45,8 +45,8 @@ template <typename Matrix>
 Matrix
 select_upper_triangular(const Matrix& m){
 
-    const int nrows = num_rows(m);
-    const int ncols = num_cols(m);
+    const int nrows = linalg::num_rows(m);
+    const int ncols = linalg::num_cols(m);
 
     const int dim = std::min(nrows, ncols);
     const int col_offset = std::max(0, ncols - nrows);
@@ -65,13 +65,13 @@ VectorType
 cholesky_solve(MatrixType a, const VectorType& y)
 {
     // set up Ax = y
-    MatrixType y1(size(y), 1, 0);
+    MatrixType y1(linalg::size(y), 1, 0);
     column(y1, 0) = y;
 
     // solve
     posv(a, y1);
 
-    return column(y1, 0);
+    return linalg::column(y1, 0);
 }
 
 template <typename MatrixType>
@@ -87,7 +87,7 @@ cholesky_invert(MatrixType a)
 
     potri(a);
     // make symmetric
-    for (size_t i = 0; i < num_rows(a); ++i){
+    for (size_t i = 0; i < linalg::num_rows(a); ++i){
         for (size_t j = 0; j < i; ++j){
             a(j, i) = a(i, j);
         }
@@ -106,7 +106,7 @@ log_cholesky_determinant(MatrixType a){
             "potrf failed in cholesky_determinant" + std::to_string(info));
 
     double logd(0.0);
-    for (size_t i = 0; i < num_rows(a); ++i){
+    for (size_t i = 0; i < linalg::num_rows(a); ++i){
         logd += log(a(i, i));
     }
     // return the square since |A| = |L|^2
