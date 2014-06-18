@@ -20,6 +20,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <iostream>
+#include <iomanip>
+
 #include "ook/state.h"
 
 namespace ook{

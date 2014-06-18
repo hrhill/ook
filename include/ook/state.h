@@ -18,14 +18,7 @@
 #ifndef OOK_STATE_H_
 #define OOK_STATE_H_
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <iostream>
-#include <iomanip>
-
 #include "ook/message.h"
-#include "ook/norms.h"
-#include "ook/type_traits.h"
 
 namespace ook{
 
