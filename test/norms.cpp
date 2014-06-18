@@ -15,6 +15,8 @@
 
 using namespace std;
 
+const double tol = 1e-04;
+
 template <typename Vector, typename Matrix>
 int zero_tests()
 {
@@ -49,8 +51,12 @@ int expr_tests()
     Vector one(n, 1.0);
 
     BOOST_CHECK_EQUAL(linalg::norm_1(one - one), 0);
-    BOOST_CHECK_EQUAL(linalg::norm_2(static_cast<const Vector&>(one - one)), 0);
-    BOOST_CHECK_EQUAL(linalg::norm_infinity(static_cast<const Vector&>(one - one)), 0);
+    BOOST_CHECK_EQUAL(linalg::norm_2(one - one), 0);
+    BOOST_CHECK_EQUAL(linalg::norm_infinity(one - one), 0);
+
+    BOOST_CHECK_CLOSE(linalg::norm_1(one / n), 1.0, tol);
+    BOOST_CHECK_CLOSE(linalg::norm_2(one / sqrt(n)), 1.0, tol);
+    BOOST_CHECK_CLOSE(linalg::norm_infinity(1.0 * one), 1.0, tol);
 
     return 0;
 }
