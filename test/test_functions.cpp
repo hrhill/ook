@@ -19,7 +19,6 @@
 
 #include <boost/mpl/list.hpp>
 
-#include "ook/norms.h"
 #include "ook/test_functions/more_garbow_hillstrom.h"
 
 using namespace ook::test_functions;
@@ -66,7 +65,7 @@ test_function_specification()
     std::tie(f_min, df, d2f) = objective_function(minima);
 
     BOOST_CHECK(abs(f_min - test_function::f_min) <= test_function::tolerance);
-    BOOST_CHECK(ook::norm_infinity(df) <= test_function::tolerance);
+    BOOST_CHECK(boost::numeric::ublas::norm_inf(df) <= test_function::tolerance);
     return 0;
 }
 

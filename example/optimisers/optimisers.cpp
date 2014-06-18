@@ -27,7 +27,6 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include "ook/norms.h"
 #include "ook/options.h"
 #include "ook/message.h"
 #include "ook/stream_observer.h"
