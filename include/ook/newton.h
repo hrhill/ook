@@ -107,7 +107,7 @@ solve(Matrix A, const Vector& b)
 template <typename X>
 struct newton{
     typedef X vector_type;
-    typedef typename X::value_type value_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef newton_state<X> state_type;
 
     template <typename F>
