@@ -19,6 +19,9 @@
 #define OOK_LINE_SEARCH_METHODS_STEEPEST_DESCENT_H_
 
 #include <tuple>
+#include <type_traits>
+
+#include "linalg/operations.hpp"
 
 #include "ook/state.h"
 #include "ook/line_search_method.h"
@@ -32,7 +35,7 @@ template <typename X>
 struct
 sd_state{
     typedef X vector_type;
-    typedef typename X::value_type value_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
 
     sd_state(const int n = 0)
     :
@@ -67,14 +70,14 @@ template <typename X>
 struct steepest_descent
 {
     typedef X vector_type;
-    typedef typename X::value_type value_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef sd_state<X> state_type;
 
     template <typename F>
     state_type
     initialise(F objective_function, const X& x0)
     {
-        state_type s(x0.size());
+        state_type s(linalg::size(x0));
         std::tie(s.fx, s.dfx) = objective_function(x0);
         return s;
     }
