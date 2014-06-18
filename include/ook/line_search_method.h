@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <type_traits>
 
 #include "linalg/norms.hpp"
 
@@ -29,15 +30,15 @@
 namespace ook{
 
 template <typename Scheme>
-struct line_search_method{
-
+struct line_search_method
+{
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
     operator()(F obj_fun, X x, const Options& opts, Observer& observer)
     {
         typedef detail::call_selector<
                     std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
-        typedef typename X::value_type real_type;
+        typedef typename std::remove_reference<decltype(x[0])>::type real_type;
 
         const real_type epsilon = std::numeric_limits<real_type>::epsilon();
         const real_type dx_eps = sqrt(epsilon);
