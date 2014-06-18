@@ -20,20 +20,11 @@
 
 #include <tuple>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/assignment.hpp>
-
-#include <boost/numeric/bindings/ublas/matrix.hpp>
-#include <boost/numeric/bindings/lapack/computational/potrs.hpp>
-#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
-#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include "linalg.hpp"
 
 #include "ook/state.h"
 #include "ook/line_search/more_thuente.h"
 #include "ook/line_search_method.h"
-#include "ook/factorisations/gmw81.h"
 
 namespace ook{
 namespace detail{
@@ -42,9 +33,8 @@ template <typename X>
 struct
 n_state{
     typedef X vector_type;
-    typedef typename X::value_type value_type;
-    typedef boost::numeric::ublas::matrix<value_type,
-              boost::numeric::ublas::column_major> matrix_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+    typedef typename linalg::associated_matrix<X>::type matrix_type;
 
     n_state(const int n = 0)
     :
@@ -83,7 +73,7 @@ template <typename Matrix>
 Matrix
 convert_to_cholesky(const Matrix& LD)
 {
-    int n = LD.size1();
+    int n = linalg::num_rows(LD);
     Matrix L(LD);
     for (int j = 0; j < n; ++j){
         const double di = sqrt(L(j, j));
@@ -101,17 +91,15 @@ template <typename Matrix, typename Vector>
 Vector
 solve(Matrix A, const Vector& b)
 {
-    Matrix LD = ook::factorisations::gmw81(A);
+    Matrix LD = linalg::factorisations::gmw81(A);
     Matrix L = convert_to_cholesky(LD);
 
-    boost::numeric::ublas::symmetric_adaptor<Matrix,
-                            boost::numeric::ublas::lower> sa(L);
-    Matrix b1(b.size(), 1);
+    Matrix b1(linalg::size(b), 1);
 
-    boost::numeric::ublas::column(b1, 0) = b;
-    boost::numeric::bindings::lapack::potrs(sa, b1);
+    linalg::column(b1, 0) = b;
+    linalg::potrs(L, b1);
 
-    return boost::numeric::ublas::column(b1, 0);
+    return linalg::column(b1, 0);
 }
 
 /// \brief Implementation of the required steps of line_search_method
@@ -126,7 +114,7 @@ struct newton{
     state_type
     initialise(F objective_function, const X& x0)
     {
-        state_type s(x0.size());
+        state_type s(linalg::size(x0));
         std::tie(s.fx, s.dfx, s.H) = objective_function(x0);
         return s;
     }
