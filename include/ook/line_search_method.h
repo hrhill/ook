@@ -21,7 +21,8 @@
 #include <iostream>
 #include <iomanip>
 
-#include "ook/norms.h"
+#include "linalg/norms.hpp"
+
 #include "ook/message.h"
 #include "ook/call_selector.h"
 
@@ -54,12 +55,12 @@ struct line_search_method{
             {
                 s = caller_type::call(obj_fun, x + a * s.p, s);
                 ++s.nfev;
-                return std::make_pair(s.fx, inner_product(s.dfx, s.p));
+                return std::make_pair(s.fx, linalg::inner_prod(s.dfx, s.p));
             };
 
             // Store current fx value since line search overwrites the state values.
             const real_type fxk = s.fx;
-            real_type dfx_dot_p = inner_product(s.dfx, s.p);
+            real_type dfx_dot_p = linalg::inner_prod(s.dfx, s.p);
             std::tie(s.msg, s.a, s.fx, dfx_dot_p) = scheme.search(phi, s.fx, dfx_dot_p, 1.0, opts);
 
             s.dx = s.a * s.p;
@@ -72,8 +73,8 @@ struct line_search_method{
             // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
             const real_type theta = epsilon * (1.0 + fabs(s.fx));
             const bool u1 = (fxk - s.fx) <= theta;
-            const bool u2 = ook::norm_infinity(s.dx) <=  dx_eps * (1.0 + ook::norm_infinity(x));
-            const bool u3 = ook::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
+            const bool u2 = linalg::norm_infinity(s.dx) <=  dx_eps * (1.0 + linalg::norm_infinity(x));
+            const bool u3 = linalg::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
 
             s.tag = state_tag::iterate;
             observer(s);

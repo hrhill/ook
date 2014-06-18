@@ -1,6 +1,5 @@
 set(TESTS line_search
           optimise
-          factorisation
           test_functions)
 
 foreach(test ${TESTS})

@@ -85,7 +85,7 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
     vector_type df;
     std::tie(f_min, df) = wrapper(x_min);
     BOOST_CHECK(fabs(f_min - test_function::f_min) <=  1e-08);
-    BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);
+    BOOST_CHECK(ublas::norm_inf(x_min - minima) <= 1e-04);
 }
 
 template <typename Function>
@@ -140,7 +140,7 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
 
     std::tie(f_min, df, d2f) = objective_function(x_min);
     //BOOST_CHECK(fabs(f_min - test_function::f_min) <= 1e-08);
-    BOOST_CHECK(ook::norm_infinity(x_min - minima) <= 1e-04);
+    BOOST_CHECK(ublas::norm_inf(x_min - minima) <= 1e-04);
 }
 
 template <typename Function>

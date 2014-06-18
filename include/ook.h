@@ -18,18 +18,12 @@
 #ifndef OOK_H_
 #define OOK_H_
 
-#include "ook/norms.h"
 #include "ook/message.h"
 #include "ook/version.h"
 #include "ook/options.h"
 #include "ook/state.h"
 
 #include "ook/stream_observer.h"
-
-#include "ook/factorisations/cholesky.h"
-#include "ook/factorisations/ldlt.h"
-#include "ook/factorisations/gmw81.h"
-#include "ook/factorisations/tools.h"
 
 #include "ook/line_search_method.h"
 #include "ook/newton.h"
