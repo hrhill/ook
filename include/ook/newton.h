@@ -30,13 +30,13 @@ namespace ook{
 namespace detail{
 
 template <typename X>
-struct
-n_state{
+struct newton_state
+{
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef typename linalg::associated_matrix<X>::type matrix_type;
 
-    n_state(const int n = 0)
+    newton_state(const int n = 0)
     :
         fx(0),
         dfx(n),
@@ -108,7 +108,7 @@ template <typename X>
 struct newton{
     typedef X vector_type;
     typedef typename X::value_type value_type;
-    typedef n_state<X> state_type;
+    typedef newton_state<X> state_type;
 
     template <typename F>
     state_type
