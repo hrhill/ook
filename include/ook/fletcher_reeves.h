@@ -20,6 +20,9 @@
 
 #include <tuple>
 #include <algorithm>
+#include <type_traits>
+
+#include "linalg.hpp"
 
 #include "ook/state.h"
 #include "ook/line_search_method.h"
@@ -30,11 +33,11 @@ namespace detail{
 
 template <typename X>
 struct
-fr_state{
+fletcher_reeves_state{
     typedef X vector_type;
-    typedef typename X::value_type value_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
 
-    fr_state(const int n = 0)
+    fletcher_reeves_state(const int n = 0)
     :
         fx(0),
         dfx(n),
@@ -66,14 +69,14 @@ fr_state{
 template <typename X>
 struct fletcher_reeves{
     typedef X vector_type;
-    typedef typename X::value_type value_type;
-    typedef fr_state<X> state_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+    typedef fletcher_reeves_state<X> state_type;
 
     template <typename F>
     state_type
     initialise(F objective_function, const X& x0)
     {
-        state_type s(x0.size());
+        state_type s(linalg::size(x0));
         std::tie(s.fx, s.dfx) = objective_function(x0);
         s.dfx0 = s.dfx;
         return s;
@@ -90,7 +93,7 @@ struct fletcher_reeves{
     state_type
     update(state_type s)
     {
-        s.beta = inner_product(s.dfx, s.dfx)/inner_product(s.dfx0, s.dfx0);
+        s.beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(s.dfx0, s.dfx0);
         s.dfx0 = s.dfx;
         return s;
     }
