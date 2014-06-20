@@ -33,22 +33,22 @@ struct backward_difference{
 	/// \brief Calculate the backward difference approximation to the gradient of f.
 	template <typename F, typename X>
 	static
-	std::tuple<typename X::value_type, X>
+	auto
 	gradient(F f, X x);
 
 	/// \brief Calculate the backward difference approximation to the hessian of f.
 	template <typename F, typename X, typename M>
 	static
-	std::tuple<typename X::value_type, M>
+	auto
 	hessian(F f, const X& x);
 };
 
 template <typename F, typename X>
-std::tuple<typename X::value_type, X>
+auto
 backward_difference::gradient(F f, X x)
 {
-	typedef typename X::value_type value_type;
-	typedef typename X::size_type size_type;
+    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
+    typedef size_t size_type;
 
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x)
@@ -82,11 +82,11 @@ backward_difference::gradient(F f, X x)
 }
 
 template <typename F, typename X, typename M>
-std::tuple<typename X::value_type, M>
+auto
 backward_difference::hessian(F f, const X& x)
 {
-	typedef typename X::value_type value_type;
-	typedef typename X::size_type size_type;
+    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
+    typedef size_t size_type;
 
 	const double eps = std::numeric_limits<value_type>::epsilon();
 	auto hmin(std::pow(eps, 1.0/3.0));

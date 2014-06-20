@@ -32,6 +32,11 @@ struct is_regular
     std::is_move_assignable<T>::value >
 {};
 
+template <typename T>
+using remove_const_reference
+    = typename std::remove_const<
+        typename std::remove_reference<T>::type>;
+
 }
 
 #endif
