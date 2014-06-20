@@ -23,6 +23,8 @@
 #include <tuple>
 
 #include <algorithm>
+
+#include "ook/type_traits.h"
 #include "ook/finite_differences/detail/transform.h"
 
 namespace ook{
@@ -33,32 +35,29 @@ struct forward_difference{
 	/// \brief Calculate the forward difference approximation to the gradient of f.
 	template <typename F, typename X>
 	static
-	std::tuple<typename X::value_type, X>
-	gradient(F f, X x);
+	auto gradient(F f, X x);
 
 	/// \brief Calculate the forward difference approximation to the hessian of f.
 	template <typename F, typename X, typename M>
 	static
-	std::tuple<typename X::value_type, M>
-	hessian(F f, const X& x);
+	auto hessian(F f, const X& x);
 };
 
 template <typename F, typename X>
-std::tuple<typename X::value_type, X>
+auto
 forward_difference::gradient(F f, X x)
 {
-	typedef typename X::value_type value_type;
-	typedef typename X::size_type size_type;
+	typedef typename remove_const_reference<decltype(x[0])>::type value_type;
 
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x)
-	const size_type n = std::distance(x.begin(), x.end());
+	auto n = std::distance(x.begin(), x.end());
 	const value_type hmin(sqrt(std::numeric_limits<value_type>::epsilon()));
 
 	std::vector<X> sample_points(n + 1);
 	X h(n);
 
-	for (size_type i = 0; i < n; ++i)
+	for (size_t i = 0; i < n; ++i)
 	{
 	    const value_type xi = x[i];
 	    const value_type hx = hmin * (1 + fabs(xi));
@@ -76,18 +75,18 @@ forward_difference::gradient(F f, X x)
 	// assemble
 	X df(n);
 	const double fx = function_values[n];
-	for (size_type i = 0; i < n; ++i){
+	for (size_t i = 0; i < n; ++i){
 	    df[i] = (function_values[i] - fx) / h[i];
 	}
 	return std::make_tuple(fx, df);
 }
 
 template <typename F, typename X, typename M>
-std::tuple<typename X::value_type, M>
+auto
 forward_difference::hessian(F f, const X& x)
 {
-	typedef typename X::value_type value_type;
-	typedef typename X::size_type size_type;
+    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
+	typedef size_t size_type;
 
 	const size_type n = std::distance(x.begin(), x.end());
 	const value_type eps = std::numeric_limits<value_type>::epsilon();
