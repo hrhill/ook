@@ -21,7 +21,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/deps/linalg/include")
 add_subdirectory(example)
 add_subdirectory(test)
 
-# ------------------------------------ Documentation setup ------------------------------------------
+# ------------------------------------ Documentation setup ---------------------------
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE}
@@ -31,7 +31,7 @@ if(DOXYGEN_FOUND)
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
-#------------------------------------- Installation details -----------------------------------------
+#------------------------------------- Installation details --------------------------
 set(LIB_INST_DIR "${CMAKE_INSTALL_PREFIX}/lib64")
 set(HEADER_INST_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
