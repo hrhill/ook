@@ -31,94 +31,70 @@ namespace detail{
 
 template <typename X>
 struct
-bfgs_state{
+bfgs_state
+{
     typedef X vector_type;
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-
     typedef typename linalg::associated_matrix<X>::type matrix_type;
 
-    bfgs_state(const int n = 0)
+    bfgs_state(const X& dfx)
     :
-        fx(0),
-        dfx(n),
-        dfx0(n),
-        p(n),
-        dx(n),
-        H(n, n, 0.0),
-        a(1),
-        iteration(0),
-        nfev(0),
-        tag(state_tag::init)
+        dfx(dfx),
+        p(dfx.size()),
+        H(dfx.size(), dfx.size(), 0.0)
     {
+        const int n = dfx.size();
         for (int i = 0; i < n; ++i){
             H(i, i) = 1.0;
         }
     }
 
-    value_type fx;
     vector_type dfx;
-    vector_type dfx0;
     vector_type p;
-    vector_type dx;
     matrix_type H;
-    value_type a;
-    int iteration;
-    int nfev;
-    state_tag tag;
-    message msg;
 };
 
 /// \brief Implementation of the required steps of line_search_method
 /// for BFGS method.
 template <typename X>
-struct bfgs{
-    typedef X vector_type;
+struct bfgs
+{
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef typename linalg::associated_matrix<X>::type matrix_type;
     typedef bfgs_state<X> state_type;
 
-    template <typename F>
-    state_type
-    initialise(F objective_function, const X& x0)
+    template <typename State>
+    bfgs(const State& s)
+    : state(s.dfx)
+    {}
+
+    template <typename State>
+    X
+    descent_direction(const State& s)
     {
-        state_type s(linalg::size(x0));
-        std::tie(s.fx, s.dfx) = objective_function(x0);
-        s.dfx0 = s.dfx;
-        return s;
+        linalg::gemv(-1.0, state.H, s.dfx, 0.0, state.p);
+        return state.p;
     }
 
-    state_type
-    descent_direction(state_type s)
+    template <typename State>
+    void
+    update(const State& s)
     {
-        ++s.iteration;
-        linalg::gemv(-1.0, s.H, s.dfx, 0.0, s.p);
-        return s;
-    }
-
-    state_type
-    update(state_type s){
-        X y(s.dfx - s.dfx0);
-        const value_type rho = 1.0/linalg::inner_prod(y, s.dx);
+        X yk(s.dfx - state.dfx);
+        const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
 
         const int n = linalg::size(s.dfx);
-        matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, y));
-        matrix_type ss = rho * linalg::outer_prod(s.dx, s.dx);
+        matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, yk));
 
-        if (s.iteration == 1){
-            const value_type hii = linalg::inner_prod(s.dx, s.dx);
-            for (int i = 0; i < n; ++i){
-                s.H(i, i) = hii;
-            }
-        }
         matrix_type tmp(n, n);
-        linalg::gemm(1.0, s.H, linalg::trans(Z), 0.0, tmp);
-        linalg::gemm(1.0, Z, tmp, 0.0, s.H);
-        s.H += ss;
-        s.dfx0 = s.dfx;
-        return s;
+        linalg::gemm(1.0, state.H, linalg::trans(Z), 0.0, tmp);
+        linalg::gemm(1.0, Z, tmp, 0.0, state.H);
+        matrix_type ss = rho * linalg::outer_prod(s.dx, s.dx);
+        state.H += ss;
+        state.dfx = s.dfx;
     }
 
     ook::line_search::more_thuente search;
+    state_type state;
 };
 
 } // ns detail
