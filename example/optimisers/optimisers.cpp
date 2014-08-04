@@ -27,16 +27,16 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 
-#include "ook/options.h"
-#include "ook/message.h"
-#include "ook/stream_observer.h"
+#include "ook/options.hpp"
+#include "ook/message.hpp"
+#include "ook/stream_observer.hpp"
 
-#include "ook/test_functions/more_garbow_hillstrom/rosenbrock.h"
+#include "ook/test_functions/more_garbow_hillstrom/rosenbrock.hpp"
 
-#include "ook/steepest_descent.h"
-#include "ook/fletcher_reeves.h"
-#include "ook/bfgs.h"
-#include "ook/newton.h"
+#include "ook/steepest_descent.hpp"
+#include "ook/fletcher_reeves.hpp"
+#include "ook/bfgs.hpp"
+#include "ook/newton.hpp"
 
 namespace ublas = boost::numeric::ublas;
 typedef ublas::vector<double> vector_t;

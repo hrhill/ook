@@ -1,3 +1,5 @@
+// Copyright 2013 Harry Hill
+//
 // This file is part of ook.
 //
 // ook is free software: you can redistribute it and/or modify
@@ -13,11 +15,38 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef OOK_STREAM_OBSERVER_HPP_
+#define OOK_STREAM_OBSERVER_HPP_
+
 #include <iostream>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
 
-#include "ook.hpp"
+#include "linalg/norms.hpp"
 
-int main(int argc, char** argv){
 
-    std::cout << "ook " << ook::version::string() << std::endl;
-}
+namespace ook{
+
+/// \brief Observer that outputs the state to the given stream.
+template <typename Stream>
+struct stream_observer
+{
+    stream_observer(Stream& stream)
+    :
+        stream_(stream)
+    {}
+
+    template <typename State>
+    void operator()(const State& s)
+    {
+        stream_ << s << std::endl;
+    }
+
+private:
+    Stream& stream_;
+};
+
+} // ns ook
+
+#endif

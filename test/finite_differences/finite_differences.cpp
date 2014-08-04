@@ -15,11 +15,11 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-#include "test_functions.h"
+#include "test_functions.hpp"
 
-#include "ook/finite_differences/forward_difference.h"
-#include "ook/finite_differences/backward_difference.h"
-#include "ook/finite_differences/central_difference.h"
+#include "ook/finite_differences/forward_difference.hpp"
+#include "ook/finite_differences/backward_difference.hpp"
+#include "ook/finite_differences/central_difference.hpp"
 
 using namespace ook::finite_differences;
 
@@ -90,7 +90,7 @@ int checker(F f, G g, int dim){
         // Calculate finite difference approximation.
         auto dfh = FD::gradient(g, x);
 
-        /// Terrible hacks to 
+        /// Terrible hacks to
         typedef hessian_picker<FD> hp;
         auto d2fh = hp::call(g, x, H);
         //auto d2fh = forward_difference::hessian<G, vector_t, matrix_t>(g, x);

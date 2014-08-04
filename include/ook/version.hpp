@@ -1,3 +1,5 @@
+// Copyright 2013 Harry Hill
+//
 // This file is part of ook.
 //
 // ook is free software: you can redistribute it and/or modify
@@ -13,11 +15,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
+#ifndef OOK_VERSION_HPP_
+#define OOK_VERSION_HPP_
 
-#include "ook.hpp"
+#include <string>
 
-int main(int argc, char** argv){
+#define OOK_MAJOR_VERSION 0
+#define OOK_MINOR_VERSION 7
+#define OOK_PATCH_LEVEL 0
+#define OOK_VERSION ( OOK_MAJOR_VERSION * 100000 + OOK_MINOR_VERSION * 100 + OOK_PATCH_LEVEL )
 
-    std::cout << "ook " << ook::version::string() << std::endl;
+
+namespace ook{
+
+struct version{
+    static constexpr int major = OOK_MAJOR_VERSION;
+    static constexpr int minor = OOK_MINOR_VERSION;
+    static constexpr int patch = OOK_PATCH_LEVEL;
+
+    static std::string
+    string(){
+        return "v" + std::to_string(major) +
+               "." + std::to_string(minor) +
+               "." + std::to_string(patch);
+    }
+};
+
 }
+
+#endif
