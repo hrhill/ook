@@ -1,3 +1,5 @@
+// Copyright 2013 Harry Hill
+//
 // This file is part of ook.
 //
 // ook is free software: you can redistribute it and/or modify
@@ -13,11 +15,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
+#ifndef OOK_STATE_H_
+#define OOK_STATE_H_
 
-#include "ook.hpp"
+#include "ook/message.hpp"
 
-int main(int argc, char** argv){
+namespace ook{
 
-    std::cout << "ook " << ook::version::string() << std::endl;
-}
+/// \brief State for use with line search method.
+enum class state_tag{init, iterate, final};
+
+} // ns ook
+
+#endif

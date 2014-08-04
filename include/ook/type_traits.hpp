@@ -1,3 +1,5 @@
+// Copyright 2013 Harry Hill
+//
 // This file is part of ook.
 //
 // ook is free software: you can redistribute it and/or modify
@@ -13,11 +15,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
+#ifndef OOK_TYPE_TRAITS_HPP_
+#define OOK_TYPE_TRAITS_HPP_
 
-#include "ook.hpp"
+#include <type_traits>
 
-int main(int argc, char** argv){
+namespace ook{
 
-    std::cout << "ook " << ook::version::string() << std::endl;
+template<typename T>
+struct is_regular
+: std::integral_constant<bool,
+    std::is_default_constructible<T>::value &&
+    std::is_copy_constructible<T>::value &&
+    std::is_move_constructible<T>::value &&
+    std::is_copy_assignable<T>::value &&
+    std::is_move_assignable<T>::value >
+{};
+
+template <typename T>
+using remove_const_reference
+    = typename std::remove_const<
+        typename std::remove_reference<T>::type>;
+
 }
+
+#endif

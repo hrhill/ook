@@ -1,3 +1,5 @@
+// Copyright 2013 Harry Hill
+//
 // This file is part of ook.
 //
 // ook is free software: you can redistribute it and/or modify
@@ -13,11 +15,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
+#ifndef OOK_FINITE_DIFFERENCES_HPP_
+#define OOK_FINITE_DIFFERENCES_HPP_
 
-#include "ook.hpp"
+#include "ook/finite_differences/forward_difference.hpp"
+#include "ook/finite_differences/backward_difference.hpp"
+#include "ook/finite_differences/central_difference.hpp"
 
-int main(int argc, char** argv){
-
-    std::cout << "ook " << ook::version::string() << std::endl;
-}
+#endif
