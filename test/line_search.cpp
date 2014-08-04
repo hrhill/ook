@@ -15,10 +15,10 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/options.h"
-#include "ook/message.h"
-#include "ook/line_search/more_thuente.h"
-#include "ook/line_search/backtracking.h"
+#include "ook/options.hpp"
+#include "ook/message.hpp"
+#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/backtracking.hpp"
 
 typedef boost::mpl::list<
     ook::line_search::more_thuente,

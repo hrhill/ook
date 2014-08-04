@@ -15,14 +15,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_VERSION_H_
-#define OOK_VERSION_H_
+#ifndef OOK_VERSION_HPP_
+#define OOK_VERSION_HPP_
 
 #include <string>
 
 #define OOK_MAJOR_VERSION 0
-#define OOK_MINOR_VERSION 5
-#define OOK_PATCH_LEVEL 2
+#define OOK_MINOR_VERSION 7
+#define OOK_PATCH_LEVEL 0
 #define OOK_VERSION ( OOK_MAJOR_VERSION * 100000 + OOK_MINOR_VERSION * 100 + OOK_PATCH_LEVEL )
 
 

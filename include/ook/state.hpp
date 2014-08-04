@@ -18,7 +18,7 @@
 #ifndef OOK_STATE_H_
 #define OOK_STATE_H_
 
-#include "ook/message.h"
+#include "ook/message.hpp"
 
 namespace ook{
 

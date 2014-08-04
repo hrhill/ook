@@ -15,15 +15,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_BACKTRACKING_H_
-#define OOK_LINE_SEARCH_BACKTRACKING_H_
+#ifndef OOK_LINE_SEARCH_BACKTRACKING_HPP_
+#define OOK_LINE_SEARCH_BACKTRACKING_HPP_
 
 #include <tuple>
 #include <exception>
 #include <cassert>
 
-#include "ook/message.h"
-#include "ook/line_search/conditions.h"
+#include "ook/message.hpp"
+#include "ook/line_search/conditions.hpp"
 
 namespace ook{
 namespace line_search{

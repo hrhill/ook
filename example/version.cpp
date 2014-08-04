@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-#include "ook.h"
+#include "ook.hpp"
 
 int main(int argc, char** argv){
 

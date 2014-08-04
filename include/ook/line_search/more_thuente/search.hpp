@@ -15,15 +15,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_MORE_THUENTE_SEARCH_H_
-#define OOK_LINE_SEARCH_MORE_THUENTE_SEARCH_H_
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_SEARCH_HPP_
+#define OOK_LINE_SEARCH_MORE_THUENTE_SEARCH_HPP_
 
 #include <tuple>
 #include <cmath>
 
-#include "ook/line_search/more_thuente/step.h"
-#include "ook/line_search/conditions.h"
-#include "ook/message.h"
+#include "ook/line_search/more_thuente/step.hpp"
+#include "ook/line_search/conditions.hpp"
+#include "ook/message.hpp"
 
 // This subroutine finds a step that satisfies a sufficient
 // decrease condition and a curvature condition.

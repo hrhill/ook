@@ -15,15 +15,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_FINITE_DIFFERENCES_CENTRAL_DIFFERENCE_H_
-#define OOK_FINITE_DIFFERENCES_CENTRAL_DIFFERENCE_H_
+#ifndef OOK_FINITE_DIFFERENCES_CENTRAL_DIFFERENCE_HPP_
+#define OOK_FINITE_DIFFERENCES_CENTRAL_DIFFERENCE_HPP_
 
 #include <limits>
 #include <cmath>
 #include <tuple>
 
 #include <algorithm>
-#include "ook/finite_differences/detail/transform.h"
+#include "ook/finite_differences/detail/transform.hpp"
 
 namespace ook{
 namespace finite_differences{

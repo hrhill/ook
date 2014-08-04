@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_FINITE_DIFFERENCES_H_
-#define OOK_FINITE_DIFFERENCES_H_
+#ifndef OOK_FINITE_DIFFERENCES_HPP_
+#define OOK_FINITE_DIFFERENCES_HPP_
 
-#include "ook/finite_differences/forward_difference.h"
-#include "ook/finite_differences/backward_difference.h"
-#include "ook/finite_differences/central_difference.h"
+#include "ook/finite_differences/forward_difference.hpp"
+#include "ook/finite_differences/backward_difference.hpp"
+#include "ook/finite_differences/central_difference.hpp"
 
 #endif
