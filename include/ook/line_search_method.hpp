@@ -24,7 +24,6 @@
 #include "linalg.hpp"
 
 #include "ook/message.hpp"
-#include "ook/state.hpp"
 #include "ook/call_selector.hpp"
 
 namespace ook{
@@ -32,6 +31,11 @@ namespace ook{
 template <typename X>
 struct lsm_state
 {
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+
+    /// \brief State for use with line search method.
+    enum class tag{init, iterate, final};
+
     typedef typename linalg::associated_matrix<X>::type matrix_type;
 
     lsm_state(const X& x)
@@ -42,22 +46,66 @@ struct lsm_state
         fx(0),
         gnorm(0),
         xnorm(0),
-        tag(state_tag::init),
+        state(lsm_state::tag::init),
         x(x),
         dfx(x.size(), 0),
         dx(x.size(), 0),
         H(x.size(), x.size())
-    {
+    {}
 
+    friend
+    std::ostream&
+    operator<<(std::ostream& out, const lsm_state<X>& s)
+    {
+        if (s.state == lsm_state::tag::init)
+        {
+            out << "\n"
+                << std::setw(8) << "n"
+                << std::setw(8) << "nfev"
+                << std::scientific
+                << std::setw(16) << "a"
+                << std::setw(16) << "fx"
+                << std::setw(16) << "max ||dfx||"
+                << std::setw(16) << "max ||dx||";
+        }
+
+        if (s.state == lsm_state::tag::iterate)
+        {
+            out << std::setw(8) << s.iteration
+                << std::setw(8) << s.nfev
+                << std::scientific
+                << std::setw(16) << s.a
+                << std::setw(16) << s.fx
+                << std::setw(16) << s.gnorm
+                << std::setw(16) << s.xnorm;
+        }
+
+        if (s.state == lsm_state::tag::final)
+        {
+            out << "\nstatus : " << s.msg
+                << "\n"
+                << std::setw(8) << "iter"
+                << std::setw(8) << "nfev"
+                << std::setw(16) << "fx"
+                << std::setw(16) << "max ||dfx||"
+                << std::setw(16) << "max ||dx||\n"
+                << std::setw(8) << s.iteration
+                << std::setw(8) << s.nfev
+                << std::scientific
+                << std::setw(16) << s.fx
+                << std::setw(16) << s.gnorm
+                << std::setw(16) << s.xnorm;
+        }
+        return out;
     }
 
     uint iteration;
     uint nfev;
-    double a;
-    double fx;
-    double gnorm;
-    double xnorm;
-    state_tag tag;
+    value_type a;
+    value_type fx;
+    value_type gnorm;
+    value_type xnorm;
+    tag state;
     message msg;
     X x;
     X dfx;
@@ -121,7 +169,7 @@ struct line_search_method
             const bool u2 = state.xnorm <=  dx_eps * (1.0 + linalg::norm_infinity(x));
             const bool u3 = state.gnorm <= df_eps * (1.0 + fabs(state.fx));
 
-            state.tag = state_tag::iterate;
+            state.state = lsm_state<X>::tag::iterate;
             observer(state);
             if ((u1 and u2) or u3){
                 state.msg = ook::message::convergence;
@@ -130,7 +178,7 @@ struct line_search_method
             scheme.update(state);
             ++state.iteration;
         }
-        state.tag = state_tag::final;
+        state.state = lsm_state<X>::tag::final;
         observer(state);
         return std::make_pair(state.msg, x);
     }
