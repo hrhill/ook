@@ -11,7 +11,7 @@ typedef boost::numeric::ublas::vector<double> vector_t;
 typedef boost::numeric::ublas::matrix<double> matrix_t;
 
 /// Rosenbrocks function, minimum is at f(1,1)=0
-double 
+double
 rosenbrock(const vector_t& x, vector_t& g, matrix_t& H)
 {
     sleep(1);
@@ -76,10 +76,9 @@ double paraboloid(const vector_t& x, vector_t& g, matrix_t& H)
     return pow(boost::numeric::ublas::norm_2(x), 2);
 }
 
-double 
+double
 rosenbrock_f(const vector_t& x)
 {
-    sleep(1);
     const double x02 = pow(x(0), 2);
     double f = 100.0 * pow(x(1) - x02, 2) + pow(1.0 - x(0), 2);
     return f;
