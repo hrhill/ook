@@ -26,10 +26,11 @@ namespace ook{
 template <typename T>
 struct options
 {
+
     options()
     :
         ftol(T(1e-03)),
-        gtol(T(1e-01)),
+        gtol(T(9e-01)),
         xtol(T(1e-08)),
         stpmin(std::numeric_limits<T>::epsilon()),
         stpmax(T(5.0)),

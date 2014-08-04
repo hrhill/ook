@@ -33,71 +33,55 @@ namespace detail{
 
 template <typename X>
 struct
-fletcher_reeves_state{
+fletcher_reeves_state
+{
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
 
-    fletcher_reeves_state(const int n = 0)
+    fletcher_reeves_state(const X& dfx)
     :
-        fx(0),
-        dfx(n),
-        dfx0(n),
-        p(n),
-        dx(n),
-        a(1),
-        beta(0),
-        iteration(0),
-        nfev(0),
-        tag(state_tag::init)
+        dfx(dfx),
+        p(dfx.size(), 0),
+        beta(0)
     {}
 
-    value_type fx;
     vector_type dfx;
-    vector_type dfx0;
     vector_type p;
-    vector_type dx;
-    value_type a;
     value_type beta;
-    int iteration;
-    int nfev;
-    state_tag tag;
-    message msg;
 };
 
 /// \brief Implementation of the required steps of line_search_method
-/// for Fletcher-Reeves method.
+/// for Fletcher-Reeves method. The intitial step is a steepest descent
+/// step. However, subsequent steps use the previous descent direction
+/// is a linear combination with the steepest descent direction.
 template <typename X>
-struct fletcher_reeves{
-    typedef X vector_type;
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+struct fletcher_reeves
+{
     typedef fletcher_reeves_state<X> state_type;
 
-    template <typename F>
-    state_type
-    initialise(F objective_function, const X& x0)
+    template <typename State>
+    fletcher_reeves(const State& s)
+    :
+        state(s.dfx)
+    {}
+
+    template <typename State>
+    X
+    descent_direction(const State& s)
     {
-        state_type s(linalg::size(x0));
-        std::tie(s.fx, s.dfx) = objective_function(x0);
-        s.dfx0 = s.dfx;
-        return s;
+        state.p = -s.dfx + state.beta * state.p;
+        return state.p;
     }
 
-    state_type
-    descent_direction(state_type s)
+    template <typename State>
+    void
+    update(const State& s)
     {
-        ++s.iteration;
-        s.p = -s.dfx + s.beta * s.p;
-        return s;
+        state.beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(state.dfx, state.dfx);
+        state.dfx = s.dfx;
     }
 
-    state_type
-    update(state_type s)
-    {
-        s.beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(s.dfx0, s.dfx0);
-        s.dfx0 = s.dfx;
-        return s;
-    }
-
+    state_type state;
     ook::line_search::more_thuente search;
 };
 

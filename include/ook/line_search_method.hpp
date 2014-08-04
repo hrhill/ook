@@ -21,15 +21,53 @@
 #include <iostream>
 #include <iomanip>
 
-#include "linalg/norms.hpp"
+#include "linalg.hpp"
 
 #include "ook/message.hpp"
+#include "ook/state.hpp"
 #include "ook/call_selector.hpp"
 
 namespace ook{
 
+template <typename X>
+struct lsm_state
+{
+    typedef typename linalg::associated_matrix<X>::type matrix_type;
+
+    lsm_state(const X& x)
+    :
+        iteration(0),
+        nfev(0),
+        a(0),
+        fx(0),
+        gnorm(0),
+        xnorm(0),
+        tag(state_tag::init),
+        x(x),
+        dfx(x.size(), 0),
+        dx(x.size(), 0),
+        H(x.size(), x.size())
+    {
+
+    }
+
+    uint iteration;
+    uint nfev;
+    double a;
+    double fx;
+    double gnorm;
+    double xnorm;
+    state_tag tag;
+    message msg;
+    X x;
+    X dfx;
+    X dx;
+    matrix_type H;
+};
+
 template <typename Scheme>
-struct line_search_method{
+struct line_search_method
+{
 
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
@@ -43,53 +81,59 @@ struct line_search_method{
         const real_type dx_eps = sqrt(epsilon);
         const real_type df_eps = exp(log(epsilon)/real_type(3.0));
 
-        auto s = scheme.initialise(obj_fun, x);
+        lsm_state<X> state(x);
+        state = caller_type::call(obj_fun, x, state);
+        Scheme scheme(state);
 
-        observer(s);
-        while(true){
+        observer(state);
+
+        while(true)
+        {
             // Get descent direction and set up line search procedure.
-            s = scheme.descent_direction(s);
+            X p = scheme.descent_direction(state);
 
             // Create line search function
-            auto phi = [&s, &x, obj_fun](real_type a)
+            auto phi = [&p, &x, obj_fun, &state](real_type a)
             {
-                s = caller_type::call(obj_fun, x + a * s.p, s);
-                ++s.nfev;
-                return std::make_pair(s.fx, linalg::inner_prod(s.dfx, s.p));
+                ++state.nfev;
+                state = caller_type::call(obj_fun, x + a * p, state);
+                return std::make_pair(state.fx, linalg::inner_prod(state.dfx, p));
             };
 
             // Store current fx value since line search overwrites the state values.
-            const real_type fxk = s.fx;
-            real_type dfx_dot_p = linalg::inner_prod(s.dfx, s.p);
-            std::tie(s.msg, s.a, s.fx, dfx_dot_p) = scheme.search(phi, s.fx, dfx_dot_p, 1.0, opts);
+            const real_type fxk = state.fx;
+            real_type dfx_dot_p = linalg::inner_prod(state.dfx, p);
+            std::tie(state.msg, state.a, state.fx, dfx_dot_p)
+                = scheme.search(phi, state.fx, dfx_dot_p, 1.0, opts);
 
-            s.dx = s.a * s.p;
-            x += s.dx;
-
-            if (s.msg != ook::message::convergence){
+            if (state.msg != ook::message::convergence){
                 break;
             }
+
+            state.dx = state.a * p;
+            x += state.dx;
+            state.xnorm = linalg::norm_infinity(state.dx);
+            state.gnorm = linalg::norm_infinity(state.dfx);
 
             // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
-            const real_type theta = epsilon * (1.0 + fabs(s.fx));
-            const bool u1 = (fxk - s.fx) <= theta;
-            const bool u2 = linalg::norm_infinity(s.dx) <=  dx_eps * (1.0 + linalg::norm_infinity(x));
-            const bool u3 = linalg::norm_infinity(s.dfx) <= df_eps * (1.0 + fabs(s.fx));
+            const real_type theta = epsilon * (1.0 + fabs(state.fx));
+            const bool u1 = (fxk - state.fx) <= theta;
+            const bool u2 = state.xnorm <=  dx_eps * (1.0 + linalg::norm_infinity(x));
+            const bool u3 = state.gnorm <= df_eps * (1.0 + fabs(state.fx));
 
-            s.tag = state_tag::iterate;
-            observer(s);
+            state.tag = state_tag::iterate;
+            observer(state);
             if ((u1 and u2) or u3){
-                s.msg = ook::message::convergence;
+                state.msg = ook::message::convergence;
                 break;
             }
-            s = scheme.update(s);
+            scheme.update(state);
+            ++state.iteration;
         }
-        s.tag = state_tag::final;
-        observer(s);
-        return std::make_pair(s.msg, x);
+        state.tag = state_tag::final;
+        observer(state);
+        return std::make_pair(state.msg, x);
     }
-
-    Scheme scheme;
 };
 
 } // ns ook
