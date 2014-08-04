@@ -14,14 +14,14 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/steepest_descent.h"
-#include "ook/fletcher_reeves.h"
-#include "ook/bfgs.h"
-#include "ook/newton.h"
-#include "ook/options.h"
-#include "ook/stream_observer.h"
+#include "ook/steepest_descent.hpp"
+#include "ook/fletcher_reeves.hpp"
+#include "ook/bfgs.hpp"
+#include "ook/newton.hpp"
+#include "ook/options.hpp"
+#include "ook/stream_observer.hpp"
 
-#include "ook/test_functions/more_garbow_hillstrom.h"
+#include "ook/test_functions/more_garbow_hillstrom.hpp"
 
 namespace ublas = boost::numeric::ublas;
 

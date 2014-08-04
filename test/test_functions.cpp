@@ -19,7 +19,7 @@
 
 #include <boost/mpl/list.hpp>
 
-#include "ook/test_functions/more_garbow_hillstrom.h"
+#include "ook/test_functions/more_garbow_hillstrom.hpp"
 
 using namespace ook::test_functions;
 
