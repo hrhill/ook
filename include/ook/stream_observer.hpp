@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_STREAM_OBSERVER_H_
-#define OOK_STREAM_OBSERVER_H_
+#ifndef OOK_STREAM_OBSERVER_HPP_
+#define OOK_STREAM_OBSERVER_HPP_
 
 #include <iostream>
 #include <fstream>
@@ -25,7 +25,7 @@
 
 #include "linalg/norms.hpp"
 
-#include "ook/state.h"
+#include "ook/state.hpp"
 
 namespace ook{
 

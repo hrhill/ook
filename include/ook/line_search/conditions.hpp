@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_CONDITIONS_H_
-#define OOK_LINE_SEARCH_CONDITIONS_H_
+#ifndef OOK_LINE_SEARCH_CONDITIONS_HPP_
+#define OOK_LINE_SEARCH_CONDITIONS_HPP_
 
 #include <cassert>
 #include <cmath>

@@ -22,10 +22,11 @@
 #include <vector>
 #include <iterator>
 
-#include "ook/line_search/more_thuente.h"
-#include "ook/options.h"
-#include "ook/test_functions/line_search.h"
-#include "ook/message.h"
+#include "ook/line_search/more_thuente.hpp"
+#include "ook/test_functions/line_search.hpp"
+#include "ook/options.hpp"
+
+#include "ook/message.hpp"
 
 using namespace std;
 

@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_NEWTON_H_
-#define OOK_NEWTON_H_
+#ifndef OOK_NEWTON_HPP_
+#define OOK_NEWTON_HPP_
 
 #include <tuple>
 
 #include "linalg.hpp"
 
-#include "ook/state.h"
-#include "ook/line_search/more_thuente.h"
-#include "ook/line_search_method.h"
+#include "ook/state.hpp"
+#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search_method.hpp"
 
 namespace ook{
 namespace detail{

@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -15,14 +16,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_TEST_FUNCTIONS_PARABOLA_H_
-#define OOK_TEST_FUNCTIONS_PARABOLA_H_
+#ifndef OOK_TEST_FUNCTIONS_PARABOLA_HPP_
+#define OOK_TEST_FUNCTIONS_PARABOLA_HPP_
 
 #include <tuple>
 #include <limits>
 #include <vector>
 
-#include "ook/norms.h"
+#include "linalg/norms.hpp"
 
 namespace ook{
 namespace test_functions{

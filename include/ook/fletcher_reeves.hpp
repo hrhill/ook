@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_H_
-#define OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_H_
+#ifndef OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_HPP_
+#define OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_HPP_
 
 #include <tuple>
 #include <algorithm>
@@ -24,9 +24,9 @@
 
 #include "linalg.hpp"
 
-#include "ook/state.h"
-#include "ook/line_search_method.h"
-#include "ook/line_search/more_thuente.h"
+#include "ook/state.hpp"
+#include "ook/line_search_method.hpp"
+#include "ook/line_search/more_thuente.hpp"
 
 namespace ook{
 namespace detail{

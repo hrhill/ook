@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_METHOD_H_
-#define OOK_LINE_SEARCH_METHOD_H_
+#ifndef OOK_LINE_SEARCH_METHOD_HPP_
+#define OOK_LINE_SEARCH_METHOD_HPP_
 
 #include <iostream>
 #include <iomanip>
 
 #include "linalg/norms.hpp"
 
-#include "ook/message.h"
-#include "ook/call_selector.h"
+#include "ook/message.hpp"
+#include "ook/call_selector.hpp"
 
 namespace ook{
 

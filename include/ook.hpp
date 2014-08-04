@@ -15,29 +15,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_H_
-#define OOK_H_
+#ifndef OOK_HPP_
+#define OOK_HPP_
 
-#include "ook/message.h"
-#include "ook/version.h"
-#include "ook/options.h"
-#include "ook/state.h"
+#include "ook/message.hpp"
+#include "ook/version.hpp"
+#include "ook/options.hpp"
+#include "ook/state.hpp"
 
-#include "ook/stream_observer.h"
+#include "ook/stream_observer.hpp"
 
-#include "ook/line_search_method.h"
-#include "ook/newton.h"
-#include "ook/steepest_descent.h"
-#include "ook/bfgs.h"
-#include "ook/fletcher_reeves.h"
+#include "ook/line_search_method.hpp"
+#include "ook/newton.hpp"
+#include "ook/steepest_descent.hpp"
+#include "ook/bfgs.hpp"
+#include "ook/fletcher_reeves.hpp"
 
-#include "ook/line_search/conditions.h"
-#include "ook/line_search/more_thuente.h"
-#include "ook/line_search/backtracking.h"
+#include "ook/line_search/conditions.hpp"
+#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/backtracking.hpp"
 
-#include "ook/finite_differences/central_difference.h"
-#include "ook/finite_differences/finite_differences.h"
-#include "ook/finite_differences/forward_difference.h"
-#include "ook/finite_differences/backward_difference.h"
+#include "ook/finite_differences/central_difference.hpp"
+#include "ook/finite_differences/finite_differences.hpp"
+#include "ook/finite_differences/forward_difference.hpp"
+#include "ook/finite_differences/backward_difference.hpp"
 
 #endif

@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_TYPE_TRAITS_H_
-#define OOK_TYPE_TRAITS_H_
+#ifndef OOK_TYPE_TRAITS_HPP_
+#define OOK_TYPE_TRAITS_HPP_
 
 #include <type_traits>
 

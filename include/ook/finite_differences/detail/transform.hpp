@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_H_
-#define OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_H_
+#ifndef OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_HPP_
+#define OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_HPP_
 
 #include <algorithm>
 #include <boost/config.hpp>
