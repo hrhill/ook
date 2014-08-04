@@ -22,7 +22,6 @@
 
 #include "linalg.hpp"
 
-#include "ook/state.hpp"
 #include "ook/line_search/more_thuente.hpp"
 #include "ook/line_search_method.hpp"
 

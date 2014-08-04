@@ -25,7 +25,6 @@
 
 #include "linalg/norms.hpp"
 
-#include "ook/state.hpp"
 
 namespace ook{
 
@@ -41,45 +40,7 @@ struct stream_observer
     template <typename State>
     void operator()(const State& s)
     {
-        if (s.tag == state_tag::init)
-        {
-            stream_ << "\n"
-                    << std::setw(8) << "n"
-                    << std::setw(8) << "nfev"
-                    << std::scientific
-                    << std::setw(16) << "a"
-                    << std::setw(16) << "fx"
-                    << std::setw(16) << "max ||dfx||"
-                    << std::setw(16) << "max ||dx||\n";
-        }
-
-        if (s.tag == state_tag::iterate)
-        {
-            stream_ << std::setw(8) << s.iteration
-                    << std::setw(8) << s.nfev
-                    << std::scientific
-                    << std::setw(16) << s.a
-                    << std::setw(16) << s.fx
-                    << std::setw(16) << s.gnorm
-                    << std::setw(16) << s.xnorm << "\n";
-        }
-
-        if (s.tag == state_tag::final)
-        {
-            stream_ << "\nstatus : " << s.msg << "\n";
-            stream_ << std::setw(8) << "iter"
-                    << std::setw(8) << "nfev"
-                    << std::setw(16) << "fx"
-                    << std::setw(16) << "max ||dfx||"
-                    << std::setw(16) << "max ||dx||\n";
-
-            stream_ << std::setw(8) << s.iteration
-                    << std::setw(8) << s.nfev
-                    << std::scientific
-                    << std::setw(16) << s.fx
-                    << std::setw(16) << s.gnorm
-                    << std::setw(16) << s.xnorm << "\n";
-        }
+        stream_ << s << std::endl;
     }
 
 private:

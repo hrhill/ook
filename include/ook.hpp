@@ -21,7 +21,6 @@
 #include "ook/message.hpp"
 #include "ook/version.hpp"
 #include "ook/options.hpp"
-#include "ook/state.hpp"
 
 #include "ook/stream_observer.hpp"
 
