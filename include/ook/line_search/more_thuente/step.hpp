@@ -21,46 +21,11 @@
 #include <cmath>
 #include <algorithm>
 
+#include "ook/line_search/step_functions.hpp"
+
 namespace ook{
 namespace line_search{
 namespace detail{
-
-/// \brief Sign function
-template <typename T>
-T
-signum(T x)
-{
-    return copysign(1.0, x);
-}
-
-/// \brief Calculate the secant step.
-template <typename T>
-T
-secant_step(T x, T dx, T y, T dy)
-{
-    return y + dy / (dy - dx) * (x - y);
-}
-
-/// \brief Calculate the value which minimizes the quadratic
-/// interpolant to the inputs.
-template <typename T>
-T
-quadratic_step(T x, T fx, T dx, T y, T fy)
-{
-    return  x + dx / ((fx - fy) / (y - x) + dx) / 2.0 * (y - x);
-}
-
-/// \brief Calculate the value which minimizes the cubic
-/// interpolant to the inputs.
-template <typename T>
-T
-cubic_step(T x, T fx, T dx, T y, T fy, T dy)
-{
-    const T d1 = dx + dy - 3 * (fx - fy)/(x - y);
-    const T s = std::max({fabs(d1), fabs(dx), fabs(dy)});
-    const T d2 = signum(y - x) * s * sqrt(pow(d1 / s, 2) - (dx / s) * (dy / s));
-    return y - (y - x) * (dy + d2 - d1)/(dy - dx + 2 * d2);
-}
 
 /// \brief Return if a is closer to c than b.
 template <typename T>
@@ -141,7 +106,9 @@ step(T& stx, T& fx, T& dx, T& sty, T& fy, T& dy,
         // The case gamma = 0 only arises if the cubic does not tend
         // to infinity in the direction of the step.
         T gamma = s * sqrt(std::max(0.0, pow(theta / s, 2) - dx / s * (dp / s)));
-        gamma *= signum(stx - stp);
+        if(stp > stx){
+            gamma = -gamma;
+        }
         const T p = gamma - dp + theta;
         const T q = gamma + (dx - dp) + gamma;
         const T r = p / q;
