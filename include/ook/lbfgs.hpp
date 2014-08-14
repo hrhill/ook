@@ -12,7 +12,9 @@ extern "C" {
 #include "ook/line_search/mmt/mcsrch.hpp"
 #include "ook/lbfgs/report.hpp"
 
-/// \mainpage Limited memory BFGS method for large scale optimisation,
+namespace ook{
+
+/// \brief Limited memory BFGS method for large scale optimisation,
 /// Jorge Nocedal, July 1990.
 /// \detail This subroutine solves the unconstrained minimization problem
 /// \f[
@@ -35,9 +37,6 @@ extern "C" {
 /// routine mcsrch, which is a slight modification of the routine csrch written
 /// by More' and Thuente.
 ///
-namespace ook{
-
-/// \brief Main algorithm.
 /// \tparam F Type of objective function.
 /// \tparam D Type of function that computes the diagonal.
 /// \tparam X Vector type.

@@ -5,10 +5,11 @@ project(OOK)
 include(CheckIncludeFiles)
 include(CheckLibraryExists)
 include(CTest)
+include(ExternalProject)
 
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=c++1y -D__STRICT_ANSI__")
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
 find_package(Doxygen)
@@ -21,17 +22,17 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/deps/linalg/include")
 add_subdirectory(example)
 add_subdirectory(test)
 
-# ------------------------------------ Documentation setup ------------------------------------------
+# ------------------------------------ Documentation setup --------------------
 if(DOXYGEN_FOUND)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
-    add_custom_target(doc ${DOXYGEN_EXECUTABLE}
-                          ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
-                          WORKING_DIRECTORY
-                          ${CMAKE_CURRENT_SOURCE_DIR}
+configure_file(${PROJECT_SOURCE_DIR}/Doxyfile.in
+                   ${PROJECT_BINARY_DIR}/Doxyfile)
+    add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
+
 endif(DOXYGEN_FOUND)
 
-#------------------------------------- Installation details -----------------------------------------
+#------------------------------------- Installation details -------------------
 set(LIB_INST_DIR "${CMAKE_INSTALL_PREFIX}/lib64")
 set(HEADER_INST_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
