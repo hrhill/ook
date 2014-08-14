@@ -42,7 +42,7 @@ To run tests,
 
 and also,
 
-    > diff <(./bin/sdrive_cpp) ../lbfgs/test/f.out && diff <(./bin/sdrive_diagco_cpp) ../lbfgs/test/diagco_f.out
+    > diff <(./bin/sdrive) ../ook/test/f.out && diff <(./bin/sdrive_diagco) ../ook/test/diagco_f.out
 
 To build and view documentation,
 
