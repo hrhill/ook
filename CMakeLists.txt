@@ -18,9 +18,30 @@ find_package(BLAS)
 find_package(LAPACK)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/deps/linalg/include")
+include_directories("${PROJECT_BINARY_DIR}/include")
+
 add_subdirectory(example)
 add_subdirectory(test)
+
+ExternalProject_Add(numeric_bindings
+    GIT_REPOSITORY "git@github.com:hrhill/numeric_bindings.git"
+    PREFIX "deps/numeric_bindings"
+    BINARY_DIR ${PROJ_BINARY_DIR}
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}
+)
+
+ExternalProject_Add(linalg
+    GIT_REPOSITORY "git@github.com:hrhill/linalg.git"
+    GIT_TAG "v0.1.3"
+    PREFIX "deps/linalg"
+    BINARY_DIR ${PROJ_BINARY_DIR}
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}
+      -DBLAS_LIBRARIES=${BLAS_LIBRARIES}
+      -DLAPACK_LIBRARIES=${LAPACK_LIBRARIES}
+)
+
 
 # ------------------------------------ Documentation setup --------------------
 if(DOXYGEN_FOUND)
