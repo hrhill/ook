@@ -39,4 +39,17 @@
 #include "ook/finite_differences/forward_difference.hpp"
 #include "ook/finite_differences/backward_difference.hpp"
 
+/// \mainpage Introduction
+///
+/// OOK is a library for developing optimisation algorithms.
+///
+/// Currently implemented optimisers are line search based methods:
+///
+/// - Steepest descent ook::steepest_descent.
+/// - Fletcher-Reeves ook::fletcher_reeves.
+/// - BFGS ook::bfgs.
+/// - Newton ook::newton.
+/// - LBFGS ook::lbfgs.
+
+
 #endif
