@@ -29,6 +29,7 @@
 #include "ook/steepest_descent.hpp"
 #include "ook/bfgs.hpp"
 #include "ook/fletcher_reeves.hpp"
+#include "ook/lbfgs.hpp"
 
 #include "ook/line_search/conditions.hpp"
 #include "ook/line_search/more_thuente.hpp"
