@@ -18,14 +18,6 @@
 #ifndef OOK_STREAM_OBSERVER_HPP_
 #define OOK_STREAM_OBSERVER_HPP_
 
-#include <iostream>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-
-#include "linalg/norms.hpp"
-
-
 namespace ook{
 
 /// \brief Observer that outputs the state to the given stream.
@@ -40,7 +32,7 @@ struct stream_observer
     template <typename State>
     void operator()(const State& s)
     {
-        stream_ << s << std::endl;
+        stream_ << s << "\n";
     }
 
 private:
