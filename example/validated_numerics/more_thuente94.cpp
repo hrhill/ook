@@ -36,7 +36,6 @@ struct problem{
     double stp0;
     double ftol;
     double gtol;
-    double xtol;
 };
 
 struct algo_result{
@@ -66,12 +65,12 @@ struct algo_result{
 };
 
 problem probs[] = {
-    {1,    4,     1.e-3,    1.e-03,    1.e-01,    1.e-10},
-    {2,    4,     1.e-3,    1.e-01,    1.e-01,    1.e-10},
-    {3,    4,     1.e-3,    1.e-01,    1.e-01,    1.e-10},
-    {4,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10},
-    {5,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10},
-    {6,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10}};
+    {1,    4,     1.e-3,    1.e-03,    1.e-01},
+    {2,    4,     1.e-3,    1.e-01,    1.e-01},
+    {3,    4,     1.e-3,    1.e-01,    1.e-01},
+    {4,    4,     1.e-3,    1.e-03,    1.e-03},
+    {5,    4,     1.e-3,    1.e-03,    1.e-03},
+    {6,    4,     1.e-3,    1.e-03,    1.e-03}};
 
 int main()
 {
@@ -107,7 +106,6 @@ int main()
         const double stp0 = p.stp0;
         const double ftol = p.ftol;
         const double gtol = p.gtol;
-        const double xtol = p.xtol;
 
         double factor = 1.0;
         double g0, f0;
@@ -123,7 +121,7 @@ int main()
             };
 
             double stp = factor * stp0;
-            ook::options<double> opts(ftol, gtol, xtol, 0, 4.0 * std::max(1.0, stp));
+            ook::options<double> opts(ftol, gtol, 0, 4.0 * std::max(1.0, stp));
             ook::message msg;
             double f, g;
             tie(msg, stp, f, g) = search(phi_trace, f0, g0, stp, opts);
@@ -134,7 +132,6 @@ int main()
         }
         cout << line << "\n" << table[p.nprob - 1] << endl;
         cout << " Summary of  " << ntries << " calls to dcsrch\n"
-                "   xtol = " <<  scientific << xtol <<
                 "   ftol = " <<  scientific << ftol <<
                 "   gtol = " <<  scientific << gtol <<
                 "   g0 = " <<  scientific << g0 << "\n\n";

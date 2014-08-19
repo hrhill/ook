@@ -26,25 +26,22 @@ namespace ook{
 template <typename T>
 struct options
 {
-
     options()
     :
         ftol(T(1e-03)),
         gtol(T(9e-01)),
-        xtol(T(1e-08)),
         stpmin(std::numeric_limits<T>::epsilon()),
         stpmax(T(5.0)),
         max_function_evaluations(2000)
     {}
 
-    options(T ftol_, T gtol_, T xtol_, T stpmin_, T stpmax_)
+    options(T ftol, T gtol, T stpmin, T stpmax)
     :
-        ftol(ftol_), gtol(gtol_), xtol(xtol_), stpmin(stpmin_), stpmax(stpmax_)
+        ftol(ftol), gtol(gtol),  stpmin(stpmin), stpmax(stpmax)
     {
-        assert(ftol > T(0) && "ftol <= 0.");
-        assert(gtol > T(0) && "gtol <= 0.");
-        assert(xtol > T(0) && "xtol <= 0.");
-        assert(stpmin >= T(0.0) && "stpmin < 0.");
+        assert(ftol > T(0) && "ftol <= 0.0");
+        assert(gtol > T(0) && "gtol <= 0.0");
+        assert(stpmin >= T(0.0) && "stpmin < 0.0");
         assert(stpmax > stpmin && "stpmax <= stpmin.");
     }
 
@@ -52,8 +49,6 @@ struct options
     T ftol;
     // tolerance for the curvature condition.
     T gtol;
-    // relative tolerance for an acceptable step.
-    T xtol;
     // lower bound for the step.
     T stpmin;
     // upper bound for the step.

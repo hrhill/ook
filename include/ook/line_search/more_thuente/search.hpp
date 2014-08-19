@@ -85,7 +85,7 @@ struct search{
     {
         const T xtrapl(1.1);
         const T xtrapu(4.0);
-
+        const T xtol = std::numeric_limits<T>::epsilon();
         const T gtest = opts.ftol * g0;
         // Test for convergence.
         const bool curvature = curvature_condition(g, opts.gtol, g0);
@@ -96,7 +96,7 @@ struct search{
         // Test for warnings.
         if (bracket && (stp <= stmin || stp >= stmax))
             return std::make_tuple(message::warning_rounding_error_prevents_progress, stp);
-        if (bracket && stmax - stmin <= opts.xtol * stmax)
+        if (bracket && stmax - stmin <= xtol * stmax)
             return std::make_tuple(message::warning_xtol_satisfied, stp);
         if (stp == opts.stpmax && sufficient_decrease && curvature)
             return std::make_tuple(message::warning_stp_eq_stpmax, stp);
@@ -153,7 +153,7 @@ struct search{
         // If further progress is not possible, let stp be the best
         // point obtained during the search.
         if ((bracket && (stp <= stmin || stp >= stmax)) ||
-            (bracket && (stmax - stmin <= opts.xtol * stmax)))
+            (bracket && (stmax - stmin <= xtol * stmax)))
         {
             stp = stx;
         }
