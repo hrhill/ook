@@ -27,14 +27,6 @@ namespace ook{
 namespace line_search{
 namespace detail{
 
-/// \brief Return if a is closer to c than b.
-template <typename T>
-bool
-is_closer(T a, T b, T c)
-{
-    return fabs(a - c) < fabs(b - c);
-}
-
 // This function computes a safeguarded step for a search
 // procedure and updates an interval that contains a step that
 // satisfies a sufficient decrease and a curvature condition.
