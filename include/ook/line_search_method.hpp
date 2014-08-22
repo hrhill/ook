@@ -47,7 +47,6 @@ struct lsm_state
         gnorm(0),
         xnorm(0),
         state(lsm_state::tag::init),
-        x(x),
         dfx(x.size(), 0),
         dx(x.size(), 0),
         H(x.size(), x.size())
@@ -55,7 +54,7 @@ struct lsm_state
 
     friend
     std::ostream&
-    operator<<(std::ostream& out, const lsm_state<X>& s)
+    operator<<(std::ostream& out, const lsm_state& s)
     {
         if (s.state == lsm_state::tag::init)
         {
@@ -107,7 +106,6 @@ struct lsm_state
     value_type xnorm;
     tag state;
     message msg;
-    X x;
     X dfx;
     X dx;
     matrix_type H;
