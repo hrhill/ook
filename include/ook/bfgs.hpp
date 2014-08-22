@@ -65,7 +65,6 @@ struct bfgs
     {
         X yk(s.dfx - dfx);
         const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
-
         const int n = linalg::size(s.dfx);
         matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, yk));
 
