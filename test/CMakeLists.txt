@@ -1,4 +1,6 @@
 set(TESTS test_line_search
+          test_steepest_descent
+          test_fletcher_reeves
           test_optimise
           test_mcstep
           test_functions)
