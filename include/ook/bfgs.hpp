@@ -28,18 +28,21 @@
 namespace ook{
 namespace detail{
 
+/// \brief Implementation of the required steps of line_search_method
+/// for BFGS method.
 template <typename X>
-struct
-bfgs_state
+struct bfgs
 {
     typedef X vector_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef typename linalg::associated_matrix<X>::type matrix_type;
 
-    bfgs_state(const X& dfx)
+    template <typename State>
+    bfgs(const State& s)
     :
-        dfx(dfx),
-        p(dfx.size()),
-        H(dfx.size(), dfx.size(), 0.0)
+        dfx(s.dfx),
+        p(s.dfx.size()),
+        H(s.dfx.size(), s.dfx.size(), 0.0)
     {
         const int n = dfx.size();
         for (int i = 0; i < n; ++i){
@@ -47,53 +50,37 @@ bfgs_state
         }
     }
 
-    vector_type dfx;
-    vector_type p;
-    matrix_type H;
-};
-
-/// \brief Implementation of the required steps of line_search_method
-/// for BFGS method.
-template <typename X>
-struct bfgs
-{
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-    typedef typename linalg::associated_matrix<X>::type matrix_type;
-    typedef bfgs_state<X> state_type;
-
-    template <typename State>
-    bfgs(const State& s)
-    : state(s.dfx)
-    {}
-
     template <typename State>
     X
     descent_direction(const State& s)
     {
-        linalg::gemv(-1.0, state.H, s.dfx, 0.0, state.p);
-        return state.p;
+        linalg::gemv(-1.0, H, s.dfx, 0.0, p);
+        return p;
     }
 
     template <typename State>
     void
     update(const State& s)
     {
-        X yk(s.dfx - state.dfx);
+        X yk(s.dfx - dfx);
         const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
 
         const int n = linalg::size(s.dfx);
         matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, yk));
 
         matrix_type tmp(n, n);
-        linalg::gemm(1.0, state.H, linalg::trans(Z), 0.0, tmp);
-        linalg::gemm(1.0, Z, tmp, 0.0, state.H);
+        linalg::gemm(1.0, H, linalg::trans(Z), 0.0, tmp);
+        linalg::gemm(1.0, Z, tmp, 0.0, H);
         matrix_type ss = rho * linalg::outer_prod(s.dx, s.dx);
-        state.H += ss;
-        state.dfx = s.dfx;
+        H += ss;
+        dfx = s.dfx;
     }
 
     ook::line_search::more_thuente search;
-    state_type state;
+private:
+    vector_type dfx;
+    vector_type p;
+    matrix_type H;
 };
 
 } // ns detail
