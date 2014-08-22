@@ -65,24 +65,21 @@ solve(Matrix A, const Vector& b)
 
 /// \brief Implementation of the required steps of line_search_method
 /// for Newtons method.
-template <typename X>
 struct newton
 {
-    typedef typename X::value_type value_type;
+    template <typename T>
+    newton(const T&){}
 
     template <typename State>
-    newton(const State& s){}
-
-    template <typename State>
-    X
+    auto
     descent_direction(const State& s)
     {
         return -detail::solve(s.H, s.dfx);
     }
 
-    template <typename State>
+    template <typename T>
     void
-    update(const State& s){}
+    update(const T&){}
 
     ook::line_search::more_thuente search;
 };
@@ -96,7 +93,7 @@ template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 newton(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef detail::newton<X> scheme;
+    typedef detail::newton scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 
