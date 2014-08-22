@@ -34,8 +34,8 @@ namespace detail{
 /// for the steepes descent method.
 struct steepest_descent
 {
-    template <typename State>
-    steepest_descent(const State& state){}
+    template <typename T>
+    steepest_descent(const T&){}
 
     template <typename State>
     auto
@@ -44,10 +44,9 @@ struct steepest_descent
         return -s.dfx;
     }
 
-    template <typename State>
+    template <typename T>
     void
-    update(const State& s)
-    {}
+    update(const T& s){}
 
     ook::line_search::more_thuente search;
 };
