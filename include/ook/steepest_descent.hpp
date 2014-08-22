@@ -32,14 +32,13 @@ namespace detail{
 
 /// \brief Implementation of the required steps of line_search_method
 /// for the steepes descent method.
-template <typename X>
 struct steepest_descent
 {
     template <typename State>
     steepest_descent(const State& state){}
 
     template <typename State>
-    X
+    auto
     descent_direction(const State& s)
     {
         return -s.dfx;
@@ -60,7 +59,7 @@ template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef detail::steepest_descent<X> scheme;
+    typedef detail::steepest_descent scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }
