@@ -45,13 +45,14 @@ struct bfgs
         H(s.dfx.size(), s.dfx.size(), 0.0)
     {
         const int n = dfx.size();
-        for (int i = 0; i < n; ++i){
+        for (int i = 0; i < n; ++i)
+        {
             H(i, i) = 1.0;
         }
     }
 
     template <typename State>
-    X
+    vector_type
     descent_direction(const State& s)
     {
         linalg::gemv(-1.0, H, s.dfx, 0.0, p);
@@ -96,6 +97,5 @@ bfgs(F f, const X& x0, const Options& opts, Observer& observer)
 }
 
 } //ns ook
-
 
 #endif
