@@ -30,25 +30,6 @@
 namespace ook{
 namespace detail{
 
-template <typename X>
-struct
-fletcher_reeves_state
-{
-    typedef X vector_type;
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-
-    fletcher_reeves_state(const X& dfx)
-    :
-        dfx(dfx),
-        p(dfx.size(), 0),
-        beta(0)
-    {}
-
-    vector_type dfx;
-    vector_type p;
-    value_type beta;
-};
-
 /// \brief Implementation of the required steps of line_search_method
 /// for Fletcher-Reeves method. The intitial step is a steepest descent
 /// step. However, subsequent steps use the previous descent direction
@@ -56,32 +37,39 @@ fletcher_reeves_state
 template <typename X>
 struct fletcher_reeves
 {
-    typedef fletcher_reeves_state<X> state_type;
+    typedef X vector_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
 
     template <typename State>
     fletcher_reeves(const State& s)
     :
-        state(s.dfx)
+        dfx(s.dfx),
+        p(s.dfx.size(), 0),
+        beta(0)
     {}
 
     template <typename State>
     X
     descent_direction(const State& s)
     {
-        state.p = -s.dfx + state.beta * state.p;
-        return state.p;
+        p = -s.dfx + beta * p;
+        return p;
     }
 
     template <typename State>
     void
     update(const State& s)
     {
-        state.beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(state.dfx, state.dfx);
-        state.dfx = s.dfx;
+        beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(dfx, dfx);
+        dfx = s.dfx;
     }
 
-    state_type state;
     ook::line_search::more_thuente search;
+
+private:
+    vector_type dfx;
+    vector_type p;
+    value_type beta;
 };
 
 } // ns detail
