@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(bfgs_descent_direction)
     state s;
     s.dfx[0] = 1.234;
     s.dfx[1] = 5.678;
-    ook::detail::bfgs<vector_type> scheme(s);
+    ook::bfgs_impl<vector_type> scheme(s);
     auto dd = scheme.descent_direction(s);
     BOOST_CHECK_EQUAL(dd[0], -s.dfx[0]);
     BOOST_CHECK_EQUAL(dd[1], -s.dfx[1]);
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(bfgs_update)
     s.dfx[0] = 1;
     s.dfx[1] = 1;
     s.dx = s.dfx;
-    ook::detail::bfgs<vector_type> scheme(s);
+    ook::bfgs_impl<vector_type> scheme(s);
 
     // First step is descent direction
     auto dd = scheme.descent_direction(s);
