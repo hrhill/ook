@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_HPP_
-#define OOK_LINE_SEARCH_METHODS_FLETCHER_REEVES_HPP_
+#ifndef OOK_LINE_SEARCH_METHODS_NONLINEAR_CG_HPP_
+#define OOK_LINE_SEARCH_METHODS_NONLINEAR_CG_HPP_
 
 #include <tuple>
 #include <algorithm>
@@ -31,8 +31,46 @@ namespace ook{
 /// for Fletcher-Reeves method. The intitial step is a steepest descent
 /// step. However, subsequent steps use the previous descent direction
 /// in a linear combination with the steepest descent direction.
-template <typename X>
-struct fletcher_reeves_impl
+
+struct beta_fr
+{
+    template <typename X>
+    auto operator()(const X& dxp, const X& dxq, const X& p)
+    {
+        return linalg::inner_prod(dxp, dxp)/linalg::inner_prod(dxq, dxq);
+    }
+};
+
+struct beta_pr
+{
+    template <typename X>
+    auto operator()(const X& dxp, const X& dxq, const X& p)
+    {
+        return linalg::inner_prod(dxp, dxp - dxq)/linalg::inner_prod(dxq, dxq);
+    }
+};
+
+struct beta_hs
+{
+    template <typename X>
+    auto operator()(const X& dxp, const X& dxq, const X& p)
+    {
+        return linalg::inner_prod(dxp, dxp - dxq)/linalg::inner_prod(p, dxp - dxq);
+    }
+};
+
+struct beta_dy
+{
+    template <typename X>
+    auto operator()(const X& dxp, const X& dxq, const X& p)
+    {
+        return linalg::inner_prod(dxp, dxp)/linalg::inner_prod(p, dxp - dxq);
+    }
+};
+
+
+template <typename X, typename Beta>
+struct nonlinear_cg_impl
 {
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
@@ -40,9 +78,9 @@ struct fletcher_reeves_impl
     /// \brief Initialize the scheme with \f$ \nabla f (x_0)\f$, and
     /// \f$ \beta = 0 \f$.
     template <typename State>
-    fletcher_reeves_impl(const State& s)
+    nonlinear_cg_impl(const State& s)
     :
-        niter(0),
+        iter(0),
         dfx(s.dfx),
         p(s.dfx.size(), 0),
         beta(0)
@@ -66,24 +104,26 @@ struct fletcher_reeves_impl
     void
     update(const State& s)
     {
-        beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(dfx, dfx);
+        const int n = dfx.size();
+        beta = (iter % n) ? beta_fun(s.dfx, dfx, p) : 0;
         dfx = s.dfx;
-        ++niter;
+        ++iter;
     }
 
 private:
-    uint niter;
+    uint iter;
     vector_type dfx;
     vector_type p;
     value_type beta;
+    Beta beta_fun;
 };
 
 /// \brief The Fletcher-Reeves algorithm.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-fletcher_reeves(F f, const X& x0, const Options& opts, Observer& observer)
+nonlinear_cg(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef fletcher_reeves_impl<X> scheme;
+    typedef nonlinear_cg_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }
