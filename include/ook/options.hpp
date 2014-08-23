@@ -32,7 +32,7 @@ struct options
         gtol(T(9e-01)),
         stpmin(std::numeric_limits<T>::epsilon()),
         stpmax(T(5.0)),
-        max_function_evaluations(2000)
+        maxfev(20)
     {}
 
     options(T ftol, T gtol, T stpmin, T stpmax)
@@ -54,7 +54,7 @@ struct options
     // upper bound for the step.
     T stpmax;
 
-    uint max_function_evaluations;
+    uint maxfev;
 };
 
 } // ns ook
