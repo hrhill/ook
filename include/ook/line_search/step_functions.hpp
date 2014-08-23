@@ -1,3 +1,20 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_LINE_SEARCH_STEP_FUNCTIONS_HPP_
 #define OOK_LINE_SEARCH_STEP_FUNCTIONS_HPP_
 
@@ -9,6 +26,7 @@ namespace line_search{
 /// \brief Return true if a is closer to c than b is.
 /// \tparam T Numeric type, supporting operators +, *, / and -.
 template <typename T>
+inline
 bool
 is_closer(T a, T b, T c)
 {
@@ -22,6 +40,7 @@ is_closer(T a, T b, T c)
 /// \param y Point y.
 /// \param dy Derivative of function at y.
 template <typename T>
+inline
 T
 secant_step(T x, T dx, T y, T dy)
 {
@@ -37,6 +56,7 @@ secant_step(T x, T dx, T y, T dy)
 /// \param y Point y.
 /// \param fy Function value at y.
 template <typename T>
+inline
 T
 quadratic_step(T x, T fx, T dx, T y, T fy)
 {
@@ -53,6 +73,7 @@ quadratic_step(T x, T fx, T dx, T y, T fy)
 /// \param fy Function value at y.
 /// \param dy Derivative of function at y.
 template <typename T>
+inline
 T
 cubic_step(T x, T fx, T dx, T y, T fy, T dy)
 {

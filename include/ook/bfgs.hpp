@@ -23,22 +23,19 @@
 #include "linalg.hpp"
 
 #include "ook/line_search_method.hpp"
-#include "ook/line_search/more_thuente.hpp"
 
 namespace ook{
-namespace detail{
-
 /// \brief Implementation of the required steps of line_search_method
 /// for BFGS method.
 template <typename X>
-struct bfgs
+struct bfgs_impl
 {
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef typename linalg::associated_matrix<X>::type matrix_type;
 
     template <typename State>
-    bfgs(const State& s)
+    bfgs_impl(const State& s)
     :
         dfx(s.dfx),
         p(s.dfx.size()),
@@ -76,21 +73,18 @@ struct bfgs
         dfx = s.dfx;
     }
 
-    ook::line_search::more_thuente search;
 private:
     vector_type dfx;
     vector_type p;
     matrix_type H;
 };
 
-} // ns detail
-
 /// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 bfgs(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef detail::bfgs<X> scheme;
+    typedef bfgs_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }

@@ -17,11 +17,11 @@
 
 #include "ook/options.hpp"
 #include "ook/message.hpp"
-#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search/backtracking.hpp"
 
 typedef boost::mpl::list<
-    ook::line_search::more_thuente,
+//    ook::line_search::more_thuente,
     ook::line_search::backtracking
 > line_search_types;
 

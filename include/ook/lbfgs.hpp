@@ -6,11 +6,13 @@
 #include <cassert>
 #include <algorithm>
 
+#include "ook/line_search/mcsrch.hpp"
+#include "ook/lbfgs/report.hpp"
+#include "ook/message.hpp"
+
 extern "C" {
 #include <cblas.h>
 }
-#include "ook/line_search/mmt/mcsrch.hpp"
-#include "ook/lbfgs/report.hpp"
 
 namespace ook{
 
@@ -181,9 +183,10 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
             double dg = cblas_ddot(n, &g[0], 1, &s[0], 1);
             return std::make_tuple(f, dg);
         };
-        std::tie(info, stp) = line_search::mmt::mcsrch(phi, f, dginit, stp, opts);
+        ook::message msg;
+        std::tie(msg, stp, f, dginit) = line_search::mcsrch(phi, f, dginit, stp, opts);
 
-        if(info != 1){
+        if(msg != ook::message::convergence){
             printf(" IFLAG= -1\n LINE SEARCH FAILED."
              " SEE DOCUMENTATION OF ROUTINE MCSRCH\n"
              " ERROR RETURN OF LINE SEARCH: INFO= %2d\n"

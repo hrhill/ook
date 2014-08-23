@@ -92,13 +92,14 @@ template <typename Function>
 int
 test_gradient_based_optimisers()
 {
+    /*
     std::cout << "steepest_descent" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::steepest_descent<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-
+    */
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,

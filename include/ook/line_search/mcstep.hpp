@@ -1,11 +1,27 @@
-#ifndef LBFGS_MCSTEP_HPP_
-#define LBFGS_MCSTEP_HPP_
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_MCSTEP_HPP_
+#define OOK_LINE_SEARCH_MORE_THUENTE_MCSTEP_HPP_
 
 #include "ook/line_search/step_functions.hpp"
 
 namespace ook{
 namespace line_search{
-namespace mmt{
 
 /// \brief The purpose of mcstep is to compute a safeguarded step for a
 /// linesearch and to update an interval of uncertainty for a minimizer of the
@@ -156,7 +172,6 @@ int mcstep(T& stx, T& fx, T& dx, T& sty, T& fy,
     return info;
 }
 
-} // ns mmt
 } // ns line_search
 } // ns ook
 
