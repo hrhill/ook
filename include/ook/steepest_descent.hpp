@@ -24,7 +24,6 @@
 #include "linalg/operations.hpp"
 
 #include "ook/line_search_method.hpp"
-#include "ook/line_search/more_thuente.hpp"
 
 namespace ook{
 
@@ -47,8 +46,6 @@ struct steepest_descent
     template <typename T>
     void
     update(const T& s){}
-
-    ook::line_search::more_thuente search;
 };
 
 } // ns detail

@@ -1,11 +1,10 @@
-#ifndef LBFGS_MCSTEP_HPP_
-#define LBFGS_MCSTEP_HPP_
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_MCSTEP_HPP_
+#define OOK_LINE_SEARCH_MORE_THUENTE_MCSTEP_HPP_
 
 #include "ook/line_search/step_functions.hpp"
 
 namespace ook{
 namespace line_search{
-namespace mmt{
 
 /// \brief The purpose of mcstep is to compute a safeguarded step for a
 /// linesearch and to update an interval of uncertainty for a minimizer of the
@@ -156,7 +155,6 @@ int mcstep(T& stx, T& fx, T& dx, T& sty, T& fy,
     return info;
 }
 
-} // ns mmt
 } // ns line_search
 } // ns ook
 

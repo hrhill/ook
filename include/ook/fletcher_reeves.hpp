@@ -25,7 +25,6 @@
 #include "linalg.hpp"
 
 #include "ook/line_search_method.hpp"
-#include "ook/line_search/more_thuente.hpp"
 
 namespace ook{
 namespace detail{
@@ -63,8 +62,6 @@ struct fletcher_reeves
         beta = linalg::inner_prod(s.dfx, s.dfx)/linalg::inner_prod(dfx, dfx);
         dfx = s.dfx;
     }
-
-    ook::line_search::more_thuente search;
 
 private:
     vector_type dfx;

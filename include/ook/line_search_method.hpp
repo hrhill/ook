@@ -25,7 +25,7 @@
 
 #include "ook/message.hpp"
 #include "ook/call_selector.hpp"
-#include "ook/line_search/mmt.hpp"
+#include "ook/line_search/mcsrch.hpp"
 
 namespace ook{
 
@@ -150,10 +150,8 @@ struct line_search_method
             // Store current fx value since line search overwrites the state values.
             const real_type fxk = state.fx;
             real_type dfx_dot_p = linalg::inner_prod(state.dfx, p);
-//            std::tie(state.msg, state.a, state.fx, dfx_dot_p)
-//                = scheme.search(phi, state.fx, dfx_dot_p, 1.0, opts);
             std::tie(state.msg, state.a, state.fx, dfx_dot_p)
-                = line_search::mmt::mcsrch(phi, state.fx, dfx_dot_p, 1.0, opts);
+                = line_search::mcsrch(phi, state.fx, dfx_dot_p, 1.0, opts);
 
 
             if (state.msg != ook::message::convergence){

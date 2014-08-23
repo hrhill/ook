@@ -1,5 +1,5 @@
-#ifndef LBFGS_MCSRCH_HPP_
-#define LBFGS_MCSRCH_HPP_
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_MCSRCH_HPP_
+#define OOK_LINE_SEARCH_MORE_THUENTE_MCSRCH_HPP_
 
 #include <limits>
 #include "ook/message.hpp"
@@ -8,7 +8,6 @@
 
 namespace ook{
 namespace line_search{
-namespace mmt{
 
 /// \brief The purpose of mcsrch is to find a step which satisfies a sufficient
 /// decrease condition and a curvature condition.
@@ -187,7 +186,6 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
     }
 }
 
-} // ns mmt
 } // ns line_search
 } // ns ook
 

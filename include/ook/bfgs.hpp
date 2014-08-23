@@ -23,7 +23,6 @@
 #include "linalg.hpp"
 
 #include "ook/line_search_method.hpp"
-#include "ook/line_search/more_thuente.hpp"
 
 namespace ook{
 namespace detail{
@@ -76,7 +75,6 @@ struct bfgs
         dfx = s.dfx;
     }
 
-    ook::line_search::more_thuente search;
 private:
     vector_type dfx;
     vector_type p;

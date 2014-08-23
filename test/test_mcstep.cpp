@@ -3,7 +3,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/line_search/mmt/mcstep.hpp"
+#include "ook/line_search/mcstep.hpp"
 
 BOOST_AUTO_TEST_CASE(is_closer_check)
 {
