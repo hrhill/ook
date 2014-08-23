@@ -40,7 +40,7 @@ enum class message{
 const char* message_string[] = {"start",
     "update",
     "warning_rounding_error_prevents_progress",
-    "warning_xtol_satistfied",
+    "warning_xtol_satisfied",
     "warning_stp_eq_stpmax",
     "warning_stp_eq_stpmin",
     "warning_max_line_search_attempts_reached",

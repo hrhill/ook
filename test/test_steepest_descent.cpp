@@ -12,7 +12,7 @@ struct state{
 
 BOOST_AUTO_TEST_CASE(steepest_descent_descent_direction)
 {
-    ook::detail::steepest_descent scheme(1);
+    ook::steepest_descent_impl scheme(1);
     state s;
     s.dfx = 1.234;
     BOOST_CHECK_EQUAL(scheme.descent_direction(s), -1.234);
