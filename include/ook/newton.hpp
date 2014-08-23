@@ -62,14 +62,22 @@ solve(Matrix A, const Vector& b)
     return linalg::column(b1, 0);
 }
 
+} // ns detail
+
 /// \brief Implementation of the required steps of line_search_method
 /// for Newtons method.
 template <typename X>
-struct newton
+struct newton_impl
 {
     template <typename T>
-    newton(const T&){}
+    newton_impl(const T&){}
 
+    /// \brief The descent direction for the Newton method
+    /// is determined by find the solution p to the system
+    /// \f[
+    ///          H p = -\nabla f(x).
+    /// \f]
+    ///
     template <typename State>
     X
     descent_direction(const State& s)
@@ -82,8 +90,6 @@ struct newton
     update(const T&){}
 };
 
-} // ns detail
-
 /// \brief The Newton algorithm.
 /// \details Implementation of the Newton algorithm using the generic line
 /// search function.
@@ -91,7 +97,7 @@ template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 newton(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef detail::newton<X> scheme;
+    typedef newton_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 

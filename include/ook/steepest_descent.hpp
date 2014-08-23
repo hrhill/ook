@@ -26,16 +26,18 @@
 #include "ook/line_search_method.hpp"
 
 namespace ook{
-
-namespace detail{
-
-/// \brief Implementation of the required steps of line_search_method
-/// for the steepes descent method.
-struct steepest_descent
+/// \brief Implementation for the steepest descent method.
+struct steepest_descent_impl
 {
+    /// \brief Constructor required by scheme concept.
     template <typename T>
-    steepest_descent(const T&){}
+    steepest_descent_impl(const T&){}
 
+    /// \brief The descent direction in the steepest descent algorithm
+    /// is the negative gradient, \f$- \nabla f(x) \f$.
+    /// \tparam State Optimiser state type.
+    /// \param s The current state.
+    /// \return The negative of the gradient vector.
     template <typename State>
     auto
     descent_direction(const State& s)
@@ -43,19 +45,20 @@ struct steepest_descent
         return -s.dfx;
     }
 
+    /// \brief Update, does nothing in this case. Required by
+    /// scheme concept.
     template <typename T>
     void
     update(const T& s){}
 };
 
-} // ns detail
-
-/// \brief The Steepest descent algorithm.
+/// \brief The Steepest descent algorithm. This is just a convenience function
+/// which forwards the call to the generic function line_search_method
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef detail::steepest_descent scheme;
+    typedef steepest_descent_impl scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }

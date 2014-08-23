@@ -1,3 +1,20 @@
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef OOK_LINE_SEARCH_MORE_THUENTE_MCSRCH_HPP_
 #define OOK_LINE_SEARCH_MORE_THUENTE_MCSRCH_HPP_
 
@@ -112,7 +129,6 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
         // Evaluate the function and derivative.
         T f, dg;
         std::tie(f, dg) = phi(stp);
-        int info = 0;
         const T ftest1 = finit + stp * dgtest;
 
         // Test for convergence.

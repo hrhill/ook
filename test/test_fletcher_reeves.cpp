@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(fletcher_reeves_descent_direction)
     state s;
     s.dfx[0] = 1.234;
     s.dfx[1] = 5.678;
-    ook::detail::fletcher_reeves<vector_type> scheme(s);
+    ook::fletcher_reeves_impl<vector_type> scheme(s);
     auto dd = scheme.descent_direction(s);
     BOOST_CHECK_EQUAL(dd[0], -s.dfx[0]);
     BOOST_CHECK_EQUAL(dd[1], -s.dfx[1]);
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(fletcher_reeves_update)
     state s;
     s.dfx[0] = 1;
     s.dfx[1] = 1;
-    ook::detail::fletcher_reeves<vector_type> scheme(s);
+    ook::fletcher_reeves_impl<vector_type> scheme(s);
 
     // First step is descent direction
     // stores p
