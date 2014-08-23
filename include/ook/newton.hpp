@@ -22,7 +22,6 @@
 
 #include "linalg.hpp"
 
-#include "ook/line_search/more_thuente.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
@@ -81,8 +80,6 @@ struct newton
     template <typename T>
     void
     update(const T&){}
-
-    ook::line_search::more_thuente search;
 };
 
 } // ns detail

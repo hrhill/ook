@@ -32,7 +32,7 @@
 #include "ook/lbfgs.hpp"
 
 #include "ook/line_search/conditions.hpp"
-#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search/backtracking.hpp"
 
 #include "ook/finite_differences/central_difference.hpp"

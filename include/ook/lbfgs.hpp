@@ -6,7 +6,7 @@
 #include <cassert>
 #include <algorithm>
 
-#include "ook/line_search/mmt/mcsrch.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/lbfgs/report.hpp"
 #include "ook/message.hpp"
 
@@ -184,7 +184,7 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
             return std::make_tuple(f, dg);
         };
         ook::message msg;
-        std::tie(msg, stp, f, dginit) = line_search::mmt::mcsrch(phi, f, dginit, stp, opts);
+        std::tie(msg, stp, f, dginit) = line_search::mcsrch(phi, f, dginit, stp, opts);
 
         if(msg != ook::message::convergence){
             printf(" IFLAG= -1\n LINE SEARCH FAILED."

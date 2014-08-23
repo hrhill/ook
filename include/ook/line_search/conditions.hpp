@@ -22,7 +22,6 @@
 #include <cmath>
 
 namespace ook{
-
 namespace line_search{
 
 template <typename T>
