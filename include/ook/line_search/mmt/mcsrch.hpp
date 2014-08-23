@@ -2,6 +2,7 @@
 #define LBFGS_MCSRCH_HPP_
 
 #include <limits>
+#include "ook/message.hpp"
 
 #include "./mcstep.hpp"
 
@@ -55,7 +56,7 @@ namespace mmt{
 ///             step which satisfies the sufficient decrease and curvature
 ///             conditions. Tolerances may be too small.
 template <typename F, typename T, typename Options>
-std::tuple<int, T>
+std::tuple<ook::message, T, T, T>
 mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
 {
     const T ftol = opts.ftol;
@@ -116,27 +117,28 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
         const T ftest1 = finit + stp * dgtest;
 
         // Test for convergence.
+        ook::message msg =  ook::message::start;
         if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0){
-            info = 6;
+            msg = ook::message::warning_rounding_error_prevents_progress;
         }
         if(stp == stpmax && f <= ftest1 && dg <= dgtest){
-            info = 5;
+            msg = ook::message::warning_stp_eq_stpmax;
         }
         if(stp == stpmin && (f > ftest1 || dg >= dgtest)){
-            info = 4;
+            msg = ook::message::warning_stp_eq_stpmin;
         }
         if(nfev >= opts.maxfev){
-            info = 3;
+            msg = ook::message::warning_max_line_search_attempts_reached;
         }
         if(brackt && stmax - stmin <= xtol * stmax){
-            info = 2;
+            msg = ook::message::warning_xtol_satisfied;
         }
         if(f <= ftest1 && fabs(dg) <= opts.gtol * (-dginit)){
-            info = 1;
+            msg = ook::message::convergence;
         }
         // Check for termination.
-        if(info != 0) {
-            return std::make_tuple(info, stp);
+        if(msg != ook::message::start){
+            return std::make_tuple(msg, stp, f, dg);
         }
 
         // In the first state, seek a step for which the modified function has
