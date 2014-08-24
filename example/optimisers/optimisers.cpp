@@ -34,7 +34,7 @@
 #include "ook/test_functions/more_garbow_hillstrom/rosenbrock.hpp"
 
 #include "ook/steepest_descent.hpp"
-#include "ook/fletcher_reeves.hpp"
+#include "ook/nonlinear_cg.hpp"
 #include "ook/bfgs.hpp"
 #include "ook/newton.hpp"
 
@@ -66,7 +66,7 @@ gradient_only_wrapper{
 
 int main(){
 
-    ook::options<double> opts(1e-03, 9e-01, 0.0, 4.0 * std::max(1.0, 1e-03));
+    ook::options<double> opts;
 
     typedef ook::test_functions::rosenbrock<vector_t, matrix_t> test_function;
     test_function objective_function;

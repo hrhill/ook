@@ -1,6 +1,6 @@
 set(TESTS test_line_search
           test_steepest_descent
-          test_fletcher_reeves
+          test_nonlinear_cg
           test_bfgs
           test_optimise
           test_mcstep
