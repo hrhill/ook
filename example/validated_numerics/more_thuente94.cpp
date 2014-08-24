@@ -24,7 +24,7 @@
 
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/test_functions/line_search.hpp"
-#include "ook/options.hpp"
+#include "ook/line_search/options.hpp"
 #include "ook/message.hpp"
 
 using namespace std;
@@ -118,7 +118,7 @@ int main()
             };
 
             double stp = factor * stp0;
-            ook::options<double> opts(ftol, gtol, 0, 4.0 * std::max(1.0, stp));
+            ook::line_search::options<double> opts(ftol, gtol, 0, 4.0 * std::max(1.0, stp));
             ook::message msg;
             double f, g;
             tie(msg, stp, f, g) = ook::line_search::mcsrch(phi_trace, f0, g0, stp, opts);
