@@ -28,7 +28,7 @@
 #include "ook/newton.hpp"
 #include "ook/steepest_descent.hpp"
 #include "ook/bfgs.hpp"
-#include "ook/fletcher_reeves.hpp"
+#include "ook/nonlinear_cg.hpp"
 #include "ook/lbfgs.hpp"
 
 #include "ook/line_search/conditions.hpp"
