@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -33,6 +34,17 @@ struct bfgs_impl
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
     typedef typename linalg::associated_matrix<X>::type matrix_type;
+
+    struct state
+    {
+        typedef X vector_type;
+        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+        typedef typename linalg::associated_matrix<X>::type matrix_type;
+
+        value_type fx;
+        vector_type dfx;
+        matrix_type H;
+    };
 
     template <typename State>
     bfgs_impl(const State& s)

@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -29,28 +30,23 @@
 
 namespace ook{
 
-template <typename X>
-struct lsm_state
+template <typename SchemeState>
+struct lsm_state : public SchemeState
 {
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+    typedef typename SchemeState::value_type value_type;
+    typedef typename SchemeState::vector_type vector_type;
 
     /// \brief State for use with line search method.
     enum class tag{init, iterate, final};
 
-    typedef typename linalg::associated_matrix<X>::type matrix_type;
-
-    lsm_state(const X& x)
+    lsm_state(const vector_type& x)
     :
         iteration(0),
         nfev(0),
         a(0),
-        fx(0),
         gnorm(0),
         xnorm(0),
-        state(lsm_state::tag::init),
-        dfx(x.size(), 0),
-        dx(x.size(), 0),
-        H(x.size(), x.size())
+        state(lsm_state::tag::init)
     {}
 
     friend
@@ -102,32 +98,34 @@ struct lsm_state
     uint iteration;
     uint nfev;
     value_type a;
-    value_type fx;
     value_type gnorm;
     value_type xnorm;
     tag state;
     message msg;
-    X dfx;
-    X dx;
-    matrix_type H;
+    vector_type dx;
 };
 
 template <typename Scheme>
 struct line_search_method
 {
+    typedef lsm_state<typename Scheme::state> state_type;
+
+
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
     operator()(F obj_fun, X x, const Options& opts, Observer& observer) const
     {
+
         typedef detail::call_selector<
-                    std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
+                std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
         typedef typename X::value_type real_type;
+
 
         const real_type epsilon = std::numeric_limits<real_type>::epsilon();
         const real_type dx_eps = sqrt(epsilon);
         const real_type df_eps = exp(log(epsilon)/real_type(3.0));
 
-        lsm_state<X> state(x);
+        state_type state(x);
         state = caller_type::call(obj_fun, x, state);
         Scheme scheme(state);
 
@@ -173,7 +171,7 @@ struct line_search_method
             const bool u2 = state.xnorm <=  dx_eps * (1.0 + linalg::norm_infinity(x));
             const bool u3 = state.gnorm <= df_eps * (1.0 + fabs(state.fx));
 
-            state.state = lsm_state<X>::tag::iterate;
+            state.state = state_type::tag::iterate;
             observer(state);
             if ((u1 and u2) or u3){
                 state.msg = message::convergence;
@@ -187,7 +185,7 @@ struct line_search_method
             scheme.update(state);
             ++state.iteration;
         }
-        state.state = lsm_state<X>::tag::final;
+        state.state = state_type::tag::final;
         observer(state);
         return std::make_pair(state.msg, x);
     }

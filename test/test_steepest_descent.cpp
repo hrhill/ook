@@ -6,14 +6,19 @@
 
 #include "ook/steepest_descent.hpp"
 
+#include <boost/numeric/ublas/vector.hpp>
+
+typedef boost::numeric::ublas::vector<double> vector_type;
+
 struct state{
-    double dfx;
+    vector_type dfx;
 };
 
 BOOST_AUTO_TEST_CASE(steepest_descent_descent_direction)
 {
-    ook::steepest_descent_impl scheme(1);
+    ook::steepest_descent_impl<vector_type> scheme(1.0);
     state s;
-    s.dfx = 1.234;
-    BOOST_CHECK_EQUAL(scheme.descent_direction(s), -1.234);
+    s.dfx = vector_type(1, 1.234);
+    vector_type dd = scheme.descent_direction(s);
+    BOOST_CHECK_EQUAL(dd[0], -1.234);
 }

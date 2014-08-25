@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -82,6 +83,15 @@ struct nonlinear_cg_impl
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
 
+    struct state
+    {
+        typedef X vector_type;
+        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+
+        value_type fx;
+        vector_type dfx;
+    };
+
     /// \brief Initialize the scheme with \f$ \nabla f (x_0)\f$, and
     /// \f$ \beta = 0 \f$.
     template <typename State>
@@ -165,8 +175,6 @@ dai_yuan(F f, const X& x0, const Options& opts, Observer& observer)
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }
-
-
 
 } //ns ook
 

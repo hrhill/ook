@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -27,8 +28,21 @@
 
 namespace ook{
 /// \brief Implementation for the steepest descent method.
+template <typename X>
 struct steepest_descent_impl
 {
+    typedef X vector_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+
+    struct state
+    {
+        typedef X vector_type;
+        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+
+        value_type fx;
+        vector_type dfx;
+    };
+
     /// \brief Constructor required by scheme concept.
     template <typename T>
     steepest_descent_impl(const T&){}
@@ -58,7 +72,7 @@ template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef steepest_descent_impl scheme;
+    typedef steepest_descent_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }
