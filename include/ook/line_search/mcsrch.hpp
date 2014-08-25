@@ -132,7 +132,7 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
         const T ftest1 = finit + stp * dgtest;
 
         // Test for convergence.
-        ook::message msg =  ook::message::start;
+        ook::message msg = ook::message::null;
         if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0){
             msg = ook::message::warning_rounding_error_prevents_progress;
         }
@@ -152,7 +152,7 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
             msg = ook::message::convergence;
         }
         // Check for termination.
-        if(msg != ook::message::start){
+        if(msg != ook::message::null){
             return std::make_tuple(msg, stp, f, dg);
         }
 

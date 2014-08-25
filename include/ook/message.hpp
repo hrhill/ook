@@ -24,8 +24,7 @@
 namespace ook{
 
 enum class message{
-    start,
-    update,
+    null,
     warning_rounding_error_prevents_progress,
     warning_xtol_satisfied,
     warning_stp_eq_stpmax,
@@ -33,12 +32,11 @@ enum class message{
     warning_max_line_search_attempts_reached,
     convergence,
     search_direction_is_not_a_descent_direction,
-    error_step_less_than_stpmin,
-    error_step_greater_than_stpmax
+    maximum_iterations_reached
 };
 
-const char* message_string[] = {"start",
-    "update",
+const char* message_string[] = {
+    "null",
     "warning_rounding_error_prevents_progress",
     "warning_xtol_satisfied",
     "warning_stp_eq_stpmax",
@@ -46,8 +44,7 @@ const char* message_string[] = {"start",
     "warning_max_line_search_attempts_reached",
     "convergence",
     "search_direction_is_not_a_descent_direction",
-    "error_step_less_than_stpmin",
-    "error_step_greater_than_stpmax"
+    "maximum_iterations_reached"
 };
 
 std::ostream&

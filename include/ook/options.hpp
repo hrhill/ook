@@ -31,7 +31,7 @@ struct options : line_search::options<T>
     options()
     :
         eps(T(1e-05)),
-        max_iter(1000)
+        maxiter(2000)
     {}
 /*
     options(T eps, uint maxiter)
@@ -43,7 +43,7 @@ struct options : line_search::options<T>
     // tolerance for the first order convergence criteria
     T eps;
     // maximum number of iterations
-    uint max_iter;
+    uint maxiter;
 };
 
 } // ns ook
