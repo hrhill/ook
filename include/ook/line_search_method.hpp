@@ -115,10 +115,9 @@ struct lsm_state
 template <typename Scheme>
 struct line_search_method
 {
-
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
-    operator()(F obj_fun, X x, const Options& opts, Observer& observer)
+    operator()(F obj_fun, X x, const Options& opts, Observer& observer) const
     {
         typedef detail::call_selector<
                     std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
@@ -150,11 +149,16 @@ struct line_search_method
             // Store current fx value since line search overwrites the state values.
             const real_type fxk = state.fx;
             real_type dfx_dot_p = linalg::inner_prod(state.dfx, p);
+
+            if (dfx_dot_p >= 0.0){
+                state.msg = message::search_direction_is_not_a_descent_direction;
+                break;
+            }
+
             std::tie(state.msg, state.a, state.fx, dfx_dot_p)
                 = line_search::mcsrch(phi, state.fx, dfx_dot_p, 1.0, opts);
 
-
-            if (state.msg != ook::message::convergence){
+            if (state.msg != message::convergence){
                 break;
             }
 
@@ -172,9 +176,14 @@ struct line_search_method
             state.state = lsm_state<X>::tag::iterate;
             observer(state);
             if ((u1 and u2) or u3){
-                state.msg = ook::message::convergence;
+                state.msg = message::convergence;
                 break;
             }
+            if (state.iteration >= opts.maxiter){
+                state.msg = message::maximum_iterations_reached;
+                break;
+            }
+
             scheme.update(state);
             ++state.iteration;
         }
