@@ -123,7 +123,6 @@ struct nonlinear_cg_impl
     void
     update(const State& s)
     {
-        const int n = dfx.size();
         beta = beta_fun(s.dfx, dfx, p);
         dfx = s.dfx;
     }
