@@ -37,7 +37,8 @@ struct steepest_descent_impl
     struct state
     {
         typedef X vector_type;
-        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+        typedef typename std::remove_reference<
+                            decltype(X()[0])>::type value_type;
 
         value_type fx;
         vector_type dfx;
