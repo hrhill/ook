@@ -28,18 +28,11 @@ namespace ook{
 template <typename T>
 struct options : line_search::options<T>
 {
-    options()
+    options(T eps = T(1e-05), uint maxiter = 2000)
     :
-        eps(T(1e-05)),
-        maxiter(2000)
+        eps(eps), maxiter(maxiter)
     {}
-/*
-    options(T eps, uint maxiter)
-    :
-        ftol(ftol), gtol(gtol),  stpmin(stpmin), stpmax(stpmax)
-    {
-    }
-*/
+
     // tolerance for the first order convergence criteria
     T eps;
     // maximum number of iterations
