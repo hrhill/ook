@@ -15,7 +15,7 @@
 #include <boost/test/test_tools.hpp>
 
 #include "ook/steepest_descent.hpp"
-#include "ook/fletcher_reeves.hpp"
+#include "ook/nonlinear_cg.hpp"
 #include "ook/bfgs.hpp"
 #include "ook/newton.hpp"
 #include "ook/options.hpp"
@@ -30,9 +30,9 @@ typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-ook::test_functions::rosenbrock<V, M>,
-ook::test_functions::freudenstein_roth<V, M>,
-ook::test_functions::powell_badly_scaled<V, M>
+ook::test_functions::rosenbrock<V, M>
+//ook::test_functions::freudenstein_roth<V, M>,
+//ook::test_functions::powell_badly_scaled<V, M>
 >;
 
 typedef test_function_types<vector_type, matrix_type> ublas_function_types;
@@ -92,6 +92,7 @@ template <typename Function>
 int
 test_gradient_based_optimisers()
 {
+
     std::cout << "steepest_descent" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::steepest_descent<gradient_only_wrapper<Function, vector_type>,

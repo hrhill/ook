@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -24,43 +25,54 @@
 #include "linalg/operations.hpp"
 
 #include "ook/line_search_method.hpp"
-#include "ook/line_search/more_thuente.hpp"
 
 namespace ook{
-
-namespace detail{
-
-/// \brief Implementation of the required steps of line_search_method
-/// for the steepes descent method.
+/// \brief Implementation for the steepest descent method.
 template <typename X>
-struct steepest_descent
+struct steepest_descent_impl
 {
-    template <typename State>
-    steepest_descent(const State& state){}
+    typedef X vector_type;
+    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
 
+    struct state
+    {
+        typedef X vector_type;
+        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+
+        value_type fx;
+        vector_type dfx;
+    };
+
+    /// \brief Constructor required by scheme concept.
+    template <typename T>
+    steepest_descent_impl(const T&){}
+
+    /// \brief The descent direction in the steepest descent algorithm
+    /// is the negative gradient, \f$- \nabla f(x) \f$.
+    /// \tparam State Optimiser state type.
+    /// \param s The current state.
+    /// \return The negative of the gradient vector.
     template <typename State>
-    X
+    auto
     descent_direction(const State& s)
     {
         return -s.dfx;
     }
 
-    template <typename State>
+    /// \brief Update, does nothing in this case. Required by
+    /// scheme concept.
+    template <typename T>
     void
-    update(const State& s)
-    {}
-
-    ook::line_search::more_thuente search;
+    update(const T& s){}
 };
 
-} // ns detail
-
-/// \brief The Steepest descent algorithm.
+/// \brief The Steepest descent algorithm. This is just a convenience function
+/// which forwards the call to the generic function line_search_method
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
 steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef detail::steepest_descent<X> scheme;
+    typedef steepest_descent_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
 }

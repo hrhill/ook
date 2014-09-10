@@ -28,7 +28,8 @@
 namespace ook{
 namespace line_search{
 
-struct backtracking{
+struct backtracking
+{
     template <typename F, typename T, typename Options>
     std::tuple<message, T, T, T>
     operator()(F phi, T phi0, T dphi0, T a, const Options& opts)

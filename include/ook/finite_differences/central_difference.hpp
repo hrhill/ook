@@ -53,7 +53,8 @@ central_difference::gradient(F f, X x)
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x+he_n, x-he_1,..., x-he_n, x)
 	const size_type n = std::distance(x.begin(), x.end());
-	const value_type hmin(sqrt(std::numeric_limits<value_type>::epsilon()));
+	const value_type eps = std::numeric_limits<value_type>::epsilon();
+	const value_type hmin(exp(log(eps) / 3.0));
 
 	std::vector<X> sample_points(2 * n + 1);
 	X h(n);
