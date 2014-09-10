@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OOK_LINE_SEARCH_METHODS_BFGS_HPP_
-#define OOK_LINE_SEARCH_METHODS_BFGS_HPP_
+#ifndef OOK_NEWTON_HPP_
+#define OOK_NEWTON_HPP_
 
 #include <tuple>
 
@@ -26,10 +26,49 @@
 #include "ook/line_search_method.hpp"
 
 namespace ook{
+namespace detail{
+
+/// \brief Take a matrix in LD format and convert
+/// it to a lower cholesky matrix.
+template <typename Matrix>
+Matrix
+convert_to_cholesky(const Matrix& LD)
+{
+    int n = linalg::num_rows(LD);
+    Matrix L(LD);
+    for (int j = 0; j < n; ++j){
+        const double di = sqrt(L(j, j));
+        L(j, j) = di;
+        for (int i = j + 1; i < n; ++i){
+            L(i, j) *= di;
+        }
+    }
+    return L;
+}
+
+/// \brief Solve the system Ax = b where A is a
+/// symmetric positive definite matrix.
+template <typename Matrix, typename Vector>
+Vector
+solve(Matrix A, const Vector& b)
+{
+    Matrix LD = linalg::factorisations::gmw81(A);
+    Matrix L = convert_to_cholesky(LD);
+
+    Matrix b1(linalg::size(b), 1);
+
+    linalg::column(b1, 0) = b;
+    linalg::potrs(L, b1);
+
+    return linalg::column(b1, 0);
+}
+
+} // ns detail
+
 /// \brief Implementation of the required steps of line_search_method
-/// for BFGS method.
+/// for Newtons method.
 template <typename X>
-struct bfgs_impl
+struct newton_impl
 {
     typedef X vector_type;
     typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
@@ -46,59 +85,38 @@ struct bfgs_impl
         matrix_type H;
     };
 
-    template <typename State>
-    bfgs_impl(const State& s)
-    :
-        dfx(s.dfx),
-        p(s.dfx.size()),
-        H(s.dfx.size(), s.dfx.size(), 0.0)
-    {
-        const int n = dfx.size();
-        for (int i = 0; i < n; ++i)
-        {
-            H(i, i) = 1.0;
-        }
-    }
+    template <typename T>
+    newton_impl(const T&){}
 
+    /// \brief The descent direction for the Newton method
+    /// is determined by find the solution p to the system
+    /// \f[
+    ///          H p = -\nabla f(x).
+    /// \f]
+    ///
     template <typename State>
-    vector_type
+    X
     descent_direction(const State& s)
     {
-        linalg::gemv(-1.0, H, s.dfx, 0.0, p);
-        return p;
+        return -detail::solve(s.H, s.dfx);
     }
 
-    template <typename State>
+    template <typename T>
     void
-    update(const State& s)
-    {
-        X yk(s.dfx - dfx);
-        const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
-        const int n = linalg::size(s.dfx);
-        matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, yk));
-
-        matrix_type tmp(n, n);
-        linalg::gemm(1.0, H, linalg::trans(Z), 0.0, tmp);
-        linalg::gemm(1.0, Z, tmp, 0.0, H);
-        matrix_type ss = rho * linalg::outer_prod(s.dx, s.dx);
-        H += ss;
-        dfx = s.dfx;
-    }
-
-private:
-    vector_type dfx;
-    vector_type p;
-    matrix_type H;
+    update(const T&){}
 };
 
-/// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
+/// \brief The Newton algorithm.
+/// \details Implementation of the Newton algorithm using the generic line
+/// search function.
 template <typename F, typename X, typename Options, typename Observer>
 std::tuple<ook::message, X>
-bfgs(F f, const X& x0, const Options& opts, Observer& observer)
+newton(F f, const X& x0, const Options& opts, Observer& observer)
 {
-    typedef bfgs_impl<X> scheme;
+    typedef newton_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
+
 }
 
 } //ns ook

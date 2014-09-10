@@ -15,13 +15,13 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 
-#include "ook/options.hpp"
 #include "ook/message.hpp"
-#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search/backtracking.hpp"
+#include "ook/line_search/options.hpp"
 
 typedef boost::mpl::list<
-    ook::line_search::more_thuente,
+//    ook::line_search::more_thuente,
     ook::line_search::backtracking
 > line_search_types;
 
@@ -36,7 +36,7 @@ template <typename LineSearch>
 int
 test_quadratic()
 {
-    ook::options<double> opts;
+    ook::line_search::options<double> opts;
     double phi0, dphi0;
     std::tie(phi0, dphi0) = quadratic(0.0);
 

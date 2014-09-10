@@ -1,4 +1,5 @@
-set(PROGRAMS version)
+set(PROGRAMS version
+             nlgc_comparison)
 
 foreach(ex ${PROGRAMS})
     add_executable(${ex} ${ex}.cpp)

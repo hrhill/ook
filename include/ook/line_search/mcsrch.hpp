@@ -1,13 +1,30 @@
-#ifndef LBFGS_MCSRCH_HPP_
-#define LBFGS_MCSRCH_HPP_
+// Copyright 2013 Harry Hill
+//
+// This file is part of ook.
+//
+// ook is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// ook is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with ook.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef OOK_LINE_SEARCH_MORE_THUENTE_MCSRCH_HPP_
+#define OOK_LINE_SEARCH_MORE_THUENTE_MCSRCH_HPP_
 
 #include <limits>
+#include "ook/message.hpp"
 
 #include "./mcstep.hpp"
 
 namespace ook{
 namespace line_search{
-namespace mmt{
 
 /// \brief The purpose of mcsrch is to find a step which satisfies a sufficient
 /// decrease condition and a curvature condition.
@@ -55,7 +72,7 @@ namespace mmt{
 ///             step which satisfies the sufficient decrease and curvature
 ///             conditions. Tolerances may be too small.
 template <typename F, typename T, typename Options>
-std::tuple<int, T>
+std::tuple<ook::message, T, T, T>
 mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
 {
     const T ftol = opts.ftol;
@@ -112,31 +129,31 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
         // Evaluate the function and derivative.
         T f, dg;
         std::tie(f, dg) = phi(stp);
-        int info = 0;
         const T ftest1 = finit + stp * dgtest;
 
         // Test for convergence.
+        ook::message msg = ook::message::null;
         if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0){
-            info = 6;
+            msg = ook::message::warning_rounding_error_prevents_progress;
         }
         if(stp == stpmax && f <= ftest1 && dg <= dgtest){
-            info = 5;
+            msg = ook::message::warning_stp_eq_stpmax;
         }
         if(stp == stpmin && (f > ftest1 || dg >= dgtest)){
-            info = 4;
+            msg = ook::message::warning_stp_eq_stpmin;
         }
         if(nfev >= opts.maxfev){
-            info = 3;
+            msg = ook::message::warning_max_line_search_attempts_reached;
         }
         if(brackt && stmax - stmin <= xtol * stmax){
-            info = 2;
+            msg = ook::message::warning_xtol_satisfied;
         }
         if(f <= ftest1 && fabs(dg) <= opts.gtol * (-dginit)){
-            info = 1;
+            msg = ook::message::convergence;
         }
         // Check for termination.
-        if(info != 0) {
-            return std::make_tuple(info, stp);
+        if(msg != ook::message::null){
+            return std::make_tuple(msg, stp, f, dg);
         }
 
         // In the first state, seek a step for which the modified function has
@@ -185,7 +202,6 @@ mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
     }
 }
 
-} // ns mmt
 } // ns line_search
 } // ns ook
 

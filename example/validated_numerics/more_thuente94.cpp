@@ -22,10 +22,9 @@
 #include <vector>
 #include <iterator>
 
-#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/test_functions/line_search.hpp"
-#include "ook/options.hpp"
-
+#include "ook/line_search/options.hpp"
 #include "ook/message.hpp"
 
 using namespace std;
@@ -36,7 +35,6 @@ struct problem{
     double stp0;
     double ftol;
     double gtol;
-    double xtol;
 };
 
 struct algo_result{
@@ -66,12 +64,12 @@ struct algo_result{
 };
 
 problem probs[] = {
-    {1,    4,     1.e-3,    1.e-03,    1.e-01,    1.e-10},
-    {2,    4,     1.e-3,    1.e-01,    1.e-01,    1.e-10},
-    {3,    4,     1.e-3,    1.e-01,    1.e-01,    1.e-10},
-    {4,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10},
-    {5,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10},
-    {6,    4,     1.e-3,    1.e-03,    1.e-03,    1.e-10}};
+    {1,    4,     1.e-3,    1.e-03,    1.e-01},
+    {2,    4,     1.e-3,    1.e-01,    1.e-01},
+    {3,    4,     1.e-3,    1.e-01,    1.e-01},
+    {4,    4,     1.e-3,    1.e-03,    1.e-03},
+    {5,    4,     1.e-3,    1.e-03,    1.e-03},
+    {6,    4,     1.e-3,    1.e-03,    1.e-03}};
 
 int main()
 {
@@ -98,8 +96,6 @@ int main()
                          "Table 5.6, ftol = 0.001, gtol = 0.001\n"};
     string line(80, '-');
 
-    ook::line_search::more_thuente search;
-
     for (const auto& p : probs){
         // Read in problem parameters.
         const int nprob = p.nprob;
@@ -107,7 +103,6 @@ int main()
         const double stp0 = p.stp0;
         const double ftol = p.ftol;
         const double gtol = p.gtol;
-        const double xtol = p.xtol;
 
         double factor = 1.0;
         double g0, f0;
@@ -123,10 +118,10 @@ int main()
             };
 
             double stp = factor * stp0;
-            ook::options<double> opts(ftol, gtol, xtol, 0, 4.0 * std::max(1.0, stp));
+            ook::line_search::options<double> opts(ftol, gtol, 0, 4.0 * std::max(1.0, stp));
             ook::message msg;
             double f, g;
-            tie(msg, stp, f, g) = search(phi_trace, f0, g0, stp, opts);
+            tie(msg, stp, f, g) = ook::line_search::mcsrch(phi_trace, f0, g0, stp, opts);
 
             // Record information on the algorithm.
             results.push_back({msg, nfev, ntry + 1, nprob, factor * stp0, stp, f, g});
@@ -134,7 +129,6 @@ int main()
         }
         cout << line << "\n" << table[p.nprob - 1] << endl;
         cout << " Summary of  " << ntries << " calls to dcsrch\n"
-                "   xtol = " <<  scientific << xtol <<
                 "   ftol = " <<  scientific << ftol <<
                 "   gtol = " <<  scientific << gtol <<
                 "   g0 = " <<  scientific << g0 << "\n\n";

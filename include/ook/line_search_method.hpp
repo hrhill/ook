@@ -1,3 +1,4 @@
+
 // Copyright 2013 Harry Hill
 //
 // This file is part of ook.
@@ -25,37 +26,32 @@
 
 #include "ook/message.hpp"
 #include "ook/call_selector.hpp"
+#include "ook/line_search/mcsrch.hpp"
 
 namespace ook{
 
-template <typename X>
-struct lsm_state
+template <typename SchemeState>
+struct lsm_state : public SchemeState
 {
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+    typedef typename SchemeState::value_type value_type;
+    typedef typename SchemeState::vector_type vector_type;
 
     /// \brief State for use with line search method.
     enum class tag{init, iterate, final};
 
-    typedef typename linalg::associated_matrix<X>::type matrix_type;
-
-    lsm_state(const X& x)
+    lsm_state(const vector_type& x)
     :
         iteration(0),
         nfev(0),
         a(0),
-        fx(0),
         gnorm(0),
         xnorm(0),
-        state(lsm_state::tag::init),
-        x(x),
-        dfx(x.size(), 0),
-        dx(x.size(), 0),
-        H(x.size(), x.size())
+        state(lsm_state::tag::init)
     {}
 
     friend
     std::ostream&
-    operator<<(std::ostream& out, const lsm_state<X>& s)
+    operator<<(std::ostream& out, const lsm_state& s)
     {
         if (s.state == lsm_state::tag::init)
         {
@@ -102,34 +98,34 @@ struct lsm_state
     uint iteration;
     uint nfev;
     value_type a;
-    value_type fx;
     value_type gnorm;
     value_type xnorm;
     tag state;
     message msg;
-    X x;
-    X dfx;
-    X dx;
-    matrix_type H;
+    vector_type dx;
 };
 
 template <typename Scheme>
 struct line_search_method
 {
+    typedef lsm_state<typename Scheme::state> state_type;
+
 
     template <typename F, typename X, typename Options, typename Observer>
     std::tuple<ook::message, X>
-    operator()(F obj_fun, X x, const Options& opts, Observer& observer)
+    operator()(F obj_fun, X x, const Options& opts, Observer& observer) const
     {
+
         typedef detail::call_selector<
-                    std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
+                std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
         typedef typename X::value_type real_type;
+
 
         const real_type epsilon = std::numeric_limits<real_type>::epsilon();
         const real_type dx_eps = sqrt(epsilon);
         const real_type df_eps = exp(log(epsilon)/real_type(3.0));
 
-        lsm_state<X> state(x);
+        state_type state(x);
         state = caller_type::call(obj_fun, x, state);
         Scheme scheme(state);
 
@@ -151,10 +147,16 @@ struct line_search_method
             // Store current fx value since line search overwrites the state values.
             const real_type fxk = state.fx;
             real_type dfx_dot_p = linalg::inner_prod(state.dfx, p);
-            std::tie(state.msg, state.a, state.fx, dfx_dot_p)
-                = scheme.search(phi, state.fx, dfx_dot_p, 1.0, opts);
 
-            if (state.msg != ook::message::convergence){
+            if (dfx_dot_p >= 0.0){
+                state.msg = message::search_direction_is_not_a_descent_direction;
+                break;
+            }
+
+            std::tie(state.msg, state.a, state.fx, dfx_dot_p)
+                = line_search::mcsrch(phi, state.fx, dfx_dot_p, 1.0, opts);
+
+            if (state.msg != message::convergence){
                 break;
             }
 
@@ -169,16 +171,21 @@ struct line_search_method
             const bool u2 = state.xnorm <=  dx_eps * (1.0 + linalg::norm_infinity(x));
             const bool u3 = state.gnorm <= df_eps * (1.0 + fabs(state.fx));
 
-            state.state = lsm_state<X>::tag::iterate;
+            state.state = state_type::tag::iterate;
             observer(state);
             if ((u1 and u2) or u3){
-                state.msg = ook::message::convergence;
+                state.msg = message::convergence;
                 break;
             }
+            if (state.iteration >= opts.maxiter){
+                state.msg = message::maximum_iterations_reached;
+                break;
+            }
+
             scheme.update(state);
             ++state.iteration;
         }
-        state.state = lsm_state<X>::tag::final;
+        state.state = state_type::tag::final;
         observer(state);
         return std::make_pair(state.msg, x);
     }

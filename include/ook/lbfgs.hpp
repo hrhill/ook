@@ -6,13 +6,17 @@
 #include <cassert>
 #include <algorithm>
 
+#include "ook/line_search/mcsrch.hpp"
+#include "ook/lbfgs/report.hpp"
+#include "ook/message.hpp"
+
 extern "C" {
 #include <cblas.h>
 }
-#include "ook/line_search/mmt/mcsrch.hpp"
-#include "ook/lbfgs/report.hpp"
 
-/// \mainpage Limited memory BFGS method for large scale optimisation,
+namespace ook{
+
+/// \brief Limited memory BFGS method for large scale optimisation,
 /// Jorge Nocedal, July 1990.
 /// \detail This subroutine solves the unconstrained minimization problem
 /// \f[
@@ -35,9 +39,6 @@ extern "C" {
 /// routine mcsrch, which is a slight modification of the routine csrch written
 /// by More' and Thuente.
 ///
-namespace ook{
-
-/// \brief Main algorithm.
 /// \tparam F Type of objective function.
 /// \tparam D Type of function that computes the diagonal.
 /// \tparam X Vector type.
@@ -182,9 +183,10 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
             double dg = cblas_ddot(n, &g[0], 1, &s[0], 1);
             return std::make_tuple(f, dg);
         };
-        std::tie(info, stp) = line_search::mmt::mcsrch(phi, f, dginit, stp, opts);
+        ook::message msg;
+        std::tie(msg, stp, f, dginit) = line_search::mcsrch(phi, f, dginit, stp, opts);
 
-        if(info != 1){
+        if(msg != ook::message::convergence){
             printf(" IFLAG= -1\n LINE SEARCH FAILED."
              " SEE DOCUMENTATION OF ROUTINE MCSRCH\n"
              " ERROR RETURN OF LINE SEARCH: INFO= %2d\n"

@@ -28,15 +28,29 @@
 #include "ook/newton.hpp"
 #include "ook/steepest_descent.hpp"
 #include "ook/bfgs.hpp"
-#include "ook/fletcher_reeves.hpp"
+#include "ook/nonlinear_cg.hpp"
+#include "ook/lbfgs.hpp"
 
 #include "ook/line_search/conditions.hpp"
-#include "ook/line_search/more_thuente.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search/backtracking.hpp"
 
 #include "ook/finite_differences/central_difference.hpp"
 #include "ook/finite_differences/finite_differences.hpp"
 #include "ook/finite_differences/forward_difference.hpp"
 #include "ook/finite_differences/backward_difference.hpp"
+
+/// \mainpage Introduction
+///
+/// OOK is a library for developing optimisation algorithms.
+///
+/// Currently implemented optimisers are line search based methods:
+///
+/// - Steepest descent ook::steepest_descent.
+/// - Fletcher-Reeves ook::fletcher_reeves.
+/// - BFGS ook::bfgs.
+/// - Newton ook::newton.
+/// - LBFGS ook::lbfgs.
+
 
 #endif
