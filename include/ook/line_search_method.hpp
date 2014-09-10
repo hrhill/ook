@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <type_traits>
 
 #include "linalg.hpp"
 
@@ -118,8 +119,8 @@ struct line_search_method
 
         typedef detail::call_selector<
                 std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
-        typedef typename X::value_type real_type;
-
+        typedef typename std::remove_reference<decltype(X()[0])>::type
+                real_type;
 
         const real_type epsilon = std::numeric_limits<real_type>::epsilon();
         const real_type dx_eps = sqrt(epsilon);
