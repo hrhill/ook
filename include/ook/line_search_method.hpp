@@ -39,7 +39,7 @@ struct lsm_state : public SchemeState
     /// \brief State for use with line search method.
     enum class tag{init, iterate, final};
 
-    lsm_state(const vector_type& x)
+    lsm_state()
     :
         iteration(0),
         nfev(0),
@@ -125,10 +125,8 @@ struct line_search_method
         const real_type dx_eps = sqrt(epsilon);
         const real_type df_eps = exp(log(epsilon)/real_type(3.0));
 
-        state_type state(x);
-        state = caller_type::call(obj_fun, x, state);
+        state_type state = caller_type::call(obj_fun, x, state_type());
         Scheme scheme(state);
-
         observer(state);
 
         while(true)
@@ -141,15 +139,18 @@ struct line_search_method
             {
                 ++state.nfev;
                 state = caller_type::call(obj_fun, x + a * p, state);
-                return std::make_pair(state.fx, linalg::inner_prod(state.dfx, p));
+                return std::make_pair(state.fx,
+                                    linalg::inner_prod(state.dfx, p));
             };
 
-            // Store current fx value since line search overwrites the state values.
+            // Store current fx value since line search overwrites the state
+            // values.
             const real_type fxk = state.fx;
             real_type dfx_dot_p = linalg::inner_prod(state.dfx, p);
 
             if (dfx_dot_p >= 0.0){
-                state.msg = message::search_direction_is_not_a_descent_direction;
+                state.msg =
+                    message::search_direction_is_not_a_descent_direction;
                 break;
             }
 
@@ -165,10 +166,12 @@ struct line_search_method
             state.xnorm = linalg::norm_infinity(state.dx);
             state.gnorm = linalg::norm_infinity(state.dfx);
 
-            // Convergence criteria assessment base on p306 in Gill, Murray and Wright.
+            // Convergence criteria assessment base on p306 in Gill, Murray
+            // and Wright.
             const real_type theta = epsilon * (1.0 + fabs(state.fx));
             const bool u1 = (fxk - state.fx) <= theta;
-            const bool u2 = state.xnorm <=  dx_eps * (1.0 + linalg::norm_infinity(x));
+            const bool u2 = state.xnorm
+                            <= dx_eps * (1.0 + linalg::norm_infinity(x));
             const bool u3 = state.gnorm <= df_eps * (1.0 + fabs(state.fx));
 
             state.state = state_type::tag::iterate;
