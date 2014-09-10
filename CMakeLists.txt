@@ -8,7 +8,7 @@ include(CTest)
 include(ExternalProject)
 
 set(BUILD_SHARED_LIBS ON)
-set(CMAKE_CXX_FLAGS  "-Wall -pedantic -std=c++1y -D__STRICT_ANSI__")
+set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
