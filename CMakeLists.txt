@@ -33,7 +33,7 @@ ExternalProject_Add(numeric_bindings
 
 ExternalProject_Add(linalg
     GIT_REPOSITORY "https://github.com/hrhill/linalg.git"
-    GIT_TAG "v0.1.3"
+    GIT_TAG "v0.1.5"
     PREFIX "deps/linalg"
     BINARY_DIR ${PROJ_BINARY_DIR}
     CMAKE_ARGS
