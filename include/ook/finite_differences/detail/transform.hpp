@@ -19,32 +19,22 @@
 #include <algorithm>
 #include <boost/config.hpp>
 
-#if BOOST_GCC
-#include <parallel/algorithm>
-#endif
-
 namespace ook{
 namespace finite_differences{
 namespace detail{
 
-template <typename InIter, typename OutIter, typename F>
-void transform(const InIter xbegin, const InIter xend, OutIter ybegin, F f)
+template <typename In, typename Out, typename F>
+void transform(const In& x, Out& y, F f)
 {
-/*
-#ifdef _GLIBCXX_PARALLEL
-        __gnu_parallel::_Settings s;
-    auto default_strategy = s.algorithm_strategy;
-    s.algorithm_strategy = __gnu_parallel::force_parallel;
-    __gnu_parallel::_Settings::set(s);
-#endif
-*/
-    std::transform(xbegin, xend, ybegin, f);
-/*
-#ifdef _GLIBCXX_PARALLEL
-    s.algorithm_strategy = default_strategy;
-    __gnu_parallel::_Settings::set(s);
-#endif
-*/
+
+	#if defined(_OPENMP)
+		#pragma omp parallel for \
+				shared(x, y) firstprivate(f)
+	#endif
+
+	for(int i=0; i < y.size(); ++i){
+		y[i] = f(x[i]);
+	}
 }
 
 }

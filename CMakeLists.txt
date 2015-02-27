@@ -8,7 +8,7 @@ include(CTest)
 include(ExternalProject)
 
 set(BUILD_SHARED_LIBS ON)
-set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y")
+set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y -fopenmp")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
@@ -33,7 +33,7 @@ ExternalProject_Add(numeric_bindings
 
 ExternalProject_Add(linalg
     GIT_REPOSITORY "https://github.com/hrhill/linalg.git"
-    GIT_TAG "v0.1.5"
+    GIT_TAG "v0.1.8"
     PREFIX "deps/linalg"
     BINARY_DIR ${PROJ_BINARY_DIR}
     CMAKE_ARGS
