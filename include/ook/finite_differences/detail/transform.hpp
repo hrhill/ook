@@ -16,9 +16,6 @@
 #ifndef OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_HPP_
 #define OOK_FINITE_DIFFERENCES_DETAIL_TRANSFORM_HPP_
 
-#include <algorithm>
-#include <boost/config.hpp>
-
 namespace ook{
 namespace finite_differences{
 namespace detail{
@@ -26,12 +23,7 @@ namespace detail{
 template <typename In, typename Out, typename F>
 void transform(const In& x, Out& y, F f)
 {
-
-	#if defined(_OPENMP)
-		#pragma omp parallel for \
-				shared(x, y) firstprivate(f)
-	#endif
-
+	#pragma omp parallel for shared(x, y) firstprivate(f)
 	for(size_t i=0; i < y.size(); ++i){
 		y[i] = f(x[i]);
 	}
