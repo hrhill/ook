@@ -37,7 +37,7 @@ struct central_difference{
 	gradient(F f, X x);
 
 	/// \brief Calculate the central difference approximation to the hessian of f.
-	template <typename F, typename X, typename M>
+    template <typename M, typename F, typename X>
 	static
 	auto
 	hessian(F f, const X& x);
@@ -48,18 +48,17 @@ auto
 central_difference::gradient(F f, X x)
 {
     typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-    typedef size_t size_type;
 
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x+he_n, x-he_1,..., x-he_n, x)
-	const size_type n = std::distance(x.begin(), x.end());
+	const size_t n = std::distance(x.begin(), x.end());
 	const value_type eps = std::numeric_limits<value_type>::epsilon();
 	const value_type hmin(exp(log(eps) / 3.0));
 
 	std::vector<X> sample_points(2 * n + 1);
 	X h(n);
 
-	for (size_type i = 0; i < n; ++i)
+	for (size_t i = 0; i < n; ++i)
 	{
 		const value_type xi = x[i];
 		const value_type hx = hmin * (1 + fabs(xi));
@@ -80,29 +79,30 @@ central_difference::gradient(F f, X x)
 	// assemble
 	X df(n);
 	const value_type fx = function_values[2 * n];
-	for (size_type i = 0; i < n; ++i){
+	for (size_t i = 0; i < n; ++i)
+    {
 		df[i] = (function_values[i] - function_values[i + n]) / (2.0 * h[i]);
 	}
 	return std::make_tuple(fx, df);
 }
 
 /// Calculate the central difference approximation to the hessian of f.
-template <typename F, typename X, typename M>
+template <typename M, typename F, typename X>
 auto
 central_difference::hessian(F f, const X& x)
 {
     typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-    typedef size_t size_type;
+    typedef size_t size_t;
 
 	const double eps = std::numeric_limits<value_type>::epsilon();
 	auto hmin(std::pow(eps, 1.0/3.0));
 
-	const size_type n = std::distance(x.begin(), x.end());
+	const size_t n = std::distance(x.begin(), x.end());
 	const value_type fx = f(x);
 
 	X local_x(x);
 	M H(n, n);
-	for (size_type i = 0; i < n; ++i){
+	for (size_t i = 0; i < n; ++i){
 		// Work out diagonal term first
 
 		const value_type hi = hmin * (1.0 + fabs(local_x[i]));
@@ -128,7 +128,7 @@ central_difference::hessian(F f, const X& x)
 
 		local_x[i] = xi;
 
-		for (size_type j = 0; j < i; ++j){
+		for (size_t j = 0; j < i; ++j){
 
 			const value_type xj = local_x[j];
 

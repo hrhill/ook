@@ -26,49 +26,6 @@ using namespace ook::finite_differences;
 typedef boost::numeric::ublas::vector<double> vector_t;
 typedef boost::numeric::ublas::matrix<double> matrix_t;
 
-template <typename FD>
-struct
-hessian_picker{
-    template <typename G>
-    static
-    std::tuple<double, matrix_t>
-    call(G g, const vector_t& x){
-        return std::make_tuple(0.0, matrix_t());
-    }
-};
-
-template <>
-struct
-hessian_picker<forward_difference>{
-    template <typename G>
-    static
-    std::tuple<double, matrix_t>
-    call(G g, const vector_t& x, matrix_t& m){
-        return forward_difference::hessian<G, vector_t, matrix_t>(g, x);
-    }
-};
-
-template <>
-struct
-hessian_picker<backward_difference>{
-    template <typename G>
-    static
-    std::tuple<double, matrix_t>
-    call(G g, const vector_t& x, matrix_t& m){
-        return backward_difference::hessian<G, vector_t, matrix_t>(g, x);
-    }
-};
-
-template <>
-struct
-hessian_picker<central_difference>{
-    template <typename G>
-    static
-    std::tuple<double, matrix_t>
-    call(G g, const vector_t& x, matrix_t& m){
-        return central_difference::hessian<G, vector_t, matrix_t>(g, x);
-    }
-};
 
 template <typename FD, typename F, typename G>
 int checker(F f, G g, int dim){
@@ -89,11 +46,7 @@ int checker(F f, G g, int dim){
         std::generate(x.begin(), x.end(), normrnd);
         // Calculate finite difference approximation.
         auto dfh = FD::gradient(g, x);
-
-        /// Terrible hacks to
-        typedef hessian_picker<FD> hp;
-        auto d2fh = hp::call(g, x, H);
-        //auto d2fh = forward_difference::hessian<G, vector_t, matrix_t>(g, x);
+        auto d2fh = FD::template hessian<matrix_t>(g, x);
 
         // Evaluate true gradient.
         f(x, df, H);

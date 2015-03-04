@@ -32,7 +32,7 @@ void transform(const In& x, Out& y, F f)
 				shared(x, y) firstprivate(f)
 	#endif
 
-	for(int i=0; i < y.size(); ++i){
+	for(size_t i=0; i < y.size(); ++i){
 		y[i] = f(x[i]);
 	}
 }
