@@ -8,14 +8,16 @@ include(CTest)
 include(ExternalProject)
 
 set(BUILD_SHARED_LIBS ON)
-set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y -fopenmp")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
 find_package(BLAS)
 find_package(LAPACK)
+
+set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/include")
