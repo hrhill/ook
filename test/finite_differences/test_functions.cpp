@@ -1,7 +1,6 @@
 /// \file test_functions.cpp
 
 #include <vector>
-#include <unistd.h>
 #include <tuple>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -14,7 +13,6 @@ typedef boost::numeric::ublas::matrix<double> matrix_t;
 double
 rosenbrock(const vector_t& x, vector_t& g, matrix_t& H)
 {
-    sleep(1);
     const double x02 = pow(x(0), 2);
     double f = 100.0 * pow(x(1) - x02, 2) + pow(1.0 - x(0), 2);
 

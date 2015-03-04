@@ -38,7 +38,7 @@ struct forward_difference{
 	auto gradient(F f, X x);
 
 	/// \brief Calculate the forward difference approximation to the hessian of f.
-	template <typename F, typename X, typename M>
+    template <typename M, typename F, typename X>
 	static
 	auto hessian(F f, const X& x);
 };
@@ -51,7 +51,7 @@ forward_difference::gradient(F f, X x)
 
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x)
-	auto n = std::distance(x.begin(), x.end());
+	size_t n = std::distance(x.begin(), x.end());
 	const value_type hmin(sqrt(std::numeric_limits<value_type>::epsilon()));
 
 	std::vector<X> sample_points(n + 1);
@@ -81,14 +81,13 @@ forward_difference::gradient(F f, X x)
 	return std::make_tuple(fx, df);
 }
 
-template <typename F, typename X, typename M>
+template <typename M, typename F, typename X>
 auto
 forward_difference::hessian(F f, const X& x)
 {
     typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-	typedef size_t size_type;
 
-	const size_type n = std::distance(x.begin(), x.end());
+	const size_t n = std::distance(x.begin(), x.end());
 	const value_type eps = std::numeric_limits<value_type>::epsilon();
 	value_type hmin(std::pow(eps, 1.0/3.0));
 
@@ -98,7 +97,7 @@ forward_difference::hessian(F f, const X& x)
 	const value_type fx = f(x);
 	M H(n, n);
 
-	for (size_type i = 0; i < n; ++i){
+	for (size_t i = 0; i < n; ++i){
 	    const value_type xii = xi[i];
 	    const value_type hi = hmin * (1 + fabs(xii));
 	    xi[i] += hi;
@@ -106,7 +105,8 @@ forward_difference::hessian(F f, const X& x)
 	    const value_type fxi = f(xi);
 	    xi[i] = xii;
 
-		for (size_type j = 0; j <= i; ++j){
+		for (size_t j = 0; j <= i; ++j)
+        {
 		    const value_type xjj = xj[j];
 		    const value_type hj = hmin * (1 + fabs(xjj));
 
