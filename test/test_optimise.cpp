@@ -77,10 +77,10 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
     gradient_only_wrapper<Function, vector_type> wrapper(objective_function);
     ook::stream_observer<std::ostream> obs(std::cout);
     auto soln = optimiser(wrapper, x, opts, obs);
-    BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
+    BOOST_CHECK_EQUAL(soln.msg, ook::message::convergence);
 
     // Evaluate function at minima, check proximity
-    auto x_min = std::get<1>(soln);
+    auto x_min = soln.x;
     double f_min;
     vector_type df;
     std::tie(f_min, df) = wrapper(x_min);
@@ -131,17 +131,9 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
     ook::options<double> opts;
     Function objective_function;
     auto soln = optimiser(objective_function, x, opts, obs);
-    BOOST_CHECK_EQUAL(std::get<0>(soln), ook::message::convergence);
-
-    // Evaluate function at minima, check proximity
-    auto x_min = std::get<1>(soln);
-    double f_min;
-    vector_type df(Function::n);
-    matrix_type d2f(Function::n, Function::n);
-
-    std::tie(f_min, df, d2f) = objective_function(x_min);
-    //BOOST_CHECK(fabs(f_min - test_function::f_min) <= 1e-08);
-    BOOST_CHECK(ublas::norm_inf(x_min - minima) <= 1e-04);
+    BOOST_CHECK_EQUAL(soln.msg, ook::message::convergence);
+    BOOST_CHECK(fabs(soln.fx - Function::f_min) <= 1e-08);
+    BOOST_CHECK(ublas::norm_inf(soln.x - minima) <= 1e-04);
 }
 
 template <typename Function>

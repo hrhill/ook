@@ -41,8 +41,6 @@ struct bfgs_impl
         typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
         typedef typename linalg::associated_matrix<X>::type matrix_type;
 
-        value_type fx;
-        vector_type dfx;
         matrix_type H;
     };
 
@@ -93,7 +91,7 @@ private:
 
 /// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<bfgs_impl<X>>::state_type
 bfgs(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef bfgs_impl<X> scheme;
