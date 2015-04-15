@@ -99,10 +99,13 @@ struct lsm_state : public SchemeState
     uint iteration;
     uint nfev;
     value_type a;
+    value_type fx;
     value_type gnorm;
     value_type xnorm;
     tag state;
     message msg;
+    vector_type x;
+    vector_type dfx;
     vector_type dx;
 };
 
@@ -111,9 +114,8 @@ struct line_search_method
 {
     typedef lsm_state<typename Scheme::state> state_type;
 
-
     template <typename F, typename X, typename Options, typename Observer>
-    std::tuple<ook::message, X>
+    state_type
     operator()(F obj_fun, X x, const Options& opts, Observer& observer) const
     {
 
@@ -190,8 +192,9 @@ struct line_search_method
             ++state.iteration;
         }
         state.state = state_type::tag::final;
+        state.x = x;
         observer(state);
-        return std::make_pair(state.msg, x);
+        return state;
     }
 };
 

@@ -29,7 +29,8 @@ BOOST_AUTO_TEST_CASE(newton_descent_direction)
     state s;
     s.dfx[0] = 1.234;
     s.dfx[1] = 5.678;
-    s.H(0, 0) = s.H(1, 1) = 1;
+    s.H(0, 0) = 1.0;
+    s.H(1, 1) = 1.0;
 
     ook::newton_impl<vector_type> scheme(s);
     auto dd = scheme.descent_direction(s);
