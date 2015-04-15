@@ -87,9 +87,6 @@ struct nonlinear_cg_impl
     {
         typedef X vector_type;
         typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-
-        value_type fx;
-        vector_type dfx;
     };
 
     /// \brief Initialize the scheme with \f$ \nabla f (x_0)\f$, and
@@ -137,7 +134,7 @@ private:
 
 /// \brief The Fletcher-Reeves algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<nonlinear_cg_impl<X, beta::fr>>::state_type
 fletcher_reeves(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::fr> scheme;
@@ -147,7 +144,7 @@ fletcher_reeves(F f, const X& x0, const Options& opts, Observer& observer)
 
 /// \brief The Polak-Ribiere algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<nonlinear_cg_impl<X, beta::pr>>::state_type
 polak_ribiere(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::pr> scheme;
@@ -157,7 +154,7 @@ polak_ribiere(F f, const X& x0, const Options& opts, Observer& observer)
 
 /// \brief The Hestenes-Steifel algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<nonlinear_cg_impl<X, beta::hs>>::state_type
 hestenes_steifel(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::hs> scheme;
@@ -167,7 +164,7 @@ hestenes_steifel(F f, const X& x0, const Options& opts, Observer& observer)
 
 /// \brief The Dai-Yuan algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<nonlinear_cg_impl<X, beta::dy>>::state_type
 dai_yuan(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::dy> scheme;
