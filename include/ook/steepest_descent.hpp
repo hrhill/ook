@@ -39,9 +39,6 @@ struct steepest_descent_impl
         typedef X vector_type;
         typedef typename std::remove_reference<
                             decltype(X()[0])>::type value_type;
-
-        value_type fx;
-        vector_type dfx;
     };
 
     /// \brief Constructor required by scheme concept.
@@ -70,7 +67,7 @@ struct steepest_descent_impl
 /// \brief The Steepest descent algorithm. This is just a convenience function
 /// which forwards the call to the generic function line_search_method
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<steepest_descent_impl<X>>::state_type
 steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef steepest_descent_impl<X> scheme;

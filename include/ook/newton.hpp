@@ -80,8 +80,6 @@ struct newton_impl
         typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
         typedef typename linalg::associated_matrix<X>::type matrix_type;
 
-        value_type fx;
-        vector_type dfx;
         matrix_type H;
     };
 
@@ -110,13 +108,12 @@ struct newton_impl
 /// \details Implementation of the Newton algorithm using the generic line
 /// search function.
 template <typename F, typename X, typename Options, typename Observer>
-std::tuple<ook::message, X>
+typename line_search_method<newton_impl<X>>::state_type
 newton(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef newton_impl<X> scheme;
     line_search_method<scheme> method;
     return method(f, x0, opts, observer);
-
 }
 
 } //ns ook
