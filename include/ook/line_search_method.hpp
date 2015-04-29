@@ -109,7 +109,7 @@ struct lsm_state : public SchemeState
     vector_type dx;
 };
 
-template <typename Scheme, typename LineSearch = line_search::mcsrch>
+template <typename Scheme, typename LineSearch>
 struct line_search_method
 {
     typedef lsm_state<typename Scheme::state> state_type;
@@ -119,7 +119,6 @@ struct line_search_method
     operator()(F obj_fun, X x, const Options& opts, Observer& observer) const
     {
         LineSearch line_search;
-
 
         typedef detail::call_selector<
                 std::tuple_size<decltype(obj_fun(x))>::value> caller_type;

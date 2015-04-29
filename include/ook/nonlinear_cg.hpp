@@ -25,6 +25,7 @@
 
 #include "linalg.hpp"
 
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
@@ -134,41 +135,41 @@ private:
 
 /// \brief The Fletcher-Reeves algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::fr>>::state_type
+typename line_search_method<nonlinear_cg_impl<X, beta::fr>, line_search::mcsrch>::state_type
 fletcher_reeves(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::fr> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
 /// \brief The Polak-Ribiere algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::pr>>::state_type
+typename line_search_method<nonlinear_cg_impl<X, beta::pr>, line_search::mcsrch>::state_type
 polak_ribiere(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::pr> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
 /// \brief The Hestenes-Steifel algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::hs>>::state_type
+typename line_search_method<nonlinear_cg_impl<X, beta::hs>, line_search::mcsrch>::state_type
 hestenes_steifel(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::hs> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
 /// \brief The Dai-Yuan algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::dy>>::state_type
+typename line_search_method<nonlinear_cg_impl<X, beta::dy>, line_search::mcsrch>::state_type
 dai_yuan(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<X, beta::dy> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
