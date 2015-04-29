@@ -161,9 +161,7 @@ struct line_search_method
             std::tie(state.msg, state.a, state.fx, dfx_dot_p)
                 = line_search(phi, state.fx, dfx_dot_p, 1.0, opts);
 
-            if (state.msg != message::convergence){
-                break;
-            }
+            if (state.msg != message::convergence) break;
 
             state.dx = state.a * p;
             x += state.dx;
