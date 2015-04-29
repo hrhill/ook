@@ -32,7 +32,7 @@ struct backtracking
 {
     template <typename F, typename T, typename Options>
     std::tuple<message, T, T, T>
-    operator()(F phi, T phi0, T dphi0, T a, const Options& opts)
+    operator()(F phi, T phi0, T dphi0, T a, const Options& opts) const
     {
         T phia, dphia;
         T rho(0.9); // Need to pass this as an option.
@@ -53,6 +53,10 @@ struct backtracking
                 break;
             }
             a *= rho;
+            if (a <= std::numeric_limits<T>::epsilon()){
+                msg = message::warning_rounding_error_prevents_progress;
+                break;
+            }
         }
         return std::make_tuple(msg, a, phia, dphia);
     }

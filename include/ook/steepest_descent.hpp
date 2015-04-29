@@ -23,7 +23,7 @@
 #include <type_traits>
 
 #include "linalg/operations.hpp"
-
+#include "ook/line_search/backtracking.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
@@ -67,11 +67,11 @@ struct steepest_descent_impl
 /// \brief The Steepest descent algorithm. This is just a convenience function
 /// which forwards the call to the generic function line_search_method
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<steepest_descent_impl<X>>::state_type
+typename line_search_method<steepest_descent_impl<X>, line_search::mcsrch>::state_type
 steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef steepest_descent_impl<X> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::backtracking> method;
     return method(f, x0, opts, observer);
 }
 
