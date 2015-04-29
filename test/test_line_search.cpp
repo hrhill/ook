@@ -21,7 +21,7 @@
 #include "ook/line_search/options.hpp"
 
 typedef boost::mpl::list<
-//    ook::line_search::more_thuente,
+    ook::line_search::mcsrch,
     ook::line_search::backtracking
 > line_search_types;
 

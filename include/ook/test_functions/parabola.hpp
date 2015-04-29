@@ -28,42 +28,50 @@
 namespace ook{
 namespace test_functions{
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 struct parabola
 {
     typedef Vector vector_type;
+    typedef Matrix matrix_type;
     typedef typename vector_type::value_type real_type;
 
-    std::tuple<real_type, vector_type>
+    std::tuple<real_type, vector_type, matrix_type>
     operator()(const vector_type& x) const
     {
         real_type f = 0.5 * std::pow(norm_2(x), 2);
-        return std::make_pair(f, x);
+        matrix_type id(n, n, 0);
+        for (size_t i = 0; i < n; ++i) id(i, i) = 1.0;
+        return std::make_tuple(f, x, id);
     }
 
     static const int n = 4;
     static const int m = 4;
     static real_type f_min;
     static real_type tolerance;
+    static std::vector<real_type> local_minima;
     static std::vector<real_type> minima;
     static std::vector<real_type> x0;
 };
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-parabola<Vector>::f_min = 0.0;
+parabola<Vector, Matrix>::f_min = 0.0;
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 typename Vector::value_type
-parabola<Vector>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+parabola<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-parabola<Vector>::minima = {0, 0, 0, 0};
+parabola<Vector, Matrix>::minima = {0, 0, 0, 0};
 
-template <typename Vector>
+template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-parabola<Vector>::x0 = {10.0, -4.1513, 1.0, 1000.0};
+parabola<Vector, Matrix>::local_minima = {0, 0, 0, 0};
+
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type>
+parabola<Vector, Matrix>::x0 = {10.0, -4.1513, 1.0, 1000.0};
 
 
 } // ns test_functions
