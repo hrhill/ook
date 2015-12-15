@@ -15,7 +15,7 @@ find_package(OpenMP)
 find_package(BLAS)
 find_package(LAPACK)
 
-set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -Wno-unused-local-typedefs -std=c++1y ${OpenMP_CXX_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 
@@ -35,7 +35,7 @@ ExternalProject_Add(numeric_bindings
 
 ExternalProject_Add(linalg
     GIT_REPOSITORY "https://github.com/hrhill/linalg.git"
-    GIT_TAG "v0.1.8"
+    GIT_TAG "v0.8.1"
     PREFIX "deps/linalg"
     BINARY_DIR ${PROJ_BINARY_DIR}
     CMAKE_ARGS

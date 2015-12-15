@@ -21,6 +21,7 @@
 #include "ook/options.hpp"
 #include "ook/stream_observer.hpp"
 
+#include "ook/test_functions/parabola.hpp"
 #include "ook/test_functions/more_garbow_hillstrom.hpp"
 
 namespace ublas = boost::numeric::ublas;
@@ -30,9 +31,10 @@ typedef ublas::matrix<double, ublas::column_major> matrix_type;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-ook::test_functions::rosenbrock<V, M>
-//ook::test_functions::freudenstein_roth<V, M>,
-//ook::test_functions::powell_badly_scaled<V, M>
+  ook::test_functions::parabola<V, M>
+, ook::test_functions::rosenbrock<V, M>
+//, ook::test_functions::freudenstein_roth<V, M>
+//, ook::test_functions::powell_badly_scaled<V, M>
 >;
 
 typedef test_function_types<vector_type, matrix_type> ublas_function_types;
@@ -92,14 +94,14 @@ template <typename Function>
 int
 test_gradient_based_optimisers()
 {
-
+/*
     std::cout << "steepest_descent" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::steepest_descent<gradient_only_wrapper<Function, vector_type>,
                                 vector_type,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
-
+*/
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
             ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,

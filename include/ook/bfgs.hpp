@@ -22,7 +22,7 @@
 #include <tuple>
 
 #include "linalg.hpp"
-
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
@@ -73,7 +73,8 @@ struct bfgs_impl
         X yk(s.dfx - dfx);
         const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
         const int n = linalg::size(s.dfx);
-        matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, yk));
+        matrix_type Z(- rho * linalg::outer_prod(s.dx, yk));
+        for (int i = 0; i < n; ++i) Z(i, i) += 1.0;
 
         matrix_type tmp(n, n);
         linalg::gemm(1.0, H, linalg::trans(Z), 0.0, tmp);
@@ -91,11 +92,11 @@ private:
 
 /// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<bfgs_impl<X>>::state_type
+typename line_search_method<bfgs_impl<X>, line_search::mcsrch>::state_type
 bfgs(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef bfgs_impl<X> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 

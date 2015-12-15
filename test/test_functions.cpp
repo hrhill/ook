@@ -19,12 +19,14 @@
 
 #include <boost/mpl/list.hpp>
 
+#include "ook/test_functions/parabola.hpp"
 #include "ook/test_functions/more_garbow_hillstrom.hpp"
 
 using namespace ook::test_functions;
 
 template <typename V, typename M>
 using test_function_types = boost::mpl::list<
+parabola<V, M>,
 rosenbrock<V, M>,
 freudenstein_roth<V, M>//,
 //powell_badly_scaled<V, M>

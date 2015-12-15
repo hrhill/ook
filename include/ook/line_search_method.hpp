@@ -109,7 +109,7 @@ struct lsm_state : public SchemeState
     vector_type dx;
 };
 
-template <typename Scheme>
+template <typename Scheme, typename LineSearch>
 struct line_search_method
 {
     typedef lsm_state<typename Scheme::state> state_type;
@@ -118,6 +118,7 @@ struct line_search_method
     state_type
     operator()(F obj_fun, X x, const Options& opts, Observer& observer) const
     {
+        LineSearch line_search;
 
         typedef detail::call_selector<
                 std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
@@ -158,11 +159,9 @@ struct line_search_method
             }
 
             std::tie(state.msg, state.a, state.fx, dfx_dot_p)
-                = line_search::mcsrch(phi, state.fx, dfx_dot_p, 1.0, opts);
+                = line_search(phi, state.fx, dfx_dot_p, 1.0, opts);
 
-            if (state.msg != message::convergence){
-                break;
-            }
+            if (state.msg != message::convergence) break;
 
             state.dx = state.a * p;
             x += state.dx;
