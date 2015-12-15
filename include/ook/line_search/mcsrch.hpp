@@ -71,136 +71,141 @@ namespace line_search{
 ///   info = 6  Rounding errors prevent further progress. There may not be a
 ///             step which satisfies the sufficient decrease and curvature
 ///             conditions. Tolerances may be too small.
-template <typename F, typename T, typename Options>
-std::tuple<ook::message, T, T, T>
-mcsrch(F phi, T finit, T dginit, T stp, const Options& opts)
+struct mcsrch
 {
-    const T ftol = opts.ftol;
-    const T xtol = std::numeric_limits<T>::epsilon();
-    const T p5 = .5;
-    const T p66 = .66;
-    const T xtrapf = 4.;
+    template <typename F, typename T, typename Options>
+    std::tuple<ook::message, T, T, T>
+    operator()(F phi, T finit, T dginit, T stp, const Options& opts) const
+    {
+        const T ftol = opts.ftol;
+        const T xtol = std::numeric_limits<T>::epsilon();
+        const T p5 = .5;
+        const T p66 = .66;
+        const T xtrapf = 4.;
 
-    const T stpmin = 1e-20;
-    const T stpmax = 1e20;
+        const T stpmin = 1e-20;
+        const T stpmax = 1e20;
 
-    int infoc = 1;
-    int nfev = 0;
-    bool brackt = false;
-    bool stage1 = true;
-    const T dgtest = ftol * dginit;
-    T width = stpmax - stpmin;
-    T width1 = width / p5;
+        int infoc = 1;
+        int nfev = 0;
+        bool brackt = false;
+        bool stage1 = true;
+        const T dgtest = ftol * dginit;
+        T width = stpmax - stpmin;
+        T width1 = width / p5;
 
-    // The values stx, fx, dgx are step, function and derivative at the best
-    // step.
-    // The values sty, fy, dgy are the step, function and derivative at the
-    // other endpoint of the interval of uncertainty.
-    // The values stp, f, dg are the step, function and derivative at the
-    // current step.
-    T stx = 0.0;
-    T fx = finit;
-    T dgx = dginit;
-    T sty = 0.0;
-    T fy = finit;
-    T dgy = dginit;
+        // The values stx, fx, dgx are step, function and derivative at the best
+        // step.
+        // The values sty, fy, dgy are the step, function and derivative at the
+        // other endpoint of the interval of uncertainty.
+        // The values stp, f, dg are the step, function and derivative at the
+        // current step.
+        T stx = 0.0;
+        T fx = finit;
+        T dgx = dginit;
+        T sty = 0.0;
+        T fy = finit;
+        T dgy = dginit;
 
-    while(true){
-        T stmin = stx;
-        T stmax = stp + xtrapf * (stp - stx);
-
-        if(brackt){
-            // Set max and min step to the present interval of uncertainty.
-            stmin = std::min(stx, sty);
-            stmax = std::max(stx, sty);
-        }
-
-        // Clamp the step to be between maximum and minimum values.
-        stp = std::max(stp, stpmin);
-        stp = std::min(stp, stpmax);
-
-        // If an unusual termination occues, set stp to be the lowest point
-        // obtained so far.
-        if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0 ||
-           (brackt && stmax - stmin <= xtol * stmax))
+        while(true)
         {
-            stp = stx;
-        }
-        // Evaluate the function and derivative.
-        T f, dg;
-        std::tie(f, dg) = phi(stp);
-        const T ftest1 = finit + stp * dgtest;
+            T stmin = stx;
+            T stmax = stp + xtrapf * (stp - stx);
 
-        // Test for convergence.
-        ook::message msg = ook::message::null;
-        if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0){
-            msg = ook::message::warning_rounding_error_prevents_progress;
-        }
-        if(stp == stpmax && f <= ftest1 && dg <= dgtest){
-            msg = ook::message::warning_stp_eq_stpmax;
-        }
-        if(stp == stpmin && (f > ftest1 || dg >= dgtest)){
-            msg = ook::message::warning_stp_eq_stpmin;
-        }
-        if(nfev >= opts.maxfev){
-            msg = ook::message::warning_max_line_search_attempts_reached;
-        }
-        if(brackt && stmax - stmin <= xtol * stmax){
-            msg = ook::message::warning_xtol_satisfied;
-        }
-        if(f <= ftest1 && fabs(dg) <= opts.gtol * (-dginit)){
-            msg = ook::message::convergence;
-        }
-        // Check for termination.
-        if(msg != ook::message::null){
-            return std::make_tuple(msg, stp, f, dg);
-        }
-
-        // In the first state, seek a step for which the modified function has
-        // a non-positive value and non-negative derivative.
-        if(stage1 && f <= ftest1 && dg >= std::min(ftol, opts.gtol) * dginit){
-            stage1 = false;
-        }
-        // A modified function is used to predict the step only if we have not
-        // obtained a step for which the modified function has a non-positive
-        // function value and non-negative derivative, and if a lower function
-        // value has been obtained but the decrease is not sufficient.
-        if(stage1 && f <= fx && f > ftest1){
-            /// Define the modified function and derivative values.
-            T fm = f - stp * dgtest;
-            T fxm = fx - stx * dgtest;
-            T fym = fy - sty * dgtest;
-            T dgm = dg - dgtest;
-            T dgxm = dgx - dgtest;
-            T dgym = dgy - dgtest;
-
-            // Compute new step and update the interval of uncertainty.
-            infoc = mcstep(stx, fxm, dgxm,
-                           sty, fym, dgym,
-                           stp, fm, dgm, brackt, stmin, stmax);
-
-            // Reset function and gradient values.
-            fx = fxm + stx * dgtest;
-            fy = fym + sty * dgtest;
-            dgx = dgxm + dgtest;
-            dgy = dgym + dgtest;
-        } else {
-            // Compute new step and update the interval of uncertainty.
-            infoc = mcstep(stx, fx, dgx,
-                           sty, fy, dgy,
-                           stp, f, dg, brackt, stmin, stmax);
-        }
-        // Force a sufficient decrease in the size od the interval of
-        // uncertainty.
-        if(brackt) {
-            if(fabs(sty - stx) >= p66 * width1) {
-                stp = stx + p5 * (sty - stx);
+            if(brackt){
+                // Set max and min step to the present interval of uncertainty.
+                stmin = std::min(stx, sty);
+                stmax = std::max(stx, sty);
             }
-            width1 = width;
-            width = fabs(sty - stx);
+
+            // Clamp the step to be between maximum and minimum values.
+            stp = std::max(stp, stpmin);
+            stp = std::min(stp, stpmax);
+
+            // If an unusual termination occues, set stp to be the lowest point
+            // obtained so far.
+            if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0 ||
+                (brackt && stmax - stmin <= xtol * stmax))
+            {
+                stp = stx;
+            }
+            // Evaluate the function and derivative.
+            T f, dg;
+            std::tie(f, dg) = phi(stp);
+            const T ftest1 = finit + stp * dgtest;
+
+            // Test for convergence.
+            ook::message msg = ook::message::null;
+            if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0){
+                msg = ook::message::warning_rounding_error_prevents_progress;
+            }
+            if(stp == stpmax && f <= ftest1 && dg <= dgtest){
+                msg = ook::message::warning_stp_eq_stpmax;
+            }
+            if(stp == stpmin && (f > ftest1 || dg >= dgtest)){
+                msg = ook::message::warning_stp_eq_stpmin;
+            }
+            if(nfev >= opts.maxfev){
+                msg = ook::message::warning_max_line_search_attempts_reached;
+            }
+            if(brackt && stmax - stmin <= xtol * stmax){
+                msg = ook::message::warning_xtol_satisfied;
+            }
+            if(f <= ftest1 && fabs(dg) <= opts.gtol * (-dginit)){
+                msg = ook::message::convergence;
+            }
+            // Check for termination.
+            if(msg != ook::message::null){
+                return std::make_tuple(msg, stp, f, dg);
+            }
+
+            // In the first state, seek a step for which the modified function has
+            // a non-positive value and non-negative derivative.
+            if(stage1 && f <= ftest1 && dg >= std::min(ftol, opts.gtol) * dginit){
+                stage1 = false;
+            }
+            // A modified function is used to predict the step only if we have not
+            // obtained a step for which the modified function has a non-positive
+            // function value and non-negative derivative, and if a lower function
+            // value has been obtained but the decrease is not sufficient.
+            if(stage1 && f <= fx && f > ftest1){
+                /// Define the modified function and derivative values.
+                T fm = f - stp * dgtest;
+                T fxm = fx - stx * dgtest;
+                T fym = fy - sty * dgtest;
+                T dgm = dg - dgtest;
+                T dgxm = dgx - dgtest;
+                T dgym = dgy - dgtest;
+
+                // Compute new step and update the interval of uncertainty.
+                infoc = mcstep(stx, fxm, dgxm,
+                                sty, fym, dgym,
+                                stp, fm, dgm, brackt, stmin, stmax);
+
+                // Reset function and gradient values.
+                fx = fxm + stx * dgtest;
+                fy = fym + sty * dgtest;
+                dgx = dgxm + dgtest;
+                dgy = dgym + dgtest;
+            } else {
+                // Compute new step and update the interval of uncertainty.
+                infoc = mcstep(stx, fx, dgx,
+                                sty, fy, dgy,
+                                stp, f, dg, brackt, stmin, stmax);
+            }
+            // Force a sufficient decrease in the size od the interval of
+            // uncertainty.
+            if(brackt) {
+                if(fabs(sty - stx) >= p66 * width1)
+                {
+                    stp = stx + p5 * (sty - stx);
+                }
+                width1 = width;
+                width = fabs(sty - stx);
+            }
         }
     }
-}
+};
 
 } // ns line_search
 } // ns ook

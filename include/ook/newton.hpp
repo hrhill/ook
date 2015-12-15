@@ -22,7 +22,7 @@
 #include <tuple>
 
 #include "linalg.hpp"
-
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
@@ -108,11 +108,11 @@ struct newton_impl
 /// \details Implementation of the Newton algorithm using the generic line
 /// search function.
 template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<newton_impl<X>>::state_type
+typename line_search_method<newton_impl<X>, line_search::mcsrch>::state_type
 newton(F f, const X& x0, const Options& opts, Observer& observer)
 {
     typedef newton_impl<X> scheme;
-    line_search_method<scheme> method;
+    line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 

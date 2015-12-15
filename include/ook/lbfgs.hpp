@@ -52,6 +52,8 @@ template <typename F, typename D, typename X, typename T>
 std::tuple<int, X>
 lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
 {
+    ook::line_search::mcsrch mcsrch;
+
     const int n = x.size();
 
     // Initialize function and gradient.
@@ -184,7 +186,7 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
             return std::make_tuple(f, dg);
         };
         ook::message msg;
-        std::tie(msg, stp, f, dginit) = line_search::mcsrch(phi, f, dginit, stp, opts);
+        std::tie(msg, stp, f, dginit) = mcsrch(phi, f, dginit, stp, opts);
 
         if(msg != ook::message::convergence){
             printf(" IFLAG= -1\n LINE SEARCH FAILED."
