@@ -73,7 +73,8 @@ struct bfgs_impl
         X yk(s.dfx - dfx);
         const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
         const int n = linalg::size(s.dfx);
-        matrix_type Z(linalg::identity_matrix<matrix_type>(n) - rho * linalg::outer_prod(s.dx, yk));
+        matrix_type Z(- rho * linalg::outer_prod(s.dx, yk));
+        for (int i = 0; i < n; ++i) Z(i, i) += 1.0;
 
         matrix_type tmp(n, n);
         linalg::gemm(1.0, H, linalg::trans(Z), 0.0, tmp);
