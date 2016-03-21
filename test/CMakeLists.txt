@@ -13,7 +13,7 @@ foreach(test ${TESTS})
                                   ${BLAS_LIBRARIES}
                                   ${LAPACK_LIBRARIES})
     add_test(${test} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${test})
-    add_dependencies(${test} numeric_bindings linalg)
+    add_dependencies(${test} linalg)
 endforeach(test)
 
 add_subdirectory(finite_differences)

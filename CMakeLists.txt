@@ -25,14 +25,6 @@ include_directories("${PROJECT_BINARY_DIR}/include")
 add_subdirectory(example)
 add_subdirectory(test)
 
-ExternalProject_Add(numeric_bindings
-    GIT_REPOSITORY "https://github.com/hrhill/numeric_bindings.git"
-    PREFIX "deps/numeric_bindings"
-    BINARY_DIR ${PROJ_BINARY_DIR}
-    CMAKE_ARGS
-      -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}
-)
-
 ExternalProject_Add(linalg
     GIT_REPOSITORY "https://github.com/hrhill/linalg.git"
     GIT_TAG "v0.8.1"
@@ -42,7 +34,6 @@ ExternalProject_Add(linalg
       -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}
       -DBLAS_LIBRARIES=${BLAS_LIBRARIES}
       -DLAPACK_LIBRARIES=${LAPACK_LIBRARIES}
-    DEPENDS numeric_bindings
 )
 
 # ------------------------------------ Documentation setup --------------------
