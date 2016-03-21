@@ -1,5 +1,3 @@
-/// \file test_functions.cpp
-
 #include <vector>
 #include <tuple>
 #include <boost/numeric/ublas/vector.hpp>

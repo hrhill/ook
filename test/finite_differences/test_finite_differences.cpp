@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE smartodds_finite_differences_test
+#define BOOST_TEST_MODULE finite_differences_test
 
 #include <algorithm>
 #include <ctime>

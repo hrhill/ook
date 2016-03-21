@@ -1,11 +1,8 @@
-/// \file test_func.h
-
-#ifndef OOK_FINITE_DIFFERENCE_TEST_FUNCTIONS_H
-#define OOK_FINITE_DIFFERENCE_TEST_FUNCTIONS_H
+#ifndef OOK_FINITE_DIFFERENCE_TEST_FUNCTIONS_HPP_
+#define OOK_FINITE_DIFFERENCE_TEST_FUNCTIONS_HPP_
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
-
 
 double rosenbrock(const boost::numeric::ublas::vector<double>& x,
 						boost::numeric::ublas::vector<double>& g,
