@@ -32,10 +32,9 @@ namespace detail{
 /// it to a lower cholesky matrix.
 template <typename Matrix>
 Matrix
-convert_to_cholesky(const Matrix& LD)
+convert_to_cholesky(Matrix L)
 {
-    int n = linalg::num_rows(LD);
-    Matrix L(LD);
+    int n = linalg::num_rows(L);
     for (int j = 0; j < n; ++j){
         const double di = sqrt(L(j, j));
         L(j, j) = di;
@@ -50,10 +49,10 @@ convert_to_cholesky(const Matrix& LD)
 /// symmetric positive definite matrix.
 template <typename Matrix, typename Vector>
 Vector
-solve(Matrix A, const Vector& b)
+solve(const Matrix& A, const Vector& b)
 {
     Matrix LD = linalg::factorisations::gmw81(A);
-    Matrix L = convert_to_cholesky(LD);
+    Matrix L = convert_to_cholesky(std::move(LD));
 
     Matrix b1(linalg::size(b), 1);
 
