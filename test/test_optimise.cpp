@@ -1,15 +1,10 @@
-#include <iostream>
-#include <string>
-#include <limits>
-#include <random>
+#define BOOST_TEST_MODULE optimise
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/timer.hpp>
+#include <iostream>
+#include <limits>
 
 #include <boost/mpl/list.hpp>
 
-#define BOOST_TEST_MODULE optimise
 #include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
@@ -24,35 +19,29 @@
 #include "ook/test_functions/parabola.hpp"
 #include "ook/test_functions/more_garbow_hillstrom.hpp"
 
-namespace ublas = boost::numeric::ublas;
-
-typedef ublas::vector<double> vector_type;
-typedef ublas::matrix<double, ublas::column_major> matrix_type;
-
-template <typename V, typename M>
 using test_function_types = boost::mpl::list<
-  ook::test_functions::parabola<V, M>
-, ook::test_functions::rosenbrock<V, M>
+  ook::test_functions::parabola
+, ook::test_functions::rosenbrock
 //, ook::test_functions::freudenstein_roth<V, M>
 //, ook::test_functions::powell_badly_scaled<V, M>
 >;
 
-typedef test_function_types<vector_type, matrix_type> ublas_function_types;
-
-template <typename F, typename X>
+template <typename F>
 struct
-gradient_only_wrapper{
+gradient_only_wrapper
+{
     gradient_only_wrapper(F f)
     :
         func(f)
     {}
 
-    std::tuple<double, X>
-    operator()(const X& x) const {
+    std::tuple<double, ook::vector>
+    operator()(const ook::vector& x) const
+    {
         const int n = x.size();
         double f;
-        X df(n);
-        matrix_type d2f(n, n);
+        ook::vector df(n);
+        ook::matrix d2f(n, n);
 
         std::tie(f, df, d2f) = func(x);
         return std::make_tuple(f, df);
@@ -67,16 +56,15 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
 {
     ook::options<double> opts;
 
-    typedef Function test_function;
-    test_function objective_function;
+    Function objective_function;
 
-    vector_type x(test_function::n, 0.0);
-    std::copy(test_function::x0.begin(), test_function::x0.end(), x.begin());
+    ook::vector x(Function::n, 0.0);
+    std::copy(Function::x0.begin(), Function::x0.end(), x.begin());
 
-    vector_type minima(test_function::n, 0.0);
-    std::copy(test_function::minima.begin(), test_function::minima.end(), minima.begin());
+    ook::vector minima(Function::n, 0.0);
+    std::copy(Function::minima.begin(), Function::minima.end(), minima.begin());
 
-    gradient_only_wrapper<Function, vector_type> wrapper(objective_function);
+    gradient_only_wrapper<Function> wrapper(objective_function);
     ook::stream_observer<std::ostream> obs(std::cout);
     auto soln = optimiser(wrapper, x, opts, obs);
     BOOST_CHECK_EQUAL(soln.msg, ook::message::convergence);
@@ -84,10 +72,10 @@ run_gradient_based_optimiser(Function, Optimiser optimiser)
     // Evaluate function at minima, check proximity
     auto x_min = soln.x;
     double f_min;
-    vector_type df;
+    ook::vector df;
     std::tie(f_min, df) = wrapper(x_min);
-    BOOST_CHECK(fabs(f_min - test_function::f_min) <=  1e-08);
-    BOOST_CHECK(ublas::norm_inf(x_min - minima) <= 1e-04);
+    BOOST_CHECK(fabs(f_min - Function::f_min) <=  1e-08);
+    BOOST_CHECK(ook::norm_inf(x_min - minima) <= 1e-04);
 }
 
 template <typename Function>
@@ -97,22 +85,20 @@ test_gradient_based_optimisers()
 /*
     std::cout << "steepest_descent" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::steepest_descent<gradient_only_wrapper<Function, vector_type>,
-                                vector_type,
+            ook::steepest_descent<gradient_only_wrapper<Function>,
+                                ook::vector,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
 */
     std::cout << "fletcher_reeves" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::fletcher_reeves<gradient_only_wrapper<Function, vector_type>,
-                                vector_type,
+            ook::fletcher_reeves<gradient_only_wrapper<Function>,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
 
     std::cout << "bfgs" << std::endl;
     run_gradient_based_optimiser(Function(),
-            ook::bfgs<gradient_only_wrapper<Function, vector_type>,
-                                vector_type,
+            ook::bfgs<gradient_only_wrapper<Function>,
                                 ook::options<double>,
                                 ook::stream_observer<std::ostream>>);
     return 0;
@@ -122,10 +108,10 @@ template <typename Function, typename Optimiser>
 void
 run_hessian_based_optimiser(Function, Optimiser optimiser)
 {
-    vector_type x(Function::n, 0.0);
+    ook::vector x(Function::n, 0.0);
     std::copy(Function::x0.begin(), Function::x0.end(), x.begin());
 
-    vector_type minima(Function::n, 0.0);
+    ook::vector minima(Function::n, 0.0);
     std::copy(Function::local_minima.begin(), Function::local_minima.end(), minima.begin());
 
     ook::stream_observer<std::ostream> obs(std::cout);
@@ -135,23 +121,22 @@ run_hessian_based_optimiser(Function, Optimiser optimiser)
     auto soln = optimiser(objective_function, x, opts, obs);
     BOOST_CHECK_EQUAL(soln.msg, ook::message::convergence);
     BOOST_CHECK(fabs(soln.fx - Function::f_min) <= 1e-08);
-    BOOST_CHECK(ublas::norm_inf(soln.x - minima) <= 1e-04);
+    BOOST_CHECK(ook::norm_inf(soln.x - minima) <= 1e-04);
 }
 
 template <typename Function>
 int test_hessian_based_optimisers()
 {
-    typedef typename Function::vector_type vector_type;
     std::cout << "newton" << std::endl;
     run_hessian_based_optimiser(Function(),
-            ook::newton<Function, vector_type, ook::options<double>, ook::stream_observer<std::ostream>>);
+            ook::newton<Function, ook::options<double>, ook::stream_observer<std::ostream>>);
     return 0;
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(gradient_based_optimisers, T, ublas_function_types){
+BOOST_AUTO_TEST_CASE_TEMPLATE(gradient_based_optimisers, T, test_function_types){
     BOOST_CHECK_EQUAL(test_gradient_based_optimisers<T>(), 0);
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(hessian_based_optimisers, T, ublas_function_types){
-    BOOST_CHECK_EQUAL(test_hessian_based_optimisers<T>(), 0);
-}
+//BOOST_AUTO_TEST_CASE_TEMPLATE(hessian_based_optimisers, T, test_function_types){
+//    BOOST_CHECK_EQUAL(test_hessian_based_optimisers<T>(), 0);
+//}

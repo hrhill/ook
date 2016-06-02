@@ -22,7 +22,6 @@
 #include <tuple>
 #include <type_traits>
 
-#include "linalg/operations.hpp"
 #include "ook/line_search/backtracking.hpp"
 #include "ook/line_search_method.hpp"
 
