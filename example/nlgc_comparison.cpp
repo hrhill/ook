@@ -5,22 +5,20 @@
 
 #include "ook.hpp"
 
-typedef boost::numeric::ublas::vector<double> vector_type;
-
 struct rosenbrock
 {
-    std::tuple<double, vector_type>
-    operator()(const vector_type& x) const
+    std::tuple<double, ook::vector>
+    operator()(const ook::vector& x) const
     {
-        const double x1 = x(0);
-        const double x2 = x(1);
+        const double x1 = x[0];
+        const double x2 = x[1];
         const double f1 = 10 * (x2 - x1 * x1);
         const double f2 = 1- x1;
         const double f = f1 * f1 + f2 * f2;
 
-        vector_type df(2, 1.0);
-        df(0) = - 2 * f1 * 20 * x1 - 2 * f2;
-        df(1) = 2 * f1 * 10;
+        ook::vector df(2, 1.0);
+        df[0] = - 2 * f1 * 20 * x1 - 2 * f2;
+        df[1] = 2 * f1 * 10;
 
         return std::make_tuple(f, df);
     }
@@ -58,31 +56,31 @@ int main(int argc, char** argv)
     using namespace ook;
     options<double> opts;
 
-    vector_type x(2);
-    x(0) = -1.2;
-    x(1) = 1.0;
-    typedef nonlinear_cg_impl<vector_type, beta::fr> fr_scheme;
+    ook::vector x(2);
+    x[0] = -1.2;
+    x[1] = 1.0;
+    typedef nonlinear_cg_impl<beta::fr> fr_scheme;
     typedef line_search_method<fr_scheme, line_search::mcsrch>::state_type fr_state_type;
     observer<fr_state_type> fr_obs("fletcher-reeves");
     auto fr_soln = fletcher_reeves(rosenbrock(), x, opts, fr_obs);
 
-    x(0) = -1.2;
-    x(1) = 1.0;
-    typedef nonlinear_cg_impl<vector_type, beta::pr> pr_scheme;
+    x[0] = -1.2;
+    x[1] = 1.0;
+    typedef nonlinear_cg_impl<beta::pr> pr_scheme;
     typedef line_search_method<pr_scheme, line_search::mcsrch>::state_type pr_state_type;
     observer<pr_state_type> pr_obs("polak-ribiere");
     auto pr_soln = polak_ribiere(rosenbrock(), x, opts, pr_obs);
 
-    x(0) = -1.2;
-    x(1) = 1.0;
-    typedef nonlinear_cg_impl<vector_type, beta::hs> hs_scheme;
+    x[0] = -1.2;
+    x[1] = 1.0;
+    typedef nonlinear_cg_impl<beta::hs> hs_scheme;
     typedef line_search_method<hs_scheme, line_search::mcsrch>::state_type hs_state_type;
     observer<hs_state_type> hs_obs("hestenes-steifel");
     auto hs_soln = hestenes_steifel(rosenbrock(), x, opts, hs_obs);
 
-    x(0) = -1.2;
-    x(1) = 1.0;
-    typedef nonlinear_cg_impl<vector_type, beta::dy> dy_scheme;
+    x[0] = -1.2;
+    x[1] = 1.0;
+    typedef nonlinear_cg_impl<beta::dy> dy_scheme;
     typedef line_search_method<dy_scheme, line_search::mcsrch>::state_type dy_state_type;
     observer<dy_state_type> dy_obs("dai-yuan");
     auto dy_soln = dai_yuan(rosenbrock(), x, opts, dy_obs);

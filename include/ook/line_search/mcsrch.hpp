@@ -87,7 +87,7 @@ struct mcsrch
         const T stpmax = 1e20;
 
         int infoc = 1;
-        uint nfev = 0;
+        int nfev = 0;
         bool brackt = false;
         bool stage1 = true;
         const T dgtest = ftol * dginit;

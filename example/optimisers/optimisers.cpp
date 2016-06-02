@@ -17,16 +17,6 @@
 #include <limits>
 #include <iomanip>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/assignment.hpp>
-
-#include <boost/numeric/bindings/ublas/matrix.hpp>
-#include <boost/numeric/bindings/lapack/computational/potrs.hpp>
-#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
-#include <boost/numeric/bindings/ublas/symmetric.hpp>
-
 #include "ook/options.hpp"
 #include "ook/message.hpp"
 #include "ook/stream_observer.hpp"
@@ -38,11 +28,7 @@
 #include "ook/bfgs.hpp"
 #include "ook/newton.hpp"
 
-namespace ublas = boost::numeric::ublas;
-typedef ublas::vector<double> vector_t;
-typedef ublas::matrix<double, ublas::column_major> matrix_t;
-
-template <typename F, typename X>
+template <typename F>
 struct
 gradient_only_wrapper{
     gradient_only_wrapper(F f)
@@ -50,12 +36,12 @@ gradient_only_wrapper{
         func(f)
     {}
 
-    std::tuple<double, X>
-    operator()(const X& x) const {
+    std::tuple<double, ook::vector>
+    operator()(const ook::vector& x) const {
         const int n = x.size();
         double f;
-        X df(n);
-        matrix_t d2f(n, n);
+        ook::vector df(n);
+        ook::matrix d2f(n, n);
 
         std::tie(f, df, d2f) = func(x);
         return std::make_tuple(f, df);
@@ -68,11 +54,11 @@ int main(){
 
     ook::options<double> opts;
 
-    typedef ook::test_functions::rosenbrock<vector_t, matrix_t> test_function;
+    typedef ook::test_functions::rosenbrock test_function;
     test_function objective_function;
-    gradient_only_wrapper<test_function, vector_t> wrapper(objective_function);
+    gradient_only_wrapper<test_function> wrapper(objective_function);
 
-    vector_t x(test_function::n, 0.0);
+    ook::vector x(test_function::n, 0.0);
     std::copy(test_function::x0.begin(), test_function::x0.end(), x.begin());
     {
         std::cout << "steepest_descent\n";

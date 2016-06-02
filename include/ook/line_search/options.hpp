@@ -43,7 +43,7 @@ struct options
 
     /// \brief The maximum number of function evaluations allowed
     /// for a given line search.
-    uint maxfev;
+    int maxfev;
 };
 
 } // ns line search
