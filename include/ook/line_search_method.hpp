@@ -23,7 +23,7 @@
 #include <iomanip>
 #include <type_traits>
 
-#include "linalg.hpp"
+#include "ook/vector.hpp"
 
 #include "ook/message.hpp"
 #include "ook/call_selector.hpp"
@@ -34,9 +34,6 @@ namespace ook{
 template <typename SchemeState>
 struct lsm_state : public SchemeState
 {
-    typedef typename SchemeState::value_type value_type;
-    typedef typename SchemeState::vector_type vector_type;
-
     /// \brief State for use with line search method.
     enum class tag{init, iterate, final};
 
@@ -98,15 +95,15 @@ struct lsm_state : public SchemeState
 
     uint iteration;
     uint nfev;
-    value_type a;
-    value_type fx;
-    value_type gnorm;
-    value_type xnorm;
+    double a;
+    double fx;
+    double gnorm;
+    double xnorm;
     tag state;
     message msg;
-    vector_type x;
-    vector_type dfx;
-    vector_type dx;
+    vector x;
+    vector dfx;
+    vector dx;
 };
 
 template <typename Scheme, typename LineSearch>
@@ -122,12 +119,10 @@ struct line_search_method
 
         typedef detail::call_selector<
                 std::tuple_size<decltype(obj_fun(x))>::value> caller_type;
-        typedef typename std::remove_reference<decltype(X()[0])>::type
-                real_type;
 
-        const real_type epsilon = std::numeric_limits<real_type>::epsilon();
-        const real_type dx_eps = sqrt(epsilon);
-        const real_type df_eps = exp(log(epsilon)/real_type(3.0));
+        const double epsilon = std::numeric_limits<double>::epsilon();
+        const double dx_eps = sqrt(epsilon);
+        const double df_eps = exp(log(epsilon)/double(3.0));
 
         state_type state = caller_type::call(obj_fun, x, state_type());
         Scheme scheme(state);
@@ -139,18 +134,17 @@ struct line_search_method
             X p = scheme.descent_direction(state);
 
             // Create line search function
-            auto phi = [&p, &x, obj_fun, &state](real_type a)
+            auto phi = [&p, &x, obj_fun, &state](double a)
             {
                 ++state.nfev;
                 state = caller_type::call(obj_fun, x + a * p, state);
-                return std::make_pair(state.fx,
-                                    linalg::inner_prod(state.dfx, p));
+                return std::make_pair(state.fx, (state.dfx, p));
             };
 
             // Store current fx value since line search overwrites the state
             // values.
-            const real_type fxk = state.fx;
-            real_type dfx_dot_p = linalg::inner_prod(state.dfx, p);
+            const double fxk = state.fx;
+            double dfx_dot_p = (state.dfx, p);
 
             if (dfx_dot_p >= 0.0){
                 state.msg =
@@ -165,15 +159,15 @@ struct line_search_method
 
             state.dx = state.a * p;
             x += state.dx;
-            state.xnorm = linalg::norm_infinity(state.dx);
-            state.gnorm = linalg::norm_infinity(state.dfx);
+            state.xnorm = norm_inf(state.dx);
+            state.gnorm = norm_inf(state.dfx);
 
             // Convergence criteria assessment base on p306 in Gill, Murray
             // and Wright.
-            const real_type theta = epsilon * (1.0 + fabs(state.fx));
+            const double theta = epsilon * (1.0 + fabs(state.fx));
             const bool u1 = (fxk - state.fx) <= theta;
             const bool u2 = state.xnorm
-                            <= dx_eps * (1.0 + linalg::norm_infinity(x));
+                            <= dx_eps * (1.0 + norm_inf(x));
             const bool u3 = state.gnorm <= df_eps * (1.0 + fabs(state.fx));
 
             state.state = state_type::tag::iterate;

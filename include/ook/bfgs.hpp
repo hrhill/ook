@@ -21,27 +21,20 @@
 
 #include <tuple>
 
-#include "linalg.hpp"
+#include "ook/vector.hpp"
+#include "ook/matrix.hpp"
+
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
 /// \brief Implementation of the required steps of line_search_method
 /// for BFGS method.
-template <typename X>
 struct bfgs_impl
 {
-    typedef X vector_type;
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-    typedef typename linalg::associated_matrix<X>::type matrix_type;
-
     struct state
     {
-        typedef X vector_type;
-        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-        typedef typename linalg::associated_matrix<X>::type matrix_type;
-
-        matrix_type H;
+        matrix H;
     };
 
     template <typename State>
@@ -59,10 +52,10 @@ struct bfgs_impl
     }
 
     template <typename State>
-    vector_type
+    vector
     descent_direction(const State& s)
     {
-        linalg::gemv(-1.0, H, s.dfx, 0.0, p);
+        p = -H * s.dfx;
         return p;
     }
 
@@ -70,33 +63,32 @@ struct bfgs_impl
     void
     update(const State& s)
     {
-        X yk(s.dfx - dfx);
-        const value_type rho = 1.0/linalg::inner_prod(yk, s.dx);
-        const int n = linalg::size(s.dfx);
-        matrix_type Z(- rho * linalg::outer_prod(s.dx, yk));
+        vector yk = s.dfx - dfx;
+        const double rho = 1.0 / (yk, s.dx);
+        const int n = s.dfx.size();
+        matrix Z = - rho * (s.dx * trans(yk));
+
         for (int i = 0; i < n; ++i) Z(i, i) += 1.0;
 
-        matrix_type tmp(n, n);
-        linalg::gemm(1.0, H, linalg::trans(Z), 0.0, tmp);
-        linalg::gemm(1.0, Z, tmp, 0.0, H);
-        matrix_type ss = rho * linalg::outer_prod(s.dx, s.dx);
+        matrix tmp = H * trans(Z);
+        H = Z * tmp;
+        matrix ss = rho * s.dx * trans(s.dx);
         H += ss;
         dfx = s.dfx;
     }
 
 private:
-    vector_type dfx;
-    vector_type p;
-    matrix_type H;
+    vector dfx;
+    vector p;
+    matrix H;
 };
 
 /// \brief The Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm.
-template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<bfgs_impl<X>, line_search::mcsrch>::state_type
-bfgs(F f, const X& x0, const Options& opts, Observer& observer)
+template <typename F, typename Options, typename Observer>
+typename line_search_method<bfgs_impl, line_search::mcsrch>::state_type
+bfgs(F f, const vector& x0, const Options& opts, Observer& observer)
 {
-    typedef bfgs_impl<X> scheme;
-    line_search_method<scheme, line_search::mcsrch> method;
+    line_search_method<bfgs_impl, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 

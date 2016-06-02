@@ -9,11 +9,6 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/test_case_template.hpp>
 #include <boost/mpl/list.hpp>
-#include <boost/bind.hpp>
-
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
 
 #include "test_functions.hpp"
 
@@ -23,22 +18,16 @@
 
 using namespace ook::finite_differences;
 
-typedef boost::numeric::ublas::vector<double> vector_t;
-typedef boost::numeric::ublas::matrix<double> matrix_t;
-
-
 template <typename FD, typename F, typename G>
-int checker(F f, G g, int dim){
-
-    namespace ublas = boost::numeric::ublas;
-
+int checker(F f, G g, int dim)
+{
     std::mt19937 rng(std::time(0));
     auto normrnd = bind(std::normal_distribution<>(), std::ref(rng));
 
-    vector_t x(dim);
-    vector_t df(dim);
-    matrix_t H(dim, dim);
-    matrix_t Hh(dim, dim);
+    ook::vector x(dim);
+    ook::vector df(dim);
+    ook::matrix H(dim, dim);
+    ook::matrix Hh(dim, dim);
 
     const int n_tests = 1;
 
@@ -46,7 +35,7 @@ int checker(F f, G g, int dim){
         std::generate(x.begin(), x.end(), normrnd);
         // Calculate finite difference approximation.
         auto dfh = FD::gradient(g, x);
-        auto d2fh = FD::template hessian<matrix_t>(g, x);
+        auto d2fh = FD::template hessian<ook::matrix>(g, x);
 
         // Evaluate true gradient.
         f(x, df, H);
@@ -54,8 +43,8 @@ int checker(F f, G g, int dim){
         // Generate a course upper bound for gradient error
         const double grad_error_bound = 0.1;
         const double hess_error_bound = 1;
-        BOOST_REQUIRE_SMALL(static_cast<double>(ublas::norm_inf(H - std::get<1>(d2fh))), hess_error_bound);
-        BOOST_REQUIRE_SMALL(ublas::norm_inf(df - std::get<1>(dfh)), grad_error_bound);
+        BOOST_REQUIRE_SMALL(ook::norm_inf(static_cast<const ook::matrix&>(H - std::get<1>(d2fh))), hess_error_bound);
+        BOOST_REQUIRE_SMALL(ook::norm_inf(static_cast<const ook::vector&>(df - std::get<1>(dfh))), grad_error_bound);
     }
     return 0;
 }

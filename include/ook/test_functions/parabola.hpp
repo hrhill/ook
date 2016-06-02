@@ -23,55 +23,38 @@
 #include <limits>
 #include <vector>
 
-#include "linalg/norms.hpp"
+#include "ook/vector.hpp"
 
 namespace ook{
 namespace test_functions{
 
-template <typename Vector, typename Matrix>
 struct parabola
 {
-    typedef Vector vector_type;
-    typedef Matrix matrix_type;
-    typedef typename vector_type::value_type real_type;
 
-    std::tuple<real_type, vector_type, matrix_type>
-    operator()(const vector_type& x) const
+    std::tuple<double, vector, matrix>
+    operator()(const vector& x) const
     {
-        real_type f = 0.5 * std::pow(norm_2(x), 2);
-        matrix_type id(n, n, 0);
+        double f = 0.5 * std::pow(norm_2(x), 2);
+        matrix id(n, n, 0);
         for (size_t i = 0; i < n; ++i) id(i, i) = 1.0;
         return std::make_tuple(f, x, id);
     }
 
     static const int n = 4;
     static const int m = 4;
-    static real_type f_min;
-    static real_type tolerance;
-    static std::vector<real_type> local_minima;
-    static std::vector<real_type> minima;
-    static std::vector<real_type> x0;
+    static double f_min;
+    static double tolerance;
+    static std::vector<double> local_minima;
+    static std::vector<double> minima;
+    static std::vector<double> x0;
 };
 
-template <typename Vector, typename Matrix>
-typename Vector::value_type
-parabola<Vector, Matrix>::f_min = 0.0;
+double parabola::f_min = 0.0;
+double parabola::tolerance = std::numeric_limits<double>::epsilon();
 
-template <typename Vector, typename Matrix>
-typename Vector::value_type
-parabola<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-parabola<Vector, Matrix>::minima = {0, 0, 0, 0};
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-parabola<Vector, Matrix>::local_minima = {0, 0, 0, 0};
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-parabola<Vector, Matrix>::x0 = {10.0, -4.1513, 1.0, 1000.0};
+std::vector<double> parabola::minima = {0, 0, 0, 0};
+std::vector<double> parabola::local_minima = {0, 0, 0, 0};
+std::vector<double> parabola::x0 = {10.0, -4.1513, 1.0, 1000.0};
 
 
 } // ns test_functions
