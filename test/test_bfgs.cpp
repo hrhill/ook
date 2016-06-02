@@ -6,17 +6,13 @@
 
 #include "ook/bfgs.hpp"
 
-#include <boost/numeric/ublas/vector.hpp>
-
-typedef boost::numeric::ublas::vector<double> vector_type;
-
 struct state
 {
     state()
     :   dfx(2), dx(2)
     {}
-    vector_type dfx;
-    vector_type dx;
+    ook::vector dfx;
+    ook::vector dx;
 };
 
 BOOST_AUTO_TEST_CASE(bfgs_descent_direction)
@@ -25,7 +21,7 @@ BOOST_AUTO_TEST_CASE(bfgs_descent_direction)
     state s;
     s.dfx[0] = 1.234;
     s.dfx[1] = 5.678;
-    ook::bfgs_impl<vector_type> scheme(s);
+    ook::bfgs_impl scheme(s);
     auto dd = scheme.descent_direction(s);
     BOOST_CHECK_EQUAL(dd[0], -s.dfx[0]);
     BOOST_CHECK_EQUAL(dd[1], -s.dfx[1]);
@@ -39,7 +35,7 @@ BOOST_AUTO_TEST_CASE(bfgs_update)
     s.dfx[0] = 1;
     s.dfx[1] = 1;
     s.dx = s.dfx;
-    ook::bfgs_impl<vector_type> scheme(s);
+    ook::bfgs_impl scheme(s);
 
     // First step is descent direction
     auto dd = scheme.descent_direction(s);

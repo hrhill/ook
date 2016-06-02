@@ -12,38 +12,20 @@ set(BUILD_SHARED_LIBS ON)
 find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
-find_package(BLAS)
-find_package(LAPACK)
 
-set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -Wno-unused-local-typedefs -std=c++1y ${OpenMP_CXX_FLAGS}")
+set(OpenBLAS_INCLUDE_DIRS /usr/local/include)
+set(OpenBLAS_LIBRARIES /usr/local/lib/libopenblas.so)
+set(CMAKE_CXX_COMPILER "g++-5")
+
+set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/include")
 
-add_subdirectory(example)
+#add_subdirectory(example)
 add_subdirectory(test)
-
-ExternalProject_Add(numeric_bindings
-    GIT_REPOSITORY "https://github.com/hrhill/numeric_bindings.git"
-    PREFIX "deps/numeric_bindings"
-    BINARY_DIR ${PROJ_BINARY_DIR}
-    CMAKE_ARGS
-      -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}
-)
-
-ExternalProject_Add(linalg
-    GIT_REPOSITORY "https://github.com/hrhill/linalg.git"
-    GIT_TAG "v0.8.1"
-    PREFIX "deps/linalg"
-    BINARY_DIR ${PROJ_BINARY_DIR}
-    CMAKE_ARGS
-      -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}
-      -DBLAS_LIBRARIES=${BLAS_LIBRARIES}
-      -DLAPACK_LIBRARIES=${LAPACK_LIBRARIES}
-    DEPENDS numeric_bindings
-)
+add_subdirectory(src)
 
 # ------------------------------------ Documentation setup --------------------
 if(DOXYGEN_FOUND)

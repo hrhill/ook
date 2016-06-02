@@ -20,26 +20,16 @@
 #define OOK_LINE_SEARCH_METHODS_STEEPEST_DESCENT_HPP_
 
 #include <tuple>
-#include <type_traits>
 
-#include "linalg/operations.hpp"
 #include "ook/line_search/backtracking.hpp"
 #include "ook/line_search_method.hpp"
 
 namespace ook{
 /// \brief Implementation for the steepest descent method.
-template <typename X>
 struct steepest_descent_impl
 {
-    typedef X vector_type;
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-
     struct state
-    {
-        typedef X vector_type;
-        typedef typename std::remove_reference<
-                            decltype(X()[0])>::type value_type;
-    };
+    {};
 
     /// \brief Constructor required by scheme concept.
     template <typename T>
@@ -66,12 +56,11 @@ struct steepest_descent_impl
 
 /// \brief The Steepest descent algorithm. This is just a convenience function
 /// which forwards the call to the generic function line_search_method
-template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<steepest_descent_impl<X>, line_search::mcsrch>::state_type
-steepest_descent(F f, const X& x0, const Options& opts, Observer& observer)
+template <typename F, typename Options, typename Observer>
+typename line_search_method<steepest_descent_impl, line_search::mcsrch>::state_type
+steepest_descent(F f, const vector& x0, const Options& opts, Observer& observer)
 {
-    typedef steepest_descent_impl<X> scheme;
-    line_search_method<scheme, line_search::backtracking> method;
+    line_search_method<steepest_descent_impl, line_search::backtracking> method;
     return method(f, x0, opts, observer);
 }
 

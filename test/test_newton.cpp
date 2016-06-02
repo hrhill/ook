@@ -6,21 +6,15 @@
 
 #include "ook/newton.hpp"
 
-#include <boost/numeric/ublas/vector.hpp>
-
-typedef boost::numeric::ublas::vector<double> vector_type;
-typedef boost::numeric::ublas::matrix<double,
-     boost::numeric::ublas::column_major> matrix_type;
-
 struct state
 {
     state()
     :   dfx(2), dx(2), H(2, 2, 0.0)
     {}
 
-    vector_type dfx;
-    vector_type dx;
-    matrix_type H;
+    ook::vector dfx;
+    ook::vector dx;
+    ook::matrix H;
 };
 
 BOOST_AUTO_TEST_CASE(newton_descent_direction)
@@ -32,7 +26,7 @@ BOOST_AUTO_TEST_CASE(newton_descent_direction)
     s.H(0, 0) = 1.0;
     s.H(1, 1) = 1.0;
 
-    ook::newton_impl<vector_type> scheme(s);
+    ook::newton_impl scheme(s);
     auto dd = scheme.descent_direction(s);
     BOOST_CHECK_EQUAL(dd[0], -s.dfx[0]);
     BOOST_CHECK_EQUAL(dd[1], -s.dfx[1]);

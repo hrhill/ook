@@ -48,19 +48,17 @@ template <typename F, typename X>
 auto
 backward_difference::gradient(F f, X x)
 {
-    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x)
 	const size_t n = std::distance(x.begin(), x.end());
-	const value_type hmin(sqrt(std::numeric_limits<value_type>::epsilon()));
+	const double hmin = sqrt(std::numeric_limits<double>::epsilon());
 	std::vector<X> sample_points(n + 1);
 	X h(n);
 
 	for (size_t i = 0; i < n; ++i)
 	{
-		const value_type xi = x[i];
-		const value_type hx = hmin * (1 + fabs(xi));
+		const double xi = x[i];
+		const double hx = hmin * (1 + fabs(xi));
 		h[i] = hx;
 		x[i] = xi - hx;
 		sample_points[i] = x;
@@ -69,7 +67,7 @@ backward_difference::gradient(F f, X x)
 	sample_points[n] = x;
 
 	// evaluate function at each point
-	std::vector<value_type> function_values(sample_points.size());
+	std::vector<double> function_values(sample_points.size());
 	ook::finite_differences::detail::transform(sample_points, function_values, f);
 
 	// assemble
@@ -85,40 +83,37 @@ template <typename M, typename F, typename X>
 auto
 backward_difference::hessian(F f, const X& x)
 {
-    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-    typedef size_t size_t;
-
-	const double eps = std::numeric_limits<value_type>::epsilon();
-	auto hmin(std::pow(eps, 1.0/3.0));
+	const double eps = std::numeric_limits<double>::epsilon();
+	const double hmin = std::pow(eps, 1.0/3.0);
 
 	const size_t n = std::distance(x.begin(), x.end());
 
 	X xi(x);
 	X xj(x);
 
-	const value_type fx = f(x);
+	const double fx = f(x);
 	M H(n, n);
 
 	for (size_t i = 0; i < n; ++i){
-		const value_type xii = xi[i];
-		const value_type hi = hmin * (1 + fabs(xii));
+		const double xii = xi[i];
+		const double hi = hmin * (1 + fabs(xii));
 
 		// f(x - h_i e_i)
 		xi[i] -= hi;
-		const value_type fxi = f(xi);
+		const double fxi = f(xi);
 		xi[i] = xii;
 
 		for (size_t j = 0; j <= i; ++j){
-			const value_type xjj = xj[j];
-			const value_type hj = hmin * (1 + fabs(xjj));
+			const double xjj = xj[j];
+			const double hj = hmin * (1 + fabs(xjj));
 
 			// f(x - h_j e_j)
 			xj[j] -= hj;
-			const value_type fxj = f(xj);
+			const double fxj = f(xj);
 
 			// f(x - h_i e_i - h_j e_j)
 			xj[i] -= hi;
-			const value_type fxij = f(xj);
+			const double fxij = f(xj);
 
 			H(i, j) = H(j, i) = (fxij - fxi - fxj + fx)/(hi * hj);
 
