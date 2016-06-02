@@ -13,7 +13,7 @@ struct state{
 
 BOOST_AUTO_TEST_CASE(steepest_descent_descent_direction)
 {
-    ook::steepest_descent_impl<ook::vector> scheme(1.0);
+    ook::steepest_descent_impl scheme(1.0);
     state s;
     s.dfx = ook::vector(1, 1.234);
     ook::vector dd = scheme.descent_direction(s);
