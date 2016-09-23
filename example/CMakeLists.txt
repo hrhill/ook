@@ -3,6 +3,7 @@ set(PROGRAMS version
 
 foreach(ex ${PROGRAMS})
     add_executable(${ex} ${ex}.cpp)
+    target_link_libraries(${ex} ${Boost_PROGRAM_OPTIONS_LIBRARY} ook)
 endforeach(ex)
 
 

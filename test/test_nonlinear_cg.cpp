@@ -9,8 +9,6 @@
 
 #include "ook/nonlinear_cg.hpp"
 
-typedef boost::numeric::ublas::vector<double> vector_type;
-
 // List of beta update methods
 typedef boost::mpl::list<
     ook::beta::fr
@@ -24,7 +22,7 @@ struct state
     state()
     :   dfx(2)
     {}
-    vector_type dfx;
+    ook::vector dfx;
 };
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(nonlinear_cg_descent_direction, T, betas)
@@ -33,7 +31,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(nonlinear_cg_descent_direction, T, betas)
     state s;
     s.dfx[0] = 1.234;
     s.dfx[1] = 5.678;
-    ook::nonlinear_cg_impl<vector_type, T> scheme(s);
+    ook::nonlinear_cg_impl<T> scheme(s);
     auto dd = scheme.descent_direction(s);
     BOOST_CHECK_EQUAL(dd[0], -s.dfx[0]);
     BOOST_CHECK_EQUAL(dd[1], -s.dfx[1]);

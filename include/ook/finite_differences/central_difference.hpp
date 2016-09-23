@@ -47,21 +47,19 @@ template <typename F, typename X>
 auto
 central_difference::gradient(F f, X x)
 {
-    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-
 	// Generate a set of sample points
 	// (x + he_1, x + he_2, ..., x+he_n, x-he_1,..., x-he_n, x)
 	const size_t n = std::distance(x.begin(), x.end());
-	const value_type eps = std::numeric_limits<value_type>::epsilon();
-	const value_type hmin(exp(log(eps) / 3.0));
+	const double eps = std::numeric_limits<double>::epsilon();
+	const double hmin(exp(log(eps) / 3.0));
 
 	std::vector<X> sample_points(2 * n + 1);
 	X h(n);
 
 	for (size_t i = 0; i < n; ++i)
 	{
-		const value_type xi = x[i];
-		const value_type hx = hmin * (1 + fabs(xi));
+		const double xi = x[i];
+		const double hx = hmin * (1 + fabs(xi));
 		h[i] = hx;
 
 		x[i] = xi + hx;
@@ -73,12 +71,12 @@ central_difference::gradient(F f, X x)
 	}
 	sample_points[2 * n] = x;
 	// evaluate function at each point
-	std::vector<value_type> function_values(sample_points.size());
+	std::vector<double> function_values(sample_points.size());
 	detail::transform(sample_points, function_values, f);
 
 	// assemble
 	X df(n);
-	const value_type fx = function_values[2 * n];
+	const double fx = function_values[2 * n];
 	for (size_t i = 0; i < n; ++i)
     {
 		df[i] = (function_values[i] - function_values[i + n]) / (2.0 * h[i]);
@@ -91,38 +89,35 @@ template <typename M, typename F, typename X>
 auto
 central_difference::hessian(F f, const X& x)
 {
-    typedef typename remove_const_reference<decltype(x[0])>::type value_type;
-    typedef size_t size_t;
-
-	const double eps = std::numeric_limits<value_type>::epsilon();
-	auto hmin(std::pow(eps, 1.0/3.0));
+	const double eps = std::numeric_limits<double>::epsilon();
+	const double hmin = std::pow(eps, 1.0/3.0);
 
 	const size_t n = std::distance(x.begin(), x.end());
-	const value_type fx = f(x);
+	const double fx = f(x);
 
 	X local_x(x);
 	M H(n, n);
 	for (size_t i = 0; i < n; ++i){
 		// Work out diagonal term first
 
-		const value_type hi = hmin * (1.0 + fabs(local_x[i]));
-		const value_type xi = local_x[i];
+		const double hi = hmin * (1.0 + fabs(local_x[i]));
+		const double xi = local_x[i];
 
 		// f(x + h_i e_i)
 		local_x[i] = xi + hi;
-		const value_type fp = f(local_x);
+		const double fp = f(local_x);
 
 		// f(x + 2 h_i e_i)
 		local_x[i] = xi + 2.0 * hi;
-		const value_type fpp = f(local_x);
+		const double fpp = f(local_x);
 
 		// f(x - h_i e_i)
 		local_x[i] = xi - hi;
-		const value_type fm = f(local_x);
+		const double fm = f(local_x);
 
 		// f(x - 2 h_i e_i)
 		local_x[i] = xi - 2.0 * hi;
-		const value_type fmm = f(local_x);
+		const double fmm = f(local_x);
 
 		H(i, i) = (-fpp + 16.0 * fp - 30.0 * fx + 16.0 * fm - fmm)/(12.0 * hi * hi);
 
@@ -130,29 +125,29 @@ central_difference::hessian(F f, const X& x)
 
 		for (size_t j = 0; j < i; ++j){
 
-			const value_type xj = local_x[j];
+			const double xj = local_x[j];
 
-			const value_type hj = hmin * (1.0 + fabs(local_x[j]));
+			const double hj = hmin * (1.0 + fabs(local_x[j]));
 
 			// f(x + h_i e_i + h_j e_j)
 			local_x[i] = xi + hi;
 			local_x[j] = xj + hj;
-			const value_type fpp = f(local_x);
+			const double fpp = f(local_x);
 
 			// f(x - h_i e_i + h_j e_j)
 			local_x[i] = xi - hi;
 			local_x[j] = xj + hj;
-			const value_type fmp = f(local_x);
+			const double fmp = f(local_x);
 
 			// f(x + h_i e_i - h_j e_j)
 			local_x[i] = xi + hi;
 			local_x[j] = xj - hj;
-			const value_type fpm = f(local_x);
+			const double fpm = f(local_x);
 
 			// f(x - h_i e_i - h_j e_j)
 			local_x[i] = xi - hi;
 			local_x[j] = xj - hj;
-			const value_type fmm = f(local_x);
+			const double fmm = f(local_x);
 
 			H(i, j) = H(j, i) = (fpp - fpm - fmp + fmm)/(4.0 * hi * hj);
 

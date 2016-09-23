@@ -23,8 +23,6 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "linalg.hpp"
-
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
@@ -36,58 +34,47 @@ namespace ook{
 namespace beta{
 struct fr
 {
-    template <typename X>
-    auto operator()(const X& dxp, const X& dxq, const X& p) const
-    -> remove_const_reference<decltype(dxp[0])>
+    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
     {
-        return linalg::inner_prod(dxp, dxp)/linalg::inner_prod(dxq, dxq);
+        return (dxp, dxp) / (dxq, dxq);
     }
 };
 
 struct pr
 {
-    template <typename X>
-    auto operator()(const X& dxp, const X& dxq, const X& p) const
-    -> remove_const_reference<decltype(dxp[0])>
+    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
     {
-        return linalg::inner_prod(dxp,
-                static_cast<const X&>(dxp - dxq))/linalg::inner_prod(dxq, dxq);
+        return (dxp, dxp - dxq) / (dxq, dxq);
     }
 };
 
 struct hs
 {
-    template <typename X>
-    auto operator()(const X& dxp, const X& dxq, const X& p) const
-    -> remove_const_reference<decltype(dxp[0])>
+    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
     {
-        X d = dxp - dxq;
-        return linalg::inner_prod(dxp, d)/linalg::inner_prod(p, d);
+        vector d = dxp - dxq;
+        return (dxp, d) / (p, d);
     }
 };
 
 struct dy
 {
-    template <typename X>
-    auto operator()(const X& dxp, const X& dxq, const X& p) const
-    -> remove_const_reference<decltype(dxp[0])>
+    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
     {
-        return linalg::inner_prod(dxp, dxp)/linalg::inner_prod(p,
-                    static_cast<const X&>(dxp - dxq));
+        return (dxp, dxp) / (p, dxp - dxq);
     }
 };
 } // ns beta
 
-template <typename X, typename Beta>
+template <typename Beta>
 struct nonlinear_cg_impl
 {
-    typedef X vector_type;
-    typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
-
     struct state
     {
-        typedef X vector_type;
-        typedef typename std::remove_reference<decltype(X()[0])>::type value_type;
+        typedef vector vector_type;
+        typedef double value_type;
+        typedef matrix matrix_type;
+
     };
 
     /// \brief Initialize the scheme with \f$ \nabla f (x_0)\f$, and
@@ -107,7 +94,7 @@ struct nonlinear_cg_impl
     /// \param s The current state.
     /// \return The descent direction.
     template <typename State>
-    X
+    vector
     descent_direction(const State& s)
     {
         p = -s.dfx + beta * p;
@@ -127,48 +114,48 @@ struct nonlinear_cg_impl
 
 private:
     uint iter;
-    vector_type dfx;
-    vector_type p;
-    value_type beta;
+    vector dfx;
+    vector p;
+    double beta;
     Beta beta_fun;
 };
 
 /// \brief The Fletcher-Reeves algorithm.
-template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::fr>, line_search::mcsrch>::state_type
-fletcher_reeves(F f, const X& x0, const Options& opts, Observer& observer)
+template <typename F, typename Options, typename Observer>
+typename line_search_method<nonlinear_cg_impl<beta::fr>, line_search::mcsrch>::state_type
+fletcher_reeves(F f, const vector& x0, const Options& opts, Observer& observer)
 {
-    typedef nonlinear_cg_impl<X, beta::fr> scheme;
+    typedef nonlinear_cg_impl<beta::fr> scheme;
     line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
 /// \brief The Polak-Ribiere algorithm.
-template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::pr>, line_search::mcsrch>::state_type
-polak_ribiere(F f, const X& x0, const Options& opts, Observer& observer)
+template <typename F, typename Options, typename Observer>
+typename line_search_method<nonlinear_cg_impl<beta::pr>, line_search::mcsrch>::state_type
+polak_ribiere(F f, const vector& x0, const Options& opts, Observer& observer)
 {
-    typedef nonlinear_cg_impl<X, beta::pr> scheme;
+    typedef nonlinear_cg_impl<beta::pr> scheme;
     line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
 /// \brief The Hestenes-Steifel algorithm.
-template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::hs>, line_search::mcsrch>::state_type
-hestenes_steifel(F f, const X& x0, const Options& opts, Observer& observer)
+template <typename F, typename Options, typename Observer>
+typename line_search_method<nonlinear_cg_impl<beta::hs>, line_search::mcsrch>::state_type
+hestenes_steifel(F f, const vector& x0, const Options& opts, Observer& observer)
 {
-    typedef nonlinear_cg_impl<X, beta::hs> scheme;
+    typedef nonlinear_cg_impl<beta::hs> scheme;
     line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
 
 /// \brief The Dai-Yuan algorithm.
-template <typename F, typename X, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<X, beta::dy>, line_search::mcsrch>::state_type
-dai_yuan(F f, const X& x0, const Options& opts, Observer& observer)
+template <typename F, typename Options, typename Observer>
+typename line_search_method<nonlinear_cg_impl<beta::dy>, line_search::mcsrch>::state_type
+dai_yuan(F f, const vector& x0, const Options& opts, Observer& observer)
 {
-    typedef nonlinear_cg_impl<X, beta::dy> scheme;
+    typedef nonlinear_cg_impl<beta::dy> scheme;
     line_search_method<scheme, line_search::mcsrch> method;
     return method(f, x0, opts, observer);
 }
