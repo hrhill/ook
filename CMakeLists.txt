@@ -13,11 +13,10 @@ find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
 
-set(OpenBLAS_INCLUDE_DIRS /usr/local/include)
-set(OpenBLAS_LIBRARIES /usr/local/lib/libopenblas.so)
+set(OpenBLAS_LIBRARIES libopenblas.so)
 set(CMAKE_CXX_COMPILER "g++-5")
 
-set(CMAKE_CXX_FLAGS  "-Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
