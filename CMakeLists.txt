@@ -45,3 +45,6 @@ install(DIRECTORY "${OOK_SOURCE_DIR}/include/"
     FILES_MATCHING PATTERN "*.hpp"
     PATTERN "CMakeFiles" EXCLUDE
     PATTERN "Testing" EXCLUDE)
+
+install(DIRECTORY "${PROJECT_BINARY_DIR}/lib"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib64}")
