@@ -11,7 +11,7 @@ set(TESTS test_line_search
 foreach(test ${TESTS})
     add_executable(${test} ${test}.cpp)
     target_link_libraries(${test} ${Boost_TEST_EXEC_MONITOR_LIBRARY}
-                                  ${OpenBlas_LIBRARIES}
+                                  ${BLAS_LIBRARIES}
                                   ook)
     add_test(${test} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${test})
 endforeach(test)
