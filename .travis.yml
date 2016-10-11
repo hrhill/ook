@@ -22,12 +22,8 @@ install:
     - if [ "$CXX" == "clang++"]; then CXX=clang++-3.4; fi
 
     - sudo apt-get install -qq libboost-all-dev
-    - sudo apt-get install -qq libatlas-dev
-    - sudo apt-get install -qq liblapack-dev
+    - sudo apt-get install -qq libopenblas-dev
     - sudo apt-get install -qq cmake
-    - sudo apt-get install -qq git
-    - git clone https://github.com/hrhill/numeric-bindings.git
-    - sudo cp -r numeric-bindings/boost/numeric/bindings /usr/include/boost/numeric
 
 script:
     - cmake -DCMAKE_BUILD_TYPE=Release .
