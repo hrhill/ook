@@ -6,9 +6,6 @@ compiler:
 before_install:
     - sudo apt-get update -qq
 
-before_install:
-    - sudo apt-get update -qq
-
 # Install dependencies
 install:
     - sudo apt-get install -qq cmake
