@@ -38,7 +38,7 @@ struct bfgs_impl
     };
 
     template <typename State>
-    bfgs_impl(const State& s)
+    explicit bfgs_impl(const State& s)
     :
         dfx(s.dfx),
         p(s.dfx.size()),

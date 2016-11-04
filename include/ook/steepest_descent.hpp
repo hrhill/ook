@@ -33,7 +33,7 @@ struct steepest_descent_impl
 
     /// \brief Constructor required by scheme concept.
     template <typename T>
-    steepest_descent_impl(const T&){}
+    explicit steepest_descent_impl(const T&){}
 
     /// \brief The descent direction in the steepest descent algorithm
     /// is the negative gradient, \f$- \nabla f(x) \f$.

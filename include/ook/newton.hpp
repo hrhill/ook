@@ -192,7 +192,7 @@ struct newton_impl
     };
 
     template <typename T>
-    newton_impl(const T&){}
+    explicit newton_impl(const T&){}
 
     /// \brief The descent direction for the Newton method
     /// is determined by find the solution p to the system

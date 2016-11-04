@@ -42,6 +42,7 @@ struct lsm_state : public SchemeState
         iteration(0),
         nfev(0),
         a(0),
+        fx(0),
         gnorm(0),
         xnorm(0),
         state(lsm_state::tag::init)

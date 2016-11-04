@@ -24,7 +24,7 @@ namespace ook{
 template <typename Stream>
 struct stream_observer
 {
-    stream_observer(Stream& stream)
+    explicit stream_observer(Stream& stream)
     :
         stream_(stream)
     {}

@@ -37,15 +37,13 @@ BOOST_AUTO_TEST_CASE(bfgs_update)
     s.dx = s.dfx;
     ook::bfgs_impl scheme(s);
 
-    // First step is descent direction
-    auto dd = scheme.descent_direction(s);
     // Choose dfx and dx so that y = s = (1, 1)
     s.dfx[0] = 2.0;
     s.dfx[1] = 2.0;
     scheme.update(s);
 
     // New B matrix should be id
-    dd = scheme.descent_direction(s);
+    auto dd = scheme.descent_direction(s);
     BOOST_CHECK_EQUAL(dd[0], -s.dfx[0]);
     BOOST_CHECK_EQUAL(dd[1], -s.dfx[1]);
 }

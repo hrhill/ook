@@ -80,7 +80,7 @@ struct nonlinear_cg_impl
     /// \brief Initialize the scheme with \f$ \nabla f (x_0)\f$, and
     /// \f$ \beta = 0 \f$.
     template <typename State>
-    nonlinear_cg_impl(const State& s)
+    explicit nonlinear_cg_impl(const State& s)
     :
         iter(0),
         dfx(s.dfx),

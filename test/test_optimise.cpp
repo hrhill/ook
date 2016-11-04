@@ -30,7 +30,7 @@ template <typename F>
 struct
 gradient_only_wrapper
 {
-    gradient_only_wrapper(F f)
+    explicit gradient_only_wrapper(F f)
     :
         func(f)
     {}
