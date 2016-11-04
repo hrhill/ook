@@ -34,7 +34,7 @@ namespace ook{
 namespace beta{
 struct fr
 {
-    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
+    double operator()(const vector& dxp, const vector& dxq, const vector& /*p*/) const
     {
         return (dxp, dxp) / (dxq, dxq);
     }
@@ -42,7 +42,7 @@ struct fr
 
 struct pr
 {
-    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
+    double operator()(const vector& dxp, const vector& dxq, const vector& /*p*/) const
     {
         return (dxp, dxp - dxq) / (dxq, dxq);
     }

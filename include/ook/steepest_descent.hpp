@@ -51,7 +51,7 @@ struct steepest_descent_impl
     /// scheme concept.
     template <typename T>
     void
-    update(const T& s){}
+    update(const T& /*s*/){}
 };
 
 /// \brief The Steepest descent algorithm. This is just a convenience function

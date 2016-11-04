@@ -40,7 +40,7 @@ double symmetrical_gaussian(const ook::vector& x, ook::vector& g, ook::matrix& H
 }
 
 /// Classical test. Minimum is f(0,0,0,0)=0
-double powells_singular(const ook::vector& x, ook::vector& g, ook::matrix& H)
+double powells_singular(const ook::vector& x, ook::vector& g, ook::matrix& /*H*/)
 {
     double t1 = ( x[0] + 10.0*x[1] ) * ( x[0] + 10.0 * x[1] );
     double t2 = 5.0*( x[2] - x[3] )*( x[2] - x[3] );

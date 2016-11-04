@@ -5,6 +5,7 @@
 #include <array>
 #include <cassert>
 #include <algorithm>
+#include <tuple>
 
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/lbfgs/report.hpp"
@@ -226,7 +227,7 @@ template <typename F, typename X, typename T>
 std::tuple<int, X>
 lbfgs(F obj_f, X x, const lbfgs_options<T>& opts)
 {
-    auto diag_f = [](const X& x){
+    auto diag_f = [](const X& /*x*/){
         return X();
     };
     return lbfgs(obj_f, diag_f, x, opts);

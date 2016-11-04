@@ -30,7 +30,7 @@ namespace fmts
         = "*************************************************\n";
     const constexpr char header[]
         = "\n   I   NFN    FUNC        GNORM       STEPLENGTH\n\n";
-};
+}
 
 
 /// \brief Print the output of required at the start of the iteration.

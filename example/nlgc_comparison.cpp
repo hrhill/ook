@@ -51,7 +51,7 @@ struct observer
 };
 
 
-int main(int argc, char** argv)
+int main()
 {
     using namespace ook;
     options<double> opts;
