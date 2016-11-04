@@ -1,3 +1,0 @@
-[submodule "deps/linalg"]
-	path = deps/linalg
-	url = https://github.com/hrhill/linalg.git
