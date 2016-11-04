@@ -17,7 +17,9 @@
 
 #include "ook.hpp"
 
-int main(){
+int
+main()
+{
 
     std::cout << "ook " << ook::version::string() << std::endl;
 }

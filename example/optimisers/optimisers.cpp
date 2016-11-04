@@ -13,31 +13,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <iomanip>
 #include <iostream>
 #include <limits>
-#include <iomanip>
 
-#include "ook/options.hpp"
 #include "ook/message.hpp"
+#include "ook/options.hpp"
 #include "ook/stream_observer.hpp"
 
 #include "ook/test_functions/more_garbow_hillstrom/rosenbrock.hpp"
 
-#include "ook/steepest_descent.hpp"
-#include "ook/nonlinear_cg.hpp"
 #include "ook/bfgs.hpp"
 #include "ook/newton.hpp"
+#include "ook/nonlinear_cg.hpp"
+#include "ook/steepest_descent.hpp"
 
 template <typename F>
-struct
-gradient_only_wrapper{
-    gradient_only_wrapper(F f)
-    :
-        func(f)
-    {}
+struct gradient_only_wrapper
+{
+    gradient_only_wrapper(F f) : func(f) {}
 
     std::tuple<double, ook::vector>
-    operator()(const ook::vector& x) const {
+    operator()(const ook::vector& x) const
+    {
         const int n = x.size();
         double f;
         ook::vector df(n);
@@ -50,7 +48,9 @@ gradient_only_wrapper{
     F func;
 };
 
-int main(){
+int
+main()
+{
 
     ook::options<double> opts;
 
@@ -88,4 +88,3 @@ int main(){
         std::cout << soln.msg << "\n" << soln.x << std::endl;
     }
 }
-

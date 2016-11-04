@@ -19,26 +19,26 @@
 #define OOK_HPP_
 
 #include "ook/message.hpp"
-#include "ook/version.hpp"
 #include "ook/options.hpp"
+#include "ook/version.hpp"
 
 #include "ook/stream_observer.hpp"
 
+#include "ook/bfgs.hpp"
+#include "ook/lbfgs.hpp"
 #include "ook/line_search_method.hpp"
 #include "ook/newton.hpp"
-#include "ook/steepest_descent.hpp"
-#include "ook/bfgs.hpp"
 #include "ook/nonlinear_cg.hpp"
-#include "ook/lbfgs.hpp"
+#include "ook/steepest_descent.hpp"
 
+#include "ook/line_search/backtracking.hpp"
 #include "ook/line_search/conditions.hpp"
 #include "ook/line_search/mcsrch.hpp"
-#include "ook/line_search/backtracking.hpp"
 
+#include "ook/finite_differences/backward_difference.hpp"
 #include "ook/finite_differences/central_difference.hpp"
 #include "ook/finite_differences/finite_differences.hpp"
 #include "ook/finite_differences/forward_difference.hpp"
-#include "ook/finite_differences/backward_difference.hpp"
 
 /// \mainpage Introduction
 ///
@@ -51,6 +51,5 @@
 /// - BFGS ook::bfgs.
 /// - Newton ook::newton.
 /// - LBFGS ook::lbfgs.
-
 
 #endif

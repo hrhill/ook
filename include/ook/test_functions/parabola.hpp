@@ -19,14 +19,16 @@
 #ifndef OOK_TEST_FUNCTIONS_PARABOLA_HPP_
 #define OOK_TEST_FUNCTIONS_PARABOLA_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
 #include "ook/vector.hpp"
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 struct parabola
 {
@@ -36,7 +38,8 @@ struct parabola
     {
         double f = 0.5 * std::pow(norm_2(x), 2);
         matrix id(n, n, 0);
-        for (size_t i = 0; i < n; ++i) id(i, i) = 1.0;
+        for (size_t i = 0; i < n; ++i)
+            id(i, i) = 1.0;
         return std::make_tuple(f, x, id);
     }
 
@@ -55,7 +58,6 @@ double parabola::tolerance = std::numeric_limits<double>::epsilon();
 std::vector<double> parabola::minima = {0, 0, 0, 0};
 std::vector<double> parabola::local_minima = {0, 0, 0, 0};
 std::vector<double> parabola::x0 = {10.0, -4.1513, 1.0, 1000.0};
-
 
 } // ns test_functions
 } // ns ook

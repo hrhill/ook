@@ -18,19 +18,18 @@
 #ifndef OOK_STREAM_OBSERVER_HPP_
 #define OOK_STREAM_OBSERVER_HPP_
 
-namespace ook{
+namespace ook
+{
 
 /// \brief Observer that outputs the state to the given stream.
 template <typename Stream>
 struct stream_observer
 {
-    explicit stream_observer(Stream& stream)
-    :
-        stream_(stream)
-    {}
+    explicit stream_observer(Stream& stream) : stream_(stream) {}
 
     template <typename State>
-    void operator()(const State& s)
+    void
+    operator()(const State& s)
     {
         stream_ << s << "\n";
     }

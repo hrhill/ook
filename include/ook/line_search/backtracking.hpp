@@ -18,15 +18,17 @@
 #ifndef OOK_LINE_SEARCH_BACKTRACKING_HPP_
 #define OOK_LINE_SEARCH_BACKTRACKING_HPP_
 
-#include <tuple>
-#include <exception>
 #include <cassert>
+#include <exception>
+#include <tuple>
 
-#include "ook/message.hpp"
 #include "ook/line_search/conditions.hpp"
+#include "ook/message.hpp"
 
-namespace ook{
-namespace line_search{
+namespace ook
+{
+namespace line_search
+{
 
 struct backtracking
 {
@@ -37,23 +39,28 @@ struct backtracking
         T phia, dphia;
         T rho(0.9); // Need to pass this as an option.
         ook::message msg;
-        while(true){
-            if(a < opts.stpmin){
+        while (true)
+        {
+            if (a < opts.stpmin)
+            {
                 msg = message::warning_stp_eq_stpmin;
                 break;
             }
-            if(a > opts.stpmax){
+            if (a > opts.stpmax)
+            {
                 msg = message::warning_stp_eq_stpmax;
                 break;
             }
 
             std::tie(phia, dphia) = phi(a);
-            if (sufficient_decrease_condition(phia, phi0, opts.ftol, a, dphi0)){
+            if (sufficient_decrease_condition(phia, phi0, opts.ftol, a, dphi0))
+            {
                 msg = message::convergence;
                 break;
             }
             a *= rho;
-            if (a <= std::numeric_limits<T>::epsilon()){
+            if (a <= std::numeric_limits<T>::epsilon())
+            {
                 msg = message::warning_rounding_error_prevents_progress;
                 break;
             }
@@ -61,7 +68,6 @@ struct backtracking
         return std::make_tuple(msg, a, phia, dphia);
     }
 };
-
 
 } // ns line_search
 } // ns ook

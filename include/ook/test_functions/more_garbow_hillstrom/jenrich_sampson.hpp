@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_JENRICH_SAMPSON_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_JENRICH_SAMPSON_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct jenrich_sampson
@@ -33,21 +35,19 @@ struct jenrich_sampson
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-jenrich_sampson<Vector, Matrix>::f_min = 124.362;
+typename Vector::value_type jenrich_sampson<Vector, Matrix>::f_min = 124.362;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-jenrich_sampson<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-jenrich_sampson<Vector, Matrix>::minima = {0.2578, 0.2578};
+typename Vector::value_type jenrich_sampson<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-jenrich_sampson<Vector, Matrix>::x0 = {0.3,  0.4};
+    jenrich_sampson<Vector, Matrix>::minima = {0.2578, 0.2578};
 
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type> jenrich_sampson<Vector, Matrix>::x0 = {
+    0.3, 0.4};
 
 } // ns test_functions
 } // ns ook

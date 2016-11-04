@@ -1,16 +1,14 @@
 #define BOOST_TEST_MODULE newton
 
-#include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ook/newton.hpp"
 
 struct state
 {
-    state()
-    :   dfx(2), dx(2), H(2, 2, 0.0)
-    {}
+    state() : dfx(2), dx(2), H(2, 2, 0.0) {}
 
     ook::vector dfx;
     ook::vector dx;

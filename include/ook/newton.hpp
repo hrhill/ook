@@ -24,16 +24,20 @@
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
-namespace ook{
-namespace detail{
+namespace ook
+{
+namespace detail
+{
 
 double
 calculate_theta(const matrix& c, const size_t j)
 {
     const size_t n = c.rows();
     double theta(0.0);
-    if (j < n ){
-        for (size_t i = j + 1; i < n; ++i){
+    if (j < n)
+    {
+        for (size_t i = j + 1; i < n; ++i)
+        {
             theta = std::max(theta, c(i, j));
         }
     }
@@ -54,7 +58,7 @@ max_magnitude_diagonal(const matrix& m)
     for (int i = 1; i < n; ++i)
     {
         const double mii = fabs(m(i, i));
-        idx = mmd < mii ?  i : idx;
+        idx = mmd < mii ? i : idx;
         mmd = idx == i ? mii : mmd;
     }
     return std::make_tuple(idx, mmd);
@@ -92,9 +96,11 @@ of the LDLt factorisation. The returned matrix has layout,
     l_{nn} & l_{n2} & \cdots   & d_{nn}\\
     \end{pmatrix}
 \f]
-\tparam matrix Templated by matrix type, but currently restricted to Boost.Ublas.
+\tparam matrix Templated by matrix type, but currently restricted to
+Boost.Ublas.
 **/
-matrix gmw81(matrix G)
+matrix
+gmw81(matrix G)
 {
     // MC1
     const size_t n = G.rows();
@@ -102,41 +108,48 @@ matrix gmw81(matrix G)
     const double nu = std::max(1.0, sqrt(std::pow(n, 2) - 1.0));
     const double gamma = std::get<1>(max_magnitude_diagonal(G));
     const double eta = max_magnitude_off_diagonal(G);
-    const double beta2 = std::max({gamma, eta/nu, eps});
+    const double beta2 = std::max({gamma, eta / nu, eps});
     const double delta = sqrt(eps);
 
     // MC2
     matrix c(n, n, 0);
     matrix L(n, n, 0);
 
-    for (size_t i = 0; i < n; ++i){
+    for (size_t i = 0; i < n; ++i)
+    {
         c(i, i) = G(i, i);
     }
-    for (size_t j = 0; j < n; ++j){
+    for (size_t j = 0; j < n; ++j)
+    {
         // MC3
-/*
-        double cqq;
-        size_t q;
-        std::tie(q, cqq) = max_magnitude_diagonal(matrix_range<matrix>(c, range(j, n), range(j, n)));
+        /*
+                double cqq;
+                size_t q;
+                std::tie(q, cqq) =
+           max_magnitude_diagonal(matrix_range<matrix>(c, range(j, n), range(j,
+           n)));
 
-        // Pivoting
-        if (q != j){
-            matrix_row<matrix> rowq(G, q);
-            matrix_row<matrix> rowj(G, j);
-            rowq.swap(rowj);
+                // Pivoting
+                if (q != j){
+                    matrix_row<matrix> rowq(G, q);
+                    matrix_row<matrix> rowj(G, j);
+                    rowq.swap(rowj);
 
-            matrix_column<matrix> colq(G, q);
-            matrix_column<matrix> colj(G, j);
-            colq.swap(colj);
-        }
-*/
+                    matrix_column<matrix> colq(G, q);
+                    matrix_column<matrix> colj(G, j);
+                    colq.swap(colj);
+                }
+        */
         // MC4
-        for (size_t s = 0; s < j; ++s){
+        for (size_t s = 0; s < j; ++s)
+        {
             L(j, s) = c(j, s) / L(s, s);
         }
-        for (size_t i = j + 1; i < n; ++i){
+        for (size_t i = j + 1; i < n; ++i)
+        {
             c(i, j) = G(i, j);
-            for (size_t s = 0; s < j; ++s){
+            for (size_t s = 0; s < j; ++s)
+            {
                 c(i, j) -= L(j, s) * c(i, s);
             }
         }
@@ -144,7 +157,8 @@ matrix gmw81(matrix G)
         // MC 5
         L(j, j) = std::max({delta, fabs(c(j, j)), std::pow(theta, 2) / beta2});
 
-        for (size_t i = j + 1; i < n; ++i){
+        for (size_t i = j + 1; i < n; ++i)
+        {
             c(i, i) -= std::pow(c(i, j), 2) / L(j, j);
         }
     }
@@ -158,10 +172,12 @@ matrix
 convert_to_cholesky(matrix L)
 {
     int n = L.rows();
-    for (int j = 0; j < n; ++j){
+    for (int j = 0; j < n; ++j)
+    {
         const double di = sqrt(L(j, j));
         L(j, j) = di;
-        for (int i = j + 1; i < n; ++i){
+        for (int i = j + 1; i < n; ++i)
+        {
             L(i, j) *= di;
         }
     }
@@ -192,7 +208,9 @@ struct newton_impl
     };
 
     template <typename T>
-    explicit newton_impl(const T&){}
+    explicit newton_impl(const T&)
+    {
+    }
 
     /// \brief The descent direction for the Newton method
     /// is determined by find the solution p to the system
@@ -209,7 +227,9 @@ struct newton_impl
 
     template <typename T>
     void
-    update(const T&){}
+    update(const T&)
+    {
+    }
 };
 
 /// \brief The Newton algorithm.
@@ -224,6 +244,6 @@ newton(F f, const vector& x0, const Options& opts, Observer& observer)
     return method(f, x0, opts, observer);
 }
 
-} //ns ook
+} // ns ook
 
 #endif

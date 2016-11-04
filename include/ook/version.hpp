@@ -23,24 +23,25 @@
 #define OOK_MAJOR_VERSION 0
 #define OOK_MINOR_VERSION 11
 #define OOK_PATCH_LEVEL 0
-#define OOK_VERSION ( OOK_MAJOR_VERSION * 100000 + OOK_MINOR_VERSION * 100 + OOK_PATCH_LEVEL )
+#define OOK_VERSION                                                            \
+    (OOK_MAJOR_VERSION * 100000 + OOK_MINOR_VERSION * 100 + OOK_PATCH_LEVEL)
 
+namespace ook
+{
 
-namespace ook{
-
-struct version{
+struct version
+{
     static constexpr int major = OOK_MAJOR_VERSION;
     static constexpr int minor = OOK_MINOR_VERSION;
     static constexpr int patch = OOK_PATCH_LEVEL;
 
     static std::string
-    string(){
-        return "v" + std::to_string(major) +
-               "." + std::to_string(minor) +
-               "." + std::to_string(patch);
+    string()
+    {
+        return "v" + std::to_string(major) + "." + std::to_string(minor) + "." +
+            std::to_string(patch);
     }
 };
-
 }
 
 #endif

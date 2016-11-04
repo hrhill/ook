@@ -18,8 +18,8 @@
 #ifndef OOK_FINITE_DIFFERENCES_HPP_
 #define OOK_FINITE_DIFFERENCES_HPP_
 
-#include "ook/finite_differences/forward_difference.hpp"
 #include "ook/finite_differences/backward_difference.hpp"
 #include "ook/finite_differences/central_difference.hpp"
+#include "ook/finite_differences/forward_difference.hpp"
 
 #endif

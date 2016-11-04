@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_KOWALIK_OSBORNE_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_KOWALIK_OSBORNE_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct kowalik_osborne
@@ -33,21 +35,20 @@ struct kowalik_osborne
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-kowalik_osborne<Vector, Matrix>::f_min = 3.07505e-04;
+typename Vector::value_type kowalik_osborne<Vector, Matrix>::f_min =
+    3.07505e-04;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-kowalik_osborne<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-kowalik_osborne<Vector, Matrix>::minima = {};
+typename Vector::value_type kowalik_osborne<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-kowalik_osborne<Vector, Matrix>::x0 = {0.25, 0.39, 0.415, 0.39};
+    kowalik_osborne<Vector, Matrix>::minima = {};
 
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type> kowalik_osborne<Vector, Matrix>::x0 = {
+    0.25, 0.39, 0.415, 0.39};
 
 } // ns test_functions
 } // ns ook

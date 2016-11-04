@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BROWN_ALMOST_LINEAR_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BROWN_ALMOST_LINEAR_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct brown_almost_linear
@@ -33,21 +35,19 @@ struct brown_almost_linear
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-brown_almost_linear<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type brown_almost_linear<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-brown_almost_linear<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-brown_almost_linear<Vector, Matrix>::minima = {};
+typename Vector::value_type brown_almost_linear<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-brown_almost_linear<Vector, Matrix>::x0 = {};
+    brown_almost_linear<Vector, Matrix>::minima = {};
 
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type>
+    brown_almost_linear<Vector, Matrix>::x0 = {};
 
 } // ns test_functions
 } // ns ook

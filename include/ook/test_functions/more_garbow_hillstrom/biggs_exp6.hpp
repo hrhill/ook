@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BIGGS_EXP6_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BIGGS_EXP6_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct biggs_exp6
@@ -33,21 +35,19 @@ struct biggs_exp6
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-biggs_exp6<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type biggs_exp6<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-biggs_exp6<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+typename Vector::value_type biggs_exp6<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-biggs_exp6<Vector, Matrix>::minima = {1, 10, 1, 5, 4, 3};
+std::vector<typename Vector::value_type> biggs_exp6<Vector, Matrix>::minima = {
+    1, 10, 1, 5, 4, 3};
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-biggs_exp6<Vector, Matrix>::x0 = {1.0, 2.0, 1.0, 1.0, 1.0, 1.0};
-
+std::vector<typename Vector::value_type> biggs_exp6<Vector, Matrix>::x0 = {
+    1.0, 2.0, 1.0, 1.0, 1.0, 1.0};
 
 } // ns test_functions
 } // ns ook

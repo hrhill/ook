@@ -21,13 +21,14 @@
 
 #include <tuple>
 
-#include "ook/vector.hpp"
 #include "ook/matrix.hpp"
+#include "ook/vector.hpp"
 
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
-namespace ook{
+namespace ook
+{
 /// \brief Implementation of the required steps of line_search_method
 /// for BFGS method.
 struct bfgs_impl
@@ -39,10 +40,7 @@ struct bfgs_impl
 
     template <typename State>
     explicit bfgs_impl(const State& s)
-    :
-        dfx(s.dfx),
-        p(s.dfx.size()),
-        H(s.dfx.size(), s.dfx.size(), 0.0)
+        : dfx(s.dfx), p(s.dfx.size()), H(s.dfx.size(), s.dfx.size(), 0.0)
     {
         const int n = dfx.size();
         for (int i = 0; i < n; ++i)
@@ -66,9 +64,10 @@ struct bfgs_impl
         vector yk = s.dfx - dfx;
         const double rho = 1.0 / (yk, s.dx);
         const int n = s.dfx.size();
-        matrix Z = - rho * (s.dx * trans(yk));
+        matrix Z = -rho * (s.dx * trans(yk));
 
-        for (int i = 0; i < n; ++i) Z(i, i) += 1.0;
+        for (int i = 0; i < n; ++i)
+            Z(i, i) += 1.0;
 
         matrix tmp = H * trans(Z);
         H = Z * tmp;
@@ -92,6 +91,6 @@ bfgs(F f, const vector& x0, const Options& opts, Observer& observer)
     return method(f, x0, opts, observer);
 }
 
-} //ns ook
+} // ns ook
 
 #endif

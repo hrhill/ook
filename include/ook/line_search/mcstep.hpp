@@ -20,8 +20,10 @@
 
 #include "ook/line_search/step_functions.hpp"
 
-namespace ook{
-namespace line_search{
+namespace ook
+{
+namespace line_search
+{
 
 /// \brief The purpose of mcstep is to compute a safeguarded step for a
 /// linesearch and to update an interval of uncertainty for a minimizer of the
@@ -49,14 +51,25 @@ namespace line_search{
 /// \return An integer in [0,1,..,5] indicating which step has been used, or
 /// zero if there is a problem with the input parameters.
 template <typename T>
-int mcstep(T& stx, T& fx, T& dx, T& sty, T& fy,
-            T& dy, T& stp, T& fp, T& dp, bool& brackt, T& stpmin, T& stpmax)
+int
+mcstep(T& stx,
+       T& fx,
+       T& dx,
+       T& sty,
+       T& fy,
+       T& dy,
+       T& stp,
+       T& fp,
+       T& dp,
+       bool& brackt,
+       T& stpmin,
+       T& stpmax)
 {
     int info = 0;
-    bool invalid_bracket = (stp <= std::min(stx, sty)
-                            || stp >= std::max(stx, sty));
+    bool invalid_bracket =
+        (stp <= std::min(stx, sty) || stp >= std::max(stx, sty));
 
-    if((brackt && invalid_bracket) || dx * (stp - stx) >= 0.0)
+    if ((brackt && invalid_bracket) || dx * (stp - stx) >= 0.0)
     {
         return info;
     }
@@ -70,39 +83,49 @@ int mcstep(T& stx, T& fx, T& dx, T& sty, T& fy,
     // First case: A higher function value. The minimum is bracketed. If the
     // cubic step is closer to stx than the quadratic step, the cubic step is
     // taken, otherwise the average of the cubic and quadratic steps is taken.
-    if(fp > fx){
+    if (fp > fx)
+    {
         info = 1;
         bound = true;
         const T stpc = cubic_step(stx, fx, dx, stp, fp, dp);
         const T stpq = quadratic_step(stx, fx, dx, stp, fp);
         stpf = is_closer(stpc, stpq, stx) ? stpc : (stpq + stpc) / 2;
         brackt = true;
-    // Second case: A lower function value and derivatives of opposite sign.
-    // The minimum is bracketed. If the cubic step is farther from stp than
-    // the secant step, the cubic step is taken, otherwise the secant step is
-    // taken.
-    } else if(sgnd < 0.0){
+        // Second case: A lower function value and derivatives of opposite sign.
+        // The minimum is bracketed. If the cubic step is farther from stp than
+        // the secant step, the cubic step is taken, otherwise the secant step
+        // is
+        // taken.
+    }
+    else if (sgnd < 0.0)
+    {
         info = 2;
         bound = false;
         const T stpc = cubic_step(stx, fx, dx, stp, fp, dp);
         const T stpq = secant_step(stx, dx, stp, dp);
         stpf = is_closer(stpc, stpq, stp) ? stpq : stpc;
         brackt = true;
-    // Third case: A lower function value, derivatives of the same sign,and the
-    // magnitude of the derivative decreases. The cubic step is computed only
-    // if the cubic tends to infinity in the direction of the step or if the
-    // minimum of the cubic is beyond stp. Otherwise the cubic step is defined
-    // to be the secant step.
-    } else if(fabs(dp) < fabs(dx)){
+        // Third case: A lower function value, derivatives of the same sign,and
+        // the
+        // magnitude of the derivative decreases. The cubic step is computed
+        // only
+        // if the cubic tends to infinity in the direction of the step or if the
+        // minimum of the cubic is beyond stp. Otherwise the cubic step is
+        // defined
+        // to be the secant step.
+    }
+    else if (fabs(dp) < fabs(dx))
+    {
         info = 3;
         bound = true;
-        const T theta = 3.0 * (fx - fp)  / (stp - stx) + dx + dp;
+        const T theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
         const T s = std::max({fabs(theta), fabs(dx), fabs(dp)});
         // The case gamma = 0 only arises if the cubic does not tend to
         // infinity in the direction of the step.
         const T ts = theta / s;
         T gamma = s * sqrt(std::max(0.0, ts * ts - dx / s * (dp / s)));
-        if(stp > stx){
+        if (stp > stx)
+        {
             gamma = -gamma;
         }
         const T p = gamma - dp + theta;
@@ -110,46 +133,64 @@ int mcstep(T& stx, T& fx, T& dx, T& sty, T& fy,
         const T r = p / q;
 
         T stpc = stpmin;
-        if(r < 0.0 && gamma != 0.0){
+        if (r < 0.0 && gamma != 0.0)
+        {
             stpc = stp + r * (stx - stp);
-        } else if(stp > stx){
+        }
+        else if (stp > stx)
+        {
             stpc = stpmax;
         }
 
         const T stpq = stp + dp / (dp - dx) * (stx - stp);
-        if(brackt){
+        if (brackt)
+        {
             // A minimizer has been bracketed. If the cubic step is closer to
             // stp than the secant step, the cubic step is taken, otherwise the
             // secant step is taken.
             stpf = is_closer(stpc, stpq, stp) ? stpc : stpq;
-        }else{
+        }
+        else
+        {
             // A minimizer has not been bracketed. If the cubic step is farther
             // from stp than the secant step, the cubic step is taken,
             // otherwise the secant step is taken.
             stpf = !is_closer(stpc, stpq, stp) ? stpc : stpq;
         }
-    // Fourth case: A lower function value, derivatives of the same sign, and
-    // the magnitude of the derivative does not decrease. If the minimum is not
-    // bracketed, the step is either stpmin or stpmax, otherwise the cubic step
-    //  is taken.
-    } else {
+        // Fourth case: A lower function value, derivatives of the same sign,
+        // and
+        // the magnitude of the derivative does not decrease. If the minimum is
+        // not
+        // bracketed, the step is either stpmin or stpmax, otherwise the cubic
+        // step
+        //  is taken.
+    }
+    else
+    {
         info = 4;
         bound = false;
-        if(brackt){
+        if (brackt)
+        {
             stpf = cubic_step(sty, fy, dy, stp, fp, dp);
-        }else{
+        }
+        else
+        {
             stpf = (stp > stx) ? stpmax : stpmin;
         }
     }
 
     // Update the interval of uncertainty. This update does not depend on the
     // new step or the case analysis above.
-    if(fp > fx) {
+    if (fp > fx)
+    {
         sty = stp;
         fy = fp;
         dy = dp;
-    } else {
-        if(sgnd < 0.f) {
+    }
+    else
+    {
+        if (sgnd < 0.f)
+        {
             sty = stx;
             fy = fx;
             dy = dx;
@@ -162,10 +203,14 @@ int mcstep(T& stx, T& fx, T& dx, T& sty, T& fy,
     stpf = std::min(stpmax, stpf);
     stpf = std::max(stpmin, stpf);
     stp = stpf;
-    if(brackt && bound){
-        if(sty > stx){
+    if (brackt && bound)
+    {
+        if (sty > stx)
+        {
             stp = std::min(stx + (sty - stx) * 0.66, stp);
-        }else{
+        }
+        else
+        {
             stp = std::max(stx + (sty - stx) * 0.66, stp);
         }
     }

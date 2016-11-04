@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with ook.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /// \brief Implementation of the functions described in
 /// "Testing unconstrained optimization software",
 /// More JJ, Garbow BS, Hillstrom KE
