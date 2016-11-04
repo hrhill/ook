@@ -24,11 +24,11 @@ void print_vector(const T& x)
 }
 
 /// \brief Holder struct for some format strings.
-struct fmts
+namespace fmts
 {
-    static constexpr char stars[]
+    const constexpr char stars[]
         = "*************************************************\n";
-    static constexpr char header[]
+    const constexpr char header[]
         = "\n   I   NFN    FUNC        GNORM       STEPLENGTH\n\n";
 };
 

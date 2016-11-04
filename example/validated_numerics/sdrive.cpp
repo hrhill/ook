@@ -39,7 +39,7 @@ obj_fun(const std::vector<double>& x)
 int main()
 {
     ook::lbfgs_options<double>
-    opts(5, 1e-05, false, {1, 0}, 1e-04, 0.9, 2000, 20);
+    opts(5, 1e-05, false, {{1, 0}}, 1e-04, 0.9, 2000, 20);
 
     int n = 100;
     std::vector<double> x(n);

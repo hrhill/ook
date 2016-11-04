@@ -51,7 +51,7 @@ diag_fun(const std::vector<double>& x)
 int main()
 {
     ook::lbfgs_options<double>
-    opts(5, 1e-05, true, {1, 0}, 1e-04, 0.9, 2000, 20);
+    opts(5, 1e-05, true, {{1, 0}}, 1e-04, 0.9, 2000, 20);
 
     // Rosenbrock problem, only valid for even n.
     int n = 100;
