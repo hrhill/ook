@@ -9,6 +9,7 @@ include(CheckLibraryExists)
 include(CTest)
 include(ExternalProject)
 include(CppCheck)
+include(ClangFormat)
 
 set(BUILD_SHARED_LIBS ON)
 
