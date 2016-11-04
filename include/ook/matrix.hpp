@@ -2,6 +2,7 @@
 #define OOK_OOK_MATRIX_HPP_
 
 #include <blaze/Math.h>
+#include <random>
 
 namespace ook
 {
