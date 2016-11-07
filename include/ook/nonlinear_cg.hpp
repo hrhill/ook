@@ -19,22 +19,25 @@
 #ifndef OOK_LINE_SEARCH_METHODS_NONLINEAR_CG_HPP_
 #define OOK_LINE_SEARCH_METHODS_NONLINEAR_CG_HPP_
 
-#include <tuple>
 #include <algorithm>
+#include <tuple>
 #include <type_traits>
 
 #include "ook/line_search/mcsrch.hpp"
 #include "ook/line_search_method.hpp"
 
-namespace ook{
+namespace ook
+{
 /// \brief Implementation of the required steps of line_search_method
 /// for Fletcher-Reeves method. The intitial step is a steepest descent
 /// step. However, subsequent steps use the previous descent direction
 /// in a linear combination with the steepest descent direction.
-namespace beta{
+namespace beta
+{
 struct fr
 {
-    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
+    double
+    operator()(const vector& dxp, const vector& dxq, const vector& /*p*/) const
     {
         return (dxp, dxp) / (dxq, dxq);
     }
@@ -42,7 +45,8 @@ struct fr
 
 struct pr
 {
-    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
+    double
+    operator()(const vector& dxp, const vector& dxq, const vector& /*p*/) const
     {
         return (dxp, dxp - dxq) / (dxq, dxq);
     }
@@ -50,7 +54,8 @@ struct pr
 
 struct hs
 {
-    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
+    double
+    operator()(const vector& dxp, const vector& dxq, const vector& p) const
     {
         vector d = dxp - dxq;
         return (dxp, d) / (p, d);
@@ -59,7 +64,8 @@ struct hs
 
 struct dy
 {
-    double operator()(const vector& dxp, const vector& dxq, const vector& p) const
+    double
+    operator()(const vector& dxp, const vector& dxq, const vector& p) const
     {
         return (dxp, dxp) / (p, dxp - dxq);
     }
@@ -74,19 +80,15 @@ struct nonlinear_cg_impl
         typedef vector vector_type;
         typedef double value_type;
         typedef matrix matrix_type;
-
     };
 
     /// \brief Initialize the scheme with \f$ \nabla f (x_0)\f$, and
     /// \f$ \beta = 0 \f$.
     template <typename State>
-    nonlinear_cg_impl(const State& s)
-    :
-        iter(0),
-        dfx(s.dfx),
-        p(s.dfx.size(), 0),
-        beta(0)
-    {}
+    explicit nonlinear_cg_impl(const State& s)
+        : iter(0), dfx(s.dfx), p(s.dfx.size(), 0), beta(0)
+    {
+    }
 
     /// \brief Calculate and return the descent direction given by
     /// \f[ p_{k+1} = -\nabla f(x_k) + \beta_k p_k\f]
@@ -122,7 +124,8 @@ private:
 
 /// \brief The Fletcher-Reeves algorithm.
 template <typename F, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<beta::fr>, line_search::mcsrch>::state_type
+typename line_search_method<nonlinear_cg_impl<beta::fr>,
+                            line_search::mcsrch>::state_type
 fletcher_reeves(F f, const vector& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<beta::fr> scheme;
@@ -132,7 +135,8 @@ fletcher_reeves(F f, const vector& x0, const Options& opts, Observer& observer)
 
 /// \brief The Polak-Ribiere algorithm.
 template <typename F, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<beta::pr>, line_search::mcsrch>::state_type
+typename line_search_method<nonlinear_cg_impl<beta::pr>,
+                            line_search::mcsrch>::state_type
 polak_ribiere(F f, const vector& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<beta::pr> scheme;
@@ -142,7 +146,8 @@ polak_ribiere(F f, const vector& x0, const Options& opts, Observer& observer)
 
 /// \brief The Hestenes-Steifel algorithm.
 template <typename F, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<beta::hs>, line_search::mcsrch>::state_type
+typename line_search_method<nonlinear_cg_impl<beta::hs>,
+                            line_search::mcsrch>::state_type
 hestenes_steifel(F f, const vector& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<beta::hs> scheme;
@@ -152,7 +157,8 @@ hestenes_steifel(F f, const vector& x0, const Options& opts, Observer& observer)
 
 /// \brief The Dai-Yuan algorithm.
 template <typename F, typename Options, typename Observer>
-typename line_search_method<nonlinear_cg_impl<beta::dy>, line_search::mcsrch>::state_type
+typename line_search_method<nonlinear_cg_impl<beta::dy>,
+                            line_search::mcsrch>::state_type
 dai_yuan(F f, const vector& x0, const Options& opts, Observer& observer)
 {
     typedef nonlinear_cg_impl<beta::dy> scheme;
@@ -160,6 +166,6 @@ dai_yuan(F f, const vector& x0, const Options& opts, Observer& observer)
     return method(f, x0, opts, observer);
 }
 
-} //ns ook
+} // ns ook
 
 #endif

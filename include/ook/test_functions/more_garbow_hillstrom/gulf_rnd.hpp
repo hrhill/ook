@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_GULF_RND_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_GULF_RND_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct gulf_rnd
@@ -33,21 +35,19 @@ struct gulf_rnd
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-gulf_rnd<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type gulf_rnd<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-gulf_rnd<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+typename Vector::value_type gulf_rnd<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-gulf_rnd<Vector, Matrix>::minima = {50, 25, 1.5};
+std::vector<typename Vector::value_type> gulf_rnd<Vector, Matrix>::minima = {
+    50, 25, 1.5};
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-gulf_rnd<Vector, Matrix>::x0 = {5, 2.5, 0.15};
-
+std::vector<typename Vector::value_type> gulf_rnd<Vector, Matrix>::x0 = {
+    5, 2.5, 0.15};
 
 } // ns test_functions
 } // ns ook

@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_DISCRETE_INTEGRAL_EQUATION_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_DISCRETE_INTEGRAL_EQUATION_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct discrete_integral_equation
@@ -33,21 +35,21 @@ struct discrete_integral_equation
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-discrete_integral_equation<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type discrete_integral_equation<Vector, Matrix>::f_min =
+    0.0;
 
 template <typename Vector, typename Matrix>
 typename Vector::value_type
-discrete_integral_equation<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+    discrete_integral_equation<Vector, Matrix>::tolerance =
+        std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-discrete_integral_equation<Vector, Matrix>::minima = {};
+    discrete_integral_equation<Vector, Matrix>::minima = {};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-discrete_integral_equation<Vector, Matrix>::x0 = {};
-
+    discrete_integral_equation<Vector, Matrix>::x0 = {};
 
 } // ns test_functions
 } // ns ook

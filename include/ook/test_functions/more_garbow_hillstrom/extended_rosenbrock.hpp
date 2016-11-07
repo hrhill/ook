@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_EXTENDED_ROSENBROCK_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_EXTENDED_ROSENBROCK_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct extended_rosenbrock
@@ -34,25 +36,26 @@ struct extended_rosenbrock
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-extended_rosenbrock<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type extended_rosenbrock<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-extended_rosenbrock<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-extended_rosenbrock<Vector, Matrix>::minima = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+typename Vector::value_type extended_rosenbrock<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-extended_rosenbrock<Vector, Matrix>::local_minima = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+    extended_rosenbrock<Vector, Matrix>::minima = {
+        1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-extended_rosenbrock<Vector, Matrix>::x0 = {-1.2, 1.0, -1.2, 1.0, -1.2, 1.0, -1.2, 1.0, -1.2, 1.0};
+    extended_rosenbrock<Vector, Matrix>::local_minima = {
+        1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type>
+    extended_rosenbrock<Vector, Matrix>::x0 = {
+        -1.2, 1.0, -1.2, 1.0, -1.2, 1.0, -1.2, 1.0, -1.2, 1.0};
 
 } // ns test_functions
 } // ns ook

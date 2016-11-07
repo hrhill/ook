@@ -1,25 +1,23 @@
 #define BOOST_TEST_MODULE test functions
-#include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include <boost/mpl/list.hpp>
 
 #include <iostream>
 
-#include "ook/vector.hpp"
 #include "ook/matrix.hpp"
-#include "ook/test_functions/parabola.hpp"
 #include "ook/test_functions/more_garbow_hillstrom.hpp"
+#include "ook/test_functions/parabola.hpp"
+#include "ook/vector.hpp"
 
 using namespace ook::test_functions;
 
-using test_function_types = boost::mpl::list<
-parabola,
-rosenbrock,
-freudenstein_roth/*,
-powell_badly_scaled */
->;
+using test_function_types =
+    boost::mpl::list<parabola, rosenbrock, freudenstein_roth /*,
+                                            powell_badly_scaled */
+                     >;
 
 template <typename Function>
 int
@@ -33,7 +31,9 @@ test_function_specification()
     ook::vector minima(test_function::n);
 
     std::copy(test_function::x0.begin(), test_function::x0.end(), x0.begin());
-    std::copy(test_function::minima.begin(), test_function::minima.end(), minima.begin());
+    std::copy(test_function::minima.begin(),
+              test_function::minima.end(),
+              minima.begin());
 
     double f_min;
     ook::vector df(test_function::n);

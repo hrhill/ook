@@ -19,7 +19,7 @@ The library requires
 - Boost.Test for running the test suite.
 - Doxygen for building the docs.
 - OpenBlas
-- Blaze linear algebra
+- Blaze linear algebra library
 
 It has been tested on Suse 13.1 using
 
@@ -33,7 +33,7 @@ To build the tests,
 
     > mkdir $BUILD_DIR
     > cd $BUILD_DIR
-    > cmake  <path to ook dir>
+    > cmake -DBLAS_LIBRARIES=<blas library> <path to ook dir>
     > make
 
 To run tests,

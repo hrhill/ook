@@ -23,15 +23,15 @@
 
 #include "ook/line_search/options.hpp"
 
-namespace ook{
+namespace ook
+{
 
 template <typename T>
 struct options : line_search::options<T>
 {
-    options(T eps = T(1e-05), uint maxiter = 2000)
-    :
-        eps(eps), maxiter(maxiter)
-    {}
+    options(T eps = T(1e-05), uint maxiter = 2000) : eps(eps), maxiter(maxiter)
+    {
+    }
 
     // tolerance for the first order convergence criteria
     T eps;

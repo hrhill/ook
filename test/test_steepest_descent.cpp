@@ -1,13 +1,14 @@
 #define BOOST_TEST_MODULE steepest_descent
 
-#include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test.hpp>
 
-#include "ook/vector.hpp"
 #include "ook/steepest_descent.hpp"
+#include "ook/vector.hpp"
 
-struct state{
+struct state
+{
     ook::vector dfx;
 };
 

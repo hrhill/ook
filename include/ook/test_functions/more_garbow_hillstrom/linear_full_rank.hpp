@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_LINEAR_FULL_RANK_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_LINEAR_FULL_RANK_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct linear_full_rank
@@ -33,21 +35,19 @@ struct linear_full_rank
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-linear_full_rank<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type linear_full_rank<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-linear_full_rank<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
-
-template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-linear_full_rank<Vector, Matrix>::minima = {};
+typename Vector::value_type linear_full_rank<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
 std::vector<typename Vector::value_type>
-linear_full_rank<Vector, Matrix>::x0 = {};
+    linear_full_rank<Vector, Matrix>::minima = {};
 
+template <typename Vector, typename Matrix>
+std::vector<typename Vector::value_type> linear_full_rank<Vector, Matrix>::x0 =
+    {};
 
 } // ns test_functions
 } // ns ook

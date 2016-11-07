@@ -23,8 +23,10 @@
 
 #include "./mcstep.hpp"
 
-namespace ook{
-namespace line_search{
+namespace ook
+{
+namespace line_search
+{
 
 /// \brief The purpose of mcsrch is to find a step which satisfies a sufficient
 /// decrease condition and a curvature condition.
@@ -107,12 +109,13 @@ struct mcsrch
         T fy = finit;
         T dgy = dginit;
 
-        while(true)
+        while (true)
         {
             T stmin = stx;
             T stmax = stp + xtrapf * (stp - stx);
 
-            if(brackt){
+            if (brackt)
+            {
                 // Set max and min step to the present interval of uncertainty.
                 stmin = std::min(stx, sty);
                 stmax = std::max(stx, sty);
@@ -124,7 +127,7 @@ struct mcsrch
 
             // If an unusual termination occues, set stp to be the lowest point
             // obtained so far.
-            if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0 ||
+            if ((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0 ||
                 (brackt && stmax - stmin <= xtol * stmax))
             {
                 stp = stx;
@@ -136,39 +139,53 @@ struct mcsrch
 
             // Test for convergence.
             ook::message msg = ook::message::null;
-            if((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0){
+            if ((brackt && (stp <= stmin || stp >= stmax)) || infoc == 0)
+            {
                 msg = ook::message::warning_rounding_error_prevents_progress;
             }
-            if(stp == stpmax && f <= ftest1 && dg <= dgtest){
+            if (stp == stpmax && f <= ftest1 && dg <= dgtest)
+            {
                 msg = ook::message::warning_stp_eq_stpmax;
             }
-            if(stp == stpmin && (f > ftest1 || dg >= dgtest)){
+            if (stp == stpmin && (f > ftest1 || dg >= dgtest))
+            {
                 msg = ook::message::warning_stp_eq_stpmin;
             }
-            if(nfev >= opts.maxfev){
+            if (nfev >= opts.maxfev)
+            {
                 msg = ook::message::warning_max_line_search_attempts_reached;
             }
-            if(brackt && stmax - stmin <= xtol * stmax){
+            if (brackt && stmax - stmin <= xtol * stmax)
+            {
                 msg = ook::message::warning_xtol_satisfied;
             }
-            if(f <= ftest1 && fabs(dg) <= opts.gtol * (-dginit)){
+            if (f <= ftest1 && fabs(dg) <= opts.gtol * (-dginit))
+            {
                 msg = ook::message::convergence;
             }
             // Check for termination.
-            if(msg != ook::message::null){
+            if (msg != ook::message::null)
+            {
                 return std::make_tuple(msg, stp, f, dg);
             }
 
-            // In the first state, seek a step for which the modified function has
+            // In the first state, seek a step for which the modified function
+            // has
             // a non-positive value and non-negative derivative.
-            if(stage1 && f <= ftest1 && dg >= std::min(ftol, opts.gtol) * dginit){
+            if (stage1 && f <= ftest1 &&
+                dg >= std::min(ftol, opts.gtol) * dginit)
+            {
                 stage1 = false;
             }
-            // A modified function is used to predict the step only if we have not
-            // obtained a step for which the modified function has a non-positive
-            // function value and non-negative derivative, and if a lower function
+            // A modified function is used to predict the step only if we have
+            // not
+            // obtained a step for which the modified function has a
+            // non-positive
+            // function value and non-negative derivative, and if a lower
+            // function
             // value has been obtained but the decrease is not sufficient.
-            if(stage1 && f <= fx && f > ftest1){
+            if (stage1 && f <= fx && f > ftest1)
+            {
                 /// Define the modified function and derivative values.
                 T fm = f - stp * dgtest;
                 T fxm = fx - stx * dgtest;
@@ -178,25 +195,46 @@ struct mcsrch
                 T dgym = dgy - dgtest;
 
                 // Compute new step and update the interval of uncertainty.
-                infoc = mcstep(stx, fxm, dgxm,
-                                sty, fym, dgym,
-                                stp, fm, dgm, brackt, stmin, stmax);
+                infoc = mcstep(stx,
+                               fxm,
+                               dgxm,
+                               sty,
+                               fym,
+                               dgym,
+                               stp,
+                               fm,
+                               dgm,
+                               brackt,
+                               stmin,
+                               stmax);
 
                 // Reset function and gradient values.
                 fx = fxm + stx * dgtest;
                 fy = fym + sty * dgtest;
                 dgx = dgxm + dgtest;
                 dgy = dgym + dgtest;
-            } else {
+            }
+            else
+            {
                 // Compute new step and update the interval of uncertainty.
-                infoc = mcstep(stx, fx, dgx,
-                                sty, fy, dgy,
-                                stp, f, dg, brackt, stmin, stmax);
+                infoc = mcstep(stx,
+                               fx,
+                               dgx,
+                               sty,
+                               fy,
+                               dgy,
+                               stp,
+                               f,
+                               dg,
+                               brackt,
+                               stmin,
+                               stmax);
             }
             // Force a sufficient decrease in the size od the interval of
             // uncertainty.
-            if(brackt) {
-                if(fabs(sty - stx) >= p66 * width1)
+            if (brackt)
+            {
+                if (fabs(sty - stx) >= p66 * width1)
                 {
                     stp = stx + p5 * (sty - stx);
                 }

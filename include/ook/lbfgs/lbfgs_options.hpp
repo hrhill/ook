@@ -19,15 +19,14 @@ struct lbfgs_options
                   T gtol,
                   int maxicall,
                   int maxfev)
-    :
-        m(m),
-        eps(eps),
-        diagco(diagco),
-        iprint(iprint),
-        ftol(ftol),
-        gtol(gtol),
-        maxicall(maxicall),
-        maxfev(maxfev)
+        : m(m),
+          eps(eps),
+          diagco(diagco),
+          iprint(iprint),
+          ftol(ftol),
+          gtol(gtol),
+          maxicall(maxicall),
+          maxfev(maxfev)
     {
         assert(m > 0);
         assert(maxfev > 0);
@@ -40,7 +39,8 @@ struct lbfgs_options
     int m;
 
     /// \brief Determines the accuracy with which the solution is to be found.
-    /// The algorithm terminates when \f$ \|G\| < \epsilon \mbox{max}(1, \|X\|)\f$.
+    /// The algorithm terminates when \f$ \|G\| < \epsilon \mbox{max}(1,
+    /// \|X\|)\f$.
     /// A typical choice is 1e-05.
     T eps;
 

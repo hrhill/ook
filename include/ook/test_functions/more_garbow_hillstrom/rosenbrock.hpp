@@ -1,15 +1,17 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_ROSENBROCK_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_ROSENBROCK_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-#include "ook/vector.hpp"
 #include "ook/matrix.hpp"
+#include "ook/vector.hpp"
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 struct rosenbrock
 {
@@ -19,11 +21,11 @@ struct rosenbrock
         const double x1 = x[0];
         const double x2 = x[1];
         const double f1 = 10 * (x2 - x1 * x1);
-        const double f2 = 1- x1;
+        const double f2 = 1 - x1;
         const double f = f1 * f1 + f2 * f2;
 
         vector df(2, 1.0);
-        df[0] = - 2 * f1 * 20 * x1 - 2 * f2;
+        df[0] = -2 * f1 * 20 * x1 - 2 * f2;
         df[1] = 2 * f1 * 10;
 
         matrix d2f(2, 2, 0.0);
@@ -48,7 +50,6 @@ double rosenbrock::tolerance = std::numeric_limits<double>::epsilon();
 std::vector<double> rosenbrock::minima = {1.0, 1.0};
 std::vector<double> rosenbrock::local_minima = {1.0, 1.0};
 std::vector<double> rosenbrock::x0 = {-1.2, 1.0};
-
 
 } // ns test_functions
 } // ns ook

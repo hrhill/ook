@@ -21,9 +21,10 @@
 #include <iostream>
 #include <type_traits>
 
-namespace ook{
+namespace ook
+{
 
-enum class message{
+enum class message {
     null,
     warning_rounding_error_prevents_progress,
     warning_xtol_satisfied,
@@ -35,17 +36,15 @@ enum class message{
     maximum_iterations_reached
 };
 
-const char* message_string[] = {
-    "null",
-    "warning_rounding_error_prevents_progress",
-    "warning_xtol_satisfied",
-    "warning_stp_eq_stpmax",
-    "warning_stp_eq_stpmin",
-    "warning_max_line_search_attempts_reached",
-    "convergence",
-    "search_direction_is_not_a_descent_direction",
-    "maximum_iterations_reached"
-};
+const char* message_string[] = {"null",
+                                "warning_rounding_error_prevents_progress",
+                                "warning_xtol_satisfied",
+                                "warning_stp_eq_stpmax",
+                                "warning_stp_eq_stpmin",
+                                "warning_max_line_search_attempts_reached",
+                                "convergence",
+                                "search_direction_is_not_a_descent_direction",
+                                "maximum_iterations_reached"};
 
 std::ostream&
 operator<<(std::ostream& os, const message& tv)

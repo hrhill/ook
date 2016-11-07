@@ -4,7 +4,8 @@ namespace ook
 {
 inline namespace v1
 {
-matrix eye(const size_t n)
+matrix
+eye(const size_t n)
 {
     matrix id(n, n, 0.0);
     for (size_t i = 0; i < n; ++i)
@@ -14,7 +15,8 @@ matrix eye(const size_t n)
     return id;
 }
 
-matrix n01_matrix(size_t m, size_t n, std::mt19937& rng)
+matrix
+n01_matrix(size_t m, size_t n, std::mt19937& rng)
 {
     auto rnorm = std::bind(std::normal_distribution<>(), std::ref(rng));
     matrix a(m, n, 0.0);
@@ -28,7 +30,8 @@ matrix n01_matrix(size_t m, size_t n, std::mt19937& rng)
     return a;
 }
 
-matrix sympd(size_t n, std::mt19937& rng)
+matrix
+sympd(size_t n, std::mt19937& rng)
 {
     auto rnorm = std::bind(std::normal_distribution<>(), std::ref(rng));
     matrix a(n, n, 0.0);
@@ -43,7 +46,8 @@ matrix sympd(size_t n, std::mt19937& rng)
     return a * trans(a);
 }
 
-double norm_inf(const matrix& a)
+double
+norm_inf(const matrix& a)
 {
     double nx = 0;
     for (size_t i = 0; i < a.rows(); ++i)
@@ -59,7 +63,8 @@ double norm_inf(const matrix& a)
     return nx;
 }
 
-double norm_inf(const symmetric_matrix& a)
+double
+norm_inf(const symmetric_matrix& a)
 {
     double nx = 0;
     for (size_t i = 0; i < a.rows(); ++i)
@@ -74,6 +79,5 @@ double norm_inf(const symmetric_matrix& a)
     }
     return nx;
 }
-
 }
 }

@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_WOOD_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_WOOD_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct wood
@@ -33,21 +35,19 @@ struct wood
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-wood<Vector, Matrix>::f_min = 0.0;
+typename Vector::value_type wood<Vector, Matrix>::f_min = 0.0;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-wood<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+typename Vector::value_type wood<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-wood<Vector, Matrix>::minima = {1.0, 1.0, 1.0, 1.0};
+std::vector<typename Vector::value_type> wood<Vector, Matrix>::minima = {
+    1.0, 1.0, 1.0, 1.0};
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-wood<Vector, Matrix>::x0 = {-3, -1, -3, -1};
-
+std::vector<typename Vector::value_type> wood<Vector, Matrix>::x0 = {
+    -3, -1, -3, -1};
 
 } // ns test_functions
 } // ns ook
