@@ -1,15 +1,17 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_FREUDENSTEIN_ROTH_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_FREUDENSTEIN_ROTH_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-#include "ook/vector.hpp"
 #include "ook/matrix.hpp"
+#include "ook/vector.hpp"
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 struct freudenstein_roth
 {
@@ -41,10 +43,13 @@ struct freudenstein_roth
         df[0] = 2 * f1 * df1x1 + 2 * f2 * df2x1;
         df[1] = 2 * f1 * df1x2 + 2 * f2 * df2x2;
 
-        d2f(0, 0) = 2 * f1 * d2f1x1 + 2 * df1x1 * df1x1 + 2 * f2 * d2f2x1 + 2 * df2x1 * df2x1;
-        d2f(1, 1) = 2 * f1 * d2f1x2 + 2 * df1x2 * df1x2 + 2 * f2 * d2f2x2 + 2 * df2x2 * df2x2;
+        d2f(0, 0) = 2 * f1 * d2f1x1 + 2 * df1x1 * df1x1 + 2 * f2 * d2f2x1 +
+            2 * df2x1 * df2x1;
+        d2f(1, 1) = 2 * f1 * d2f1x2 + 2 * df1x2 * df1x2 + 2 * f2 * d2f2x2 +
+            2 * df2x2 * df2x2;
 
-        d2f(0, 1) = d2f(1, 0) = 2 * df1x1 * df1x2 + 2 * f1 * d2f1x1x2 + 2 * df2x1 * df2x2 + 2 * f2 * d2f2x1x2;
+        d2f(0, 1) = d2f(1, 0) = 2 * df1x1 * df1x2 + 2 * f1 * d2f1x1x2 +
+            2 * df2x1 * df2x2 + 2 * f2 * d2f2x1x2;
 
         return std::make_tuple(f, df, d2f);
     }
@@ -62,7 +67,7 @@ double freudenstein_roth::f_min = 0.0;
 double freudenstein_roth::tolerance = std::numeric_limits<double>::epsilon();
 std::vector<double> freudenstein_roth::minima = {5.0, 4.0};
 std::vector<double> freudenstein_roth::local_minima = {11.41278, -0.8968053};
-std::vector<double> freudenstein_roth::x0 = {0.5,  2.0};
+std::vector<double> freudenstein_roth::x0 = {0.5, 2.0};
 
 } // ns test_functions
 } // ns ook

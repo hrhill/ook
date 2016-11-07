@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BROWN_DENNIS_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BROWN_DENNIS_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct brown_dennis
@@ -33,21 +35,19 @@ struct brown_dennis
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-brown_dennis<Vector, Matrix>::f_min = 85822.2;
+typename Vector::value_type brown_dennis<Vector, Matrix>::f_min = 85822.2;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-brown_dennis<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+typename Vector::value_type brown_dennis<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-brown_dennis<Vector, Matrix>::minima = {};
+std::vector<typename Vector::value_type> brown_dennis<Vector, Matrix>::minima =
+    {};
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-brown_dennis<Vector, Matrix>::x0 = {25, 5, -5, -1};
-
+std::vector<typename Vector::value_type> brown_dennis<Vector, Matrix>::x0 = {
+    25, 5, -5, -1};
 
 } // ns test_functions
 } // ns ook

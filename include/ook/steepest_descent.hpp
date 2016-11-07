@@ -24,16 +24,20 @@
 #include "ook/line_search/backtracking.hpp"
 #include "ook/line_search_method.hpp"
 
-namespace ook{
+namespace ook
+{
 /// \brief Implementation for the steepest descent method.
 struct steepest_descent_impl
 {
     struct state
-    {};
+    {
+    };
 
     /// \brief Constructor required by scheme concept.
     template <typename T>
-    steepest_descent_impl(const T&){}
+    explicit steepest_descent_impl(const T&)
+    {
+    }
 
     /// \brief The descent direction in the steepest descent algorithm
     /// is the negative gradient, \f$- \nabla f(x) \f$.
@@ -51,19 +55,22 @@ struct steepest_descent_impl
     /// scheme concept.
     template <typename T>
     void
-    update(const T& s){}
+    update(const T& /*s*/)
+    {
+    }
 };
 
 /// \brief The Steepest descent algorithm. This is just a convenience function
 /// which forwards the call to the generic function line_search_method
 template <typename F, typename Options, typename Observer>
-typename line_search_method<steepest_descent_impl, line_search::mcsrch>::state_type
+typename line_search_method<steepest_descent_impl,
+                            line_search::mcsrch>::state_type
 steepest_descent(F f, const vector& x0, const Options& opts, Observer& observer)
 {
     line_search_method<steepest_descent_impl, line_search::backtracking> method;
     return method(f, x0, opts, observer);
 }
 
-} //ns ook
+} // ns ook
 
 #endif

@@ -20,21 +20,25 @@
 
 #include <tuple>
 
-namespace ook{
-namespace detail{
+namespace ook
+{
+namespace detail
+{
 
 /// \brief Meta function to select the right function call
 /// based on the properties of the return type.
 template <int dim>
-struct call_selector{};
+struct call_selector
+{
+};
 
 template <>
 struct call_selector<1>
 {
     template <typename F, typename X, typename State>
-    static
-    State
-    call(F f, const X& x, State&& s){
+    static State
+    call(F f, const X& x, State&& s)
+    {
         std::tie(s.fx) = f(x);
         return s;
     }
@@ -44,21 +48,22 @@ template <>
 struct call_selector<2>
 {
     template <typename F, typename X, typename State>
-    static
-    State
-    call(F f, const X& x, State&& s){
+    static State
+    call(F f, const X& x, State&& s)
+    {
         std::tie(s.fx, s.dfx) = f(x);
         return s;
     }
 };
 
 template <>
-struct call_selector<3>{
+struct call_selector<3>
+{
     template <typename F, typename X, typename State>
-    static
-    State
-    call(F f, const X& x, State&& s){
-        std::tie(s.fx, s.dfx, s.H) =  f(x);
+    static State
+    call(F f, const X& x, State&& s)
+    {
+        std::tie(s.fx, s.dfx, s.H) = f(x);
         return s;
     }
 };

@@ -1,20 +1,22 @@
 #ifndef LBFGS_HPP_
 #define LBFGS_HPP_
 
-#include <cmath>
+#include <algorithm>
 #include <array>
 #include <cassert>
-#include <algorithm>
+#include <cmath>
+#include <tuple>
 
-#include "ook/line_search/mcsrch.hpp"
 #include "ook/lbfgs/report.hpp"
+#include "ook/line_search/mcsrch.hpp"
 #include "ook/message.hpp"
 
 extern "C" {
 #include <cblas.h>
 }
 
-namespace ook{
+namespace ook
+{
 
 /// \brief Limited memory BFGS method for large scale optimisation,
 /// Jorge Nocedal, July 1990.
@@ -62,9 +64,12 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
     std::tie(f, g) = obj_f(x);
 
     X diag(n);
-    if(opts.diagco){
+    if (opts.diagco)
+    {
         diag = diag_f(x);
-    }else{
+    }
+    else
+    {
         std::fill(diag.begin(), diag.end(), 1.0);
     }
 
@@ -85,7 +90,8 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
 
     int ispt = n + (m << 1);
     int iypt = ispt + n * m;
-    for(int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i)
+    {
         w[ispt + i] = -g[i] * diag[i];
     }
     double gnorm = sqrt(cblas_ddot(n, &g[0], 1, &g[0], 1));
@@ -98,45 +104,54 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
     int point = 0;
     int npt = 0;
 
-    while(true){
+    while (true)
+    {
         ++iter;
         int info = 0;
         int bound = iter - 1;
 
-        if(iter != 1){
-            if(iter > m){
+        if (iter != 1)
+        {
+            if (iter > m)
+            {
                 bound = m;
             }
 
-            const double ys = cblas_ddot(n, &w[iypt + npt], 1,
-                                            &w[ispt + npt], 1);
-            if (opts.diagco){
+            const double ys =
+                cblas_ddot(n, &w[iypt + npt], 1, &w[ispt + npt], 1);
+            if (opts.diagco)
+            {
                 diag = diag_f(x);
-            } else {
-                const double yy = cblas_ddot(n, &w[iypt + npt], 1,
-                                                &w[iypt + npt], 1);
-                std::fill(diag.begin(), diag.end(), ys/yy);
+            }
+            else
+            {
+                const double yy =
+                    cblas_ddot(n, &w[iypt + npt], 1, &w[iypt + npt], 1);
+                std::fill(diag.begin(), diag.end(), ys / yy);
             }
             // Compute -H*G using the formula given in : Nocedal, J. 1980,
             // "Updating quasi-Newton matrices with limited storage",
             // Mathematics of Computation, Vol.24, No.151, pp. 773-782.
             int cp = point;
-            if(point == 0){
+            if (point == 0)
+            {
                 cp = m;
             }
             w[n + cp - 1] = 1.0 / ys;
-            for(int i = 0; i < n; ++i){
+            for (int i = 0; i < n; ++i)
+            {
                 w[i] = -g[i];
             }
             cp = point;
             int inmc = 0;
-            for(int i = 0; i < bound; ++i){
+            for (int i = 0; i < bound; ++i)
+            {
                 --cp;
-                if(cp == -1) {
+                if (cp == -1)
+                {
                     cp = m - 1;
                 }
-                const double sq = cblas_ddot(n, &w[ispt + cp * n], 1,
-                                                &w[0], 1);
+                const double sq = cblas_ddot(n, &w[ispt + cp * n], 1, &w[0], 1);
                 inmc = n + m + cp + 1;
                 int iycn = iypt + cp * n;
                 w[inmc - 1] = w[n + cp] * sq;
@@ -144,13 +159,14 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
                 cblas_daxpy(n, mwinmc, &w[iycn], 1, &w[0], 1);
             }
 
-            for(int i = 0; i < n; ++i){
+            for (int i = 0; i < n; ++i)
+            {
                 w[i] = diag[i] * w[i];
             }
 
-            for(int i = 0; i < bound; ++i){
-                const double yr = cblas_ddot(n, &w[iypt + cp * n], 1,
-                                                &w[0], 1);
+            for (int i = 0; i < bound; ++i)
+            {
+                const double yr = cblas_ddot(n, &w[iypt + cp * n], 1, &w[0], 1);
                 double beta = w[n + cp] * yr;
                 inmc = n + m + cp + 1;
                 beta = w[inmc - 1] - beta;
@@ -169,16 +185,16 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
         X s(w.begin() + ispt + point * n, w.begin() + ispt + point * n + n);
 
         double dginit = cblas_ddot(n, &g[0], 1, &s[0], 1);
-        if(dginit >= 0.0)
+        if (dginit >= 0.0)
             throw std::runtime_error(
-                        "The search direction is not a descent direction.");
+                "The search direction is not a descent direction.");
 
         X x0(x);
-        auto phi = [&nfun, &f, &x0, &x, &g, obj_f, &s](double stp)
-        {
+        auto phi = [&nfun, &f, &x0, &x, &g, obj_f, &s](double stp) {
             ++nfun;
             int n = x.size();
-            for (int j = 0; j < n; ++j){
+            for (int j = 0; j < n; ++j)
+            {
                 x[j] = x0[j] + stp * s[j];
             }
             std::tie(f, g) = obj_f(x);
@@ -188,34 +204,39 @@ lbfgs(F obj_f, D diag_f, X x, const lbfgs_options<T>& opts)
         ook::message msg;
         std::tie(msg, stp, f, dginit) = mcsrch(phi, f, dginit, stp, opts);
 
-        if(msg != ook::message::convergence){
+        if (msg != ook::message::convergence)
+        {
             printf(" IFLAG= -1\n LINE SEARCH FAILED."
-             " SEE DOCUMENTATION OF ROUTINE MCSRCH\n"
-             " ERROR RETURN OF LINE SEARCH: INFO= %2d\n"
-             " POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE INCORRECT\n"
-             " OR INCORRECT TOLERANCES\n", info);
+                   " SEE DOCUMENTATION OF ROUTINE MCSRCH\n"
+                   " ERROR RETURN OF LINE SEARCH: INFO= %2d\n"
+                   " POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE INCORRECT\n"
+                   " OR INCORRECT TOLERANCES\n",
+                   info);
             return std::make_tuple(-1, x);
         }
 
         // Compute the new step and gradient change.
         npt = point * n;
-        for(int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++i)
+        {
             w[ispt + npt + i] *= stp;
             w[iypt + npt + i] = g[i] - w[i];
         }
         ++point;
-        if(point == m) {
+        if (point == m)
+        {
             point = 0;
         }
 
         // Termination test
         gnorm = sqrt(cblas_ddot(n, &g[0], 1, &g[0], 1));
-        const double xnorm = std::max(1.0,
-                                    sqrt(cblas_ddot(n, &x[0], 1, &x[0], 1)));
+        const double xnorm =
+            std::max(1.0, sqrt(cblas_ddot(n, &x[0], 1, &x[0], 1)));
         bool finish = (gnorm / xnorm <= opts.eps) || (iter >= opts.maxicall);
         detail::report(opts, iter, nfun, gnorm, x, f, g, stp, finish);
 
-        if(finish){
+        if (finish)
+        {
             break;
         }
     }
@@ -226,12 +247,9 @@ template <typename F, typename X, typename T>
 std::tuple<int, X>
 lbfgs(F obj_f, X x, const lbfgs_options<T>& opts)
 {
-    auto diag_f = [](const X& x){
-        return X();
-    };
+    auto diag_f = [](const X& /*x*/) { return X(); };
     return lbfgs(obj_f, diag_f, x, opts);
 }
-
 
 } // ns ook
 

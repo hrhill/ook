@@ -3,25 +3,26 @@
 
 #include <limits>
 
-namespace ook{
-namespace line_search{
+namespace ook
+{
+namespace line_search
+{
 
 /// \brief Options structure for line searches.
 template <typename T>
 struct options
 {
     options()
-    :
-        ftol(T(1e-03)),
-        gtol(T(9e-01)),
-        stpmin(std::numeric_limits<T>::epsilon()),
-        stpmax(T(5.0)),
-        maxfev(20)
-    {}
+        : ftol(T(1e-03)),
+          gtol(T(9e-01)),
+          stpmin(std::numeric_limits<T>::epsilon()),
+          stpmax(T(5.0)),
+          maxfev(20)
+    {
+    }
 
     options(T ftol, T gtol, T stpmin, T stpmax)
-    :
-        ftol(ftol), gtol(gtol), stpmin(stpmin), stpmax(stpmax), maxfev(20)
+        : ftol(ftol), gtol(gtol), stpmin(stpmin), stpmax(stpmax), maxfev(20)
     {
         assert(ftol > T(0) && "ftol <= 0.0");
         assert(gtol > T(0) && "gtol <= 0.0");

@@ -18,108 +18,115 @@
 #ifndef OOK_FINITE_DIFFERENCES_FORWARD_DIFFERENCE_HPP_
 #define OOK_FINITE_DIFFERENCES_FORWARD_DIFFERENCE_HPP_
 
-#include <limits>
 #include <cmath>
+#include <limits>
 #include <tuple>
 
 #include <algorithm>
 
 #include "ook/finite_differences/detail/transform.hpp"
 
-namespace ook{
-namespace finite_differences{
+namespace ook
+{
+namespace finite_differences
+{
 
 /// Forward difference approximation.
-struct forward_difference{
-	/// \brief Calculate the forward difference approximation to the gradient of f.
-	template <typename F, typename X>
-	static
-	auto gradient(F f, X x);
+struct forward_difference
+{
+    /// \brief Calculate the forward difference approximation to the gradient of
+    /// f.
+    template <typename F, typename X>
+    static auto
+    gradient(F f, X x);
 
-	/// \brief Calculate the forward difference approximation to the hessian of f.
+    /// \brief Calculate the forward difference approximation to the hessian of
+    /// f.
     template <typename M, typename F, typename X>
-	static
-	auto hessian(F f, const X& x);
+    static auto
+    hessian(F f, const X& x);
 };
 
 template <typename F, typename X>
 auto
 forward_difference::gradient(F f, X x)
 {
-	// Generate a set of sample points
-	// (x + he_1, x + he_2, ..., x)
-	size_t n = std::distance(x.begin(), x.end());
-	const double hmin(sqrt(std::numeric_limits<double>::epsilon()));
+    // Generate a set of sample points
+    // (x + he_1, x + he_2, ..., x)
+    size_t n = std::distance(x.begin(), x.end());
+    const double hmin(sqrt(std::numeric_limits<double>::epsilon()));
 
-	std::vector<X> sample_points(n + 1);
-	X h(n);
+    std::vector<X> sample_points(n + 1);
+    X h(n);
 
-	for (size_t i = 0; i < n; ++i)
-	{
-	    const double xi = x[i];
-	    const double hx = hmin * (1 + fabs(xi));
-	    h[i] = hx;
-	    x[i] = xi + hx;
-		sample_points[i] = x;
-		x[i] = xi;
-	}
-	sample_points[n] = x;
+    for (size_t i = 0; i < n; ++i)
+    {
+        const double xi = x[i];
+        const double hx = hmin * (1 + fabs(xi));
+        h[i] = hx;
+        x[i] = xi + hx;
+        sample_points[i] = x;
+        x[i] = xi;
+    }
+    sample_points[n] = x;
 
-	// evaluate function at each point
-	std::vector<double> function_values(sample_points.size());
-	detail::transform(sample_points, function_values, f);
+    // evaluate function at each point
+    std::vector<double> function_values(sample_points.size());
+    detail::transform(sample_points, function_values, f);
 
-	// assemble
-	X df(n);
-	const double fx = function_values[n];
-	for (size_t i = 0; i < n; ++i){
-	    df[i] = (function_values[i] - fx) / h[i];
-	}
-	return std::make_tuple(fx, df);
+    // assemble
+    X df(n);
+    const double fx = function_values[n];
+    for (size_t i = 0; i < n; ++i)
+    {
+        df[i] = (function_values[i] - fx) / h[i];
+    }
+    return std::make_tuple(fx, df);
 }
 
 template <typename M, typename F, typename X>
 auto
 forward_difference::hessian(F f, const X& x)
 {
-	const size_t n = std::distance(x.begin(), x.end());
-	const double eps = std::numeric_limits<double>::epsilon();
-	const double hmin(std::pow(eps, 1.0/3.0));
+    const size_t n = std::distance(x.begin(), x.end());
+    const double eps = std::numeric_limits<double>::epsilon();
+    const double hmin(std::pow(eps, 1.0 / 3.0));
 
-	X xi(x);
-	X xj(x);
+    X xi(x);
+    X xj(x);
 
-	const double fx = f(x);
-	M H(n, n);
+    const double fx = f(x);
+    M H(n, n);
 
-	for (size_t i = 0; i < n; ++i){
-	    const double xii = xi[i];
-	    const double hi = hmin * (1 + fabs(xii));
-	    xi[i] += hi;
-		// f(x + h_i e_i)
-	    const double fxi = f(xi);
-	    xi[i] = xii;
+    for (size_t i = 0; i < n; ++i)
+    {
+        const double xii = xi[i];
+        const double hi = hmin * (1 + fabs(xii));
+        xi[i] += hi;
+        // f(x + h_i e_i)
+        const double fxi = f(xi);
+        xi[i] = xii;
 
-		for (size_t j = 0; j <= i; ++j)
+        for (size_t j = 0; j <= i; ++j)
         {
-		    const double xjj = xj[j];
-		    const double hj = hmin * (1 + fabs(xjj));
+            const double xjj = xj[j];
+            const double hj = hmin * (1 + fabs(xjj));
 
-			// f(x + h_j e_j)
-		    xj[j] += hj;
-		    const double fxj = f(xj);
+            // f(x + h_j e_j)
+            xj[j] += hj;
+            const double fxj = f(xj);
 
-			// f(x + h_i e_i + h_j e_j)
-		    xj[i] += hi;
-		    const double fxij = f(xj);
+            // f(x + h_i e_i + h_j e_j)
+            xj[i] += hi;
+            const double fxij = f(xj);
 
-		    H(i, j) = H(j, i) = (fxij - fxi - fxj + fx)/(hi * hj);
+            H(i, j) = H(j, i) = (fxij - fxi - fxj + fx) / (hi * hj);
 
-		    xj[i] = xii;
-		    xj[j] = xjj;
-		}
-	}
-	return std::make_tuple(fx, H);
+            xj[i] = xii;
+            xj[j] = xjj;
+        }
+    }
+    return std::make_tuple(fx, H);
 }
 
 } // ns finite_differences

@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BARD_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_BARD_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct bard
@@ -33,21 +35,21 @@ struct bard
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-bard<Vector, Matrix>::f_min = 17.4286;
+typename Vector::value_type bard<Vector, Matrix>::f_min = 17.4286;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-bard<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+typename Vector::value_type bard<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-bard<Vector, Matrix>::minima = {0.8406, -std::numeric_limits<typename Vector::value_type>::infinity(), -std::numeric_limits<typename Vector::value_type>::infinity()};
+std::vector<typename Vector::value_type> bard<Vector, Matrix>::minima = {
+    0.8406,
+    -std::numeric_limits<typename Vector::value_type>::infinity(),
+    -std::numeric_limits<typename Vector::value_type>::infinity()};
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-bard<Vector, Matrix>::x0 = {1.0, 1.0, 1.0};
-
+std::vector<typename Vector::value_type> bard<Vector, Matrix>::x0 = {
+    1.0, 1.0, 1.0};
 
 } // ns test_functions
 } // ns ook

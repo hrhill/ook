@@ -1,12 +1,14 @@
 #ifndef OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_MEYER_HPP_
 #define OOK_TEST_FUNCTIONS_MORE_GARBOW_HILLSTROM_MEYER_HPP_
 
-#include <tuple>
 #include <limits>
+#include <tuple>
 #include <vector>
 
-namespace ook{
-namespace test_functions{
+namespace ook
+{
+namespace test_functions
+{
 
 template <typename Vector, typename Matrix>
 struct meyer
@@ -33,21 +35,18 @@ struct meyer
 };
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-meyer<Vector, Matrix>::f_min = 87.9458;
+typename Vector::value_type meyer<Vector, Matrix>::f_min = 87.9458;
 
 template <typename Vector, typename Matrix>
-typename Vector::value_type
-meyer<Vector, Matrix>::tolerance = std::numeric_limits<typename Vector::value_type>::epsilon();
+typename Vector::value_type meyer<Vector, Matrix>::tolerance =
+    std::numeric_limits<typename Vector::value_type>::epsilon();
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-meyer<Vector, Matrix>::minima = {};
+std::vector<typename Vector::value_type> meyer<Vector, Matrix>::minima = {};
 
 template <typename Vector, typename Matrix>
-std::vector<typename Vector::value_type>
-meyer<Vector, Matrix>::x0 = {0.2, 4000, 250};
-
+std::vector<typename Vector::value_type> meyer<Vector, Matrix>::x0 = {
+    0.2, 4000, 250};
 
 } // ns test_functions
 } // ns ook
