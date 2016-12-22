@@ -6,6 +6,7 @@ set(TESTS test_line_search
           test_optimise
           test_mcstep
           test_functions
+          test_factorisations
 )
 
 foreach(test ${TESTS})
