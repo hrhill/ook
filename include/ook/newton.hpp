@@ -96,11 +96,9 @@ of the LDLt factorisation. The returned matrix has layout,
     l_{nn} & l_{n2} & \cdots   & d_{nn}\\
     \end{pmatrix}
 \f]
-\tparam matrix Templated by matrix type, but currently restricted to
-Boost.Ublas.
 **/
-matrix
-gmw81(matrix G)
+void
+gmw81(matrix& G)
 {
     // MC1
     const size_t n = G.rows();
@@ -113,7 +111,6 @@ gmw81(matrix G)
 
     // MC2
     matrix c(n, n, 0);
-    matrix L(n, n, 0);
 
     for (size_t i = 0; i < n; ++i)
     {
@@ -143,33 +140,31 @@ gmw81(matrix G)
         // MC4
         for (size_t s = 0; s < j; ++s)
         {
-            L(j, s) = c(j, s) / L(s, s);
+            G(j, s) = c(j, s) / G(s, s);
         }
         for (size_t i = j + 1; i < n; ++i)
         {
             c(i, j) = G(i, j);
             for (size_t s = 0; s < j; ++s)
             {
-                c(i, j) -= L(j, s) * c(i, s);
+                c(i, j) -= G(j, s) * c(i, s);
             }
         }
         double theta = detail::calculate_theta(c, j);
         // MC 5
-        L(j, j) = std::max({delta, fabs(c(j, j)), std::pow(theta, 2) / beta2});
+        G(j, j) = std::max({delta, fabs(c(j, j)), std::pow(theta, 2) / beta2});
 
         for (size_t i = j + 1; i < n; ++i)
         {
-            c(i, i) -= std::pow(c(i, j), 2) / L(j, j);
+            c(i, i) -= std::pow(c(i, j), 2) / G(j, j);
         }
     }
-    return L;
 }
 
 /// \brief Take a matrix in LD format and convert
 /// it to a lower cholesky matrix.
-template <typename matrix>
-matrix
-convert_to_cholesky(matrix L)
+inline void
+convert_to_cholesky(matrix& L)
 {
     int n = L.rows();
     for (int j = 0; j < n; ++j)
@@ -181,17 +176,16 @@ convert_to_cholesky(matrix L)
             L(i, j) *= di;
         }
     }
-    return L;
 }
 
 /// \brief Solve the system Ax = b where A is a
 /// symmetric positive definite matrix.
 vector
-solve(const matrix& A, vector b)
+solve(matrix A, vector b)
 {
-    matrix LD = gmw81(A);
-    matrix L = convert_to_cholesky(std::move(LD));
-    potrs(L, b, 'L');
+    gmw81(A);
+    convert_to_cholesky(A);
+    potrs(A, b, 'L');
 
     return b;
 }
