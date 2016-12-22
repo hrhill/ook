@@ -18,8 +18,8 @@
 #ifndef OOK_HPP_
 #define OOK_HPP_
 
-#include "ook/vector.hpp"
 #include "ook/matrix.hpp"
+#include "ook/vector.hpp"
 
 #include "ook/message.hpp"
 #include "ook/options.hpp"

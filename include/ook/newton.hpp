@@ -97,7 +97,8 @@ of the LDLt factorisation. The returned matrix has layout,
     \end{pmatrix}
 \f]
 **/
-void gmw81(matrix& G)
+void
+gmw81(matrix& G)
 {
     // MC1
     const size_t n = G.rows();
@@ -162,8 +163,7 @@ void gmw81(matrix& G)
 
 /// \brief Take a matrix in LD format and convert
 /// it to a lower cholesky matrix.
-inline
-void
+inline void
 convert_to_cholesky(matrix& L)
 {
     int n = L.rows();
