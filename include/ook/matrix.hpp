@@ -9,8 +9,8 @@ namespace ook
 inline namespace v1
 {
 
-typedef blaze::DynamicMatrix<double> matrix;
-typedef blaze::CompressedMatrix<double> sparse_matrix;
+typedef blaze::DynamicMatrix<double, blaze::columnMajor> matrix;
+typedef blaze::CompressedMatrix<double, blaze::columnMajor> sparse_matrix;
 typedef blaze::SymmetricMatrix<matrix> symmetric_matrix;
 typedef blaze::SymmetricMatrix<sparse_matrix> sparse_symmetric_matrix;
 

@@ -17,12 +17,14 @@
 #include <iomanip>
 #include <iostream>
 
+#include "ook/vector.hpp"
+#include "ook/matrix.hpp"
 #include "ook/newton.hpp"
 
 using namespace std;
 
-typedef blaze::DynamicMatrix<double> matrix_t;
-typedef blaze::DynamicVector<double> vector_t;
+using vector_t = ook::vector;
+using matrix_t = ook::matrix;
 
 void
 pretty_print(matrix_t m)
