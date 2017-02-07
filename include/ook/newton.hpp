@@ -71,9 +71,9 @@ max_magnitude_off_diagonal(const matrix& m)
     const int n = m.rows();
 
     double mmd = fabs(m(0, 0));
-    for (int i = 0; i < n; ++i)
+    for (int j = 0; j < n; ++j)
     {
-        for (int j = i + 1; j < n; ++j)
+        for (int i = j + 1; i < n; ++i)
         {
             mmd = std::max(fabs(m(i, j)), mmd);
         }
