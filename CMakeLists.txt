@@ -17,6 +17,7 @@ find_package(Boost 1.64 COMPONENTS unit_test_framework REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
 find_package(BLAS)
+find_package(LAPACK)
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
