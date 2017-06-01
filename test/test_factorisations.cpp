@@ -1,19 +1,17 @@
-/// \file factorisation_test.cpp
+#define BOOST_TEST_MODULE factorisation_test
+
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+
 #include <iostream>
 #include <limits>
 #include <random>
 #include <string>
 
 #include <boost/timer.hpp>
-
 #include <boost/mpl/list.hpp>
 
 #include "ook.hpp"
-
-#define BOOST_TEST_MODULE factorisation_test
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test.hpp>
 
 using namespace ook;
 
