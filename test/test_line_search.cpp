@@ -1,3 +1,8 @@
+#define BOOST_TEST_MODULE line_search
+
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+
 #include <iostream>
 #include <limits>
 #include <random>
@@ -9,11 +14,6 @@
 #include <boost/timer.hpp>
 
 #include <boost/mpl/list.hpp>
-
-#define BOOST_TEST_MODULE line_search
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test.hpp>
 
 #include "ook/line_search/backtracking.hpp"
 #include "ook/line_search/mcsrch.hpp"

@@ -1,7 +1,6 @@
 #define BOOST_TEST_MODULE newton
 
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
+#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
 #include "ook/newton.hpp"

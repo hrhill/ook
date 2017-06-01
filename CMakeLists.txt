@@ -1,8 +1,8 @@
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.8)
 project(OOK)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake_modules/")
 
 include(CheckIncludeFiles)
 include(CheckLibraryExists)
@@ -13,7 +13,7 @@ include(ClangFormat)
 
 set(BUILD_SHARED_LIBS ON)
 
-find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
+find_package(Boost 1.64 COMPONENTS unit_test_framework REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
 find_package(BLAS)

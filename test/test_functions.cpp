@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE test functions
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
+
+#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
 #include <boost/mpl/list.hpp>
