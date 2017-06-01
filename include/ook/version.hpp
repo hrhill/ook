@@ -21,7 +21,7 @@
 #include <string>
 
 #define OOK_MAJOR_VERSION 0
-#define OOK_MINOR_VERSION 11
+#define OOK_MINOR_VERSION 16
 #define OOK_PATCH_LEVEL 0
 #define OOK_VERSION                                                            \
     (OOK_MAJOR_VERSION * 100000 + OOK_MINOR_VERSION * 100 + OOK_PATCH_LEVEL)
