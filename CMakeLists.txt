@@ -25,8 +25,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/include")
 
-add_subdirectory(examples)
-add_subdirectory(tests)
+add_subdirectory(examples/ook)
 add_subdirectory(tests/ook)
 add_subdirectory(src)
 # ------------------------------------ Documentation setup --------------------
