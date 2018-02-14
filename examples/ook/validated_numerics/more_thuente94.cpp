@@ -141,8 +141,9 @@ main()
              << setw(6) << "info" << setw(7) << "x0" << setw(10) << "x"
              << setw(10) << "f" << setw(12) << "g\n\n";
 
-        for (const auto& x : results)
+        for (const auto& x : results) {
             cout << x << "\n";
+}
     }
     return 0;
 }

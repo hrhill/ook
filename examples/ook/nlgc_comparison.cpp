@@ -2,6 +2,7 @@
 #include <string>
 
 #include <boost/numeric/ublas/vector.hpp>
+#include <utility>
 
 #include "ook.hpp"
 
@@ -29,7 +30,7 @@ struct rosenbrock
 template <typename State>
 struct observer
 {
-    observer(const std::string& name) : name(name) {}
+    explicit observer(std::string  name) : name(std::move(name)) {}
 
     void
     operator()(const State& s)
@@ -57,7 +58,7 @@ main()
     ook::vector x(2);
     x[0] = -1.2;
     x[1] = 1.0;
-    typedef nonlinear_cg_impl<beta::fr> fr_scheme;
+    using fr_scheme = nonlinear_cg_impl<beta::fr>;
     typedef line_search_method<fr_scheme, line_search::mcsrch>::state_type
         fr_state_type;
     observer<fr_state_type> fr_obs("fletcher-reeves");
@@ -65,7 +66,7 @@ main()
 
     x[0] = -1.2;
     x[1] = 1.0;
-    typedef nonlinear_cg_impl<beta::pr> pr_scheme;
+    using pr_scheme = nonlinear_cg_impl<beta::pr>;
     typedef line_search_method<pr_scheme, line_search::mcsrch>::state_type
         pr_state_type;
     observer<pr_state_type> pr_obs("polak-ribiere");
@@ -73,7 +74,7 @@ main()
 
     x[0] = -1.2;
     x[1] = 1.0;
-    typedef nonlinear_cg_impl<beta::hs> hs_scheme;
+    using hs_scheme = nonlinear_cg_impl<beta::hs>;
     typedef line_search_method<hs_scheme, line_search::mcsrch>::state_type
         hs_state_type;
     observer<hs_state_type> hs_obs("hestenes-steifel");
@@ -81,7 +82,7 @@ main()
 
     x[0] = -1.2;
     x[1] = 1.0;
-    typedef nonlinear_cg_impl<beta::dy> dy_scheme;
+    using dy_scheme = nonlinear_cg_impl<beta::dy>;
     typedef line_search_method<dy_scheme, line_search::mcsrch>::state_type
         dy_state_type;
     observer<dy_state_type> dy_obs("dai-yuan");

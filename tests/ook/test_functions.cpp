@@ -23,7 +23,7 @@ template <typename Function>
 int
 test_function_specification()
 {
-    typedef Function test_function;
+    using test_function = Function;
 
     test_function objective_function;
 

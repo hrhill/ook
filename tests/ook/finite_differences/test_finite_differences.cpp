@@ -21,7 +21,7 @@ template <typename FD, typename F, typename G>
 int
 checker(F f, G g, int dim)
 {
-    std::mt19937 rng(std::time(0));
+    std::mt19937 rng(std::time(nullptr));
     auto normrnd = bind(std::normal_distribution<>(), std::ref(rng));
 
     ook::vector x(dim);

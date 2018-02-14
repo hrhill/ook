@@ -57,8 +57,9 @@ norm_inf(const matrix& a)
         {
             rs += a(i, j);
         }
-        if (rs > nx)
+        if (rs > nx) {
             nx = rs;
+}
     }
     return nx;
 }
@@ -74,10 +75,11 @@ norm_inf(const symmetric_matrix& a)
         {
             rs += a(i, j);
         }
-        if (rs > nx)
+        if (rs > nx) {
             nx = rs;
+}
     }
     return nx;
 }
-}
-}
+}  // namespace v1
+}  // namespace ook
