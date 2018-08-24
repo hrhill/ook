@@ -1,6 +1,7 @@
 #include "ook/vector.hpp"
 #include "ook/matrix.hpp"
 
+#include <functional>
 #include <fstream>
 
 namespace ook

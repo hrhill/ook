@@ -1,4 +1,5 @@
 #include "ook/matrix.hpp"
+#include <functional>
 
 namespace ook
 {

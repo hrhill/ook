@@ -1,13 +1,12 @@
 #define BOOST_TEST_MODULE optimise
 
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+
 #include <iostream>
 #include <limits>
 
 #include <boost/mpl/list.hpp>
-
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test.hpp>
 
 #include "ook/bfgs.hpp"
 #include "ook/newton.hpp"
@@ -48,7 +47,7 @@ struct gradient_only_wrapper
 
 template <typename Function, typename Optimiser>
 void
-run_gradient_based_optimiser(Function, Optimiser optimiser)
+run_gradient_based_optimiser(Function /*unused*/, Optimiser optimiser)
 {
     ook::options<double> opts;
 
@@ -103,7 +102,7 @@ test_gradient_based_optimisers()
 
 template <typename Function, typename Optimiser>
 void
-run_hessian_based_optimiser(Function, Optimiser optimiser)
+run_hessian_based_optimiser(Function /*unused*/, Optimiser optimiser)
 {
     ook::vector x(Function::n, 0.0);
     std::copy(Function::x0.begin(), Function::x0.end(), x.begin());

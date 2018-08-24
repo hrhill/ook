@@ -17,9 +17,9 @@
 #include <iomanip>
 #include <iostream>
 
-#include "ook/vector.hpp"
 #include "ook/matrix.hpp"
 #include "ook/newton.hpp"
+#include "ook/vector.hpp"
 
 using namespace std;
 

@@ -1,4 +1,6 @@
 #define BOOST_TEST_MODULE finite_differences_test
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
 
 #include <algorithm>
 #include <ctime>
@@ -6,9 +8,6 @@
 #include <random>
 
 #include <boost/mpl/list.hpp>
-#include <boost/test/test_case_template.hpp>
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test.hpp>
 
 #include "test_functions.hpp"
 
@@ -22,7 +21,7 @@ template <typename FD, typename F, typename G>
 int
 checker(F f, G g, int dim)
 {
-    std::mt19937 rng(std::time(0));
+    std::mt19937 rng(std::time(nullptr));
     auto normrnd = bind(std::normal_distribution<>(), std::ref(rng));
 
     ook::vector x(dim);

@@ -31,7 +31,7 @@
 template <typename F>
 struct gradient_only_wrapper
 {
-    gradient_only_wrapper(F f) : func(f) {}
+    explicit gradient_only_wrapper(F f) : func(f) {}
 
     std::tuple<double, ook::vector>
     operator()(const ook::vector& x) const
@@ -54,7 +54,7 @@ main()
 
     ook::options<double> opts;
 
-    typedef ook::test_functions::rosenbrock test_function;
+    using test_function = ook::test_functions::rosenbrock;
     test_function objective_function;
     gradient_only_wrapper<test_function> wrapper(objective_function);
 

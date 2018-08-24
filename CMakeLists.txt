@@ -1,8 +1,8 @@
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.8)
 project(OOK)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake_modules/")
 
 include(CheckIncludeFiles)
 include(CheckLibraryExists)
@@ -13,10 +13,11 @@ include(ClangFormat)
 
 set(BUILD_SHARED_LIBS ON)
 
-find_package(Boost 1.46 COMPONENTS test_exec_monitor program_options REQUIRED)
+find_package(Boost 1.64 COMPONENTS unit_test_framework REQUIRED)
 find_package(Doxygen)
 find_package(OpenMP)
 find_package(BLAS)
+find_package(LAPACK)
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror -Wall -pedantic -std=c++1y ${OpenMP_CXX_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -24,10 +25,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/include")
 
-add_subdirectory(example)
-add_subdirectory(test)
+add_subdirectory(examples/ook)
+add_subdirectory(tests/ook)
 add_subdirectory(src)
-
 # ------------------------------------ Documentation setup --------------------
 if(DOXYGEN_FOUND)
 configure_file(${PROJECT_SOURCE_DIR}/Doxyfile.in

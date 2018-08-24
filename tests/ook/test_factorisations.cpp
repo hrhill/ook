@@ -1,19 +1,17 @@
-/// \file factorisation_test.cpp
+#define BOOST_TEST_MODULE factorisation_test
+
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+
 #include <iostream>
 #include <limits>
 #include <random>
 #include <string>
 
+#include <boost/mpl/list.hpp>
 #include <boost/timer.hpp>
 
-#include <boost/mpl/list.hpp>
-
 #include "ook.hpp"
-
-#define BOOST_TEST_MODULE factorisation_test
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test.hpp>
 
 using namespace ook;
 
@@ -55,7 +53,7 @@ int
 scaled_identity_matrix_check()
 {
     const int n = 5;
-    std::mt19937 rng(std::time(0));
+    std::mt19937 rng(std::time(nullptr));
     auto rnorm = std::bind(std::normal_distribution<>(0, 1), std::ref(rng));
     const double d = exp(rnorm());
     matrix A = d * eye(n);
@@ -75,7 +73,7 @@ int
 factorisation_equivalence_test()
 {
     // Make factorisations agree on positive definite matrices.
-    std::mt19937 rng(std::time(0));
+    std::mt19937 rng(std::time(nullptr));
     const int n = 5;
     matrix A = sympd(n, rng);
     matrix cholL(A);
