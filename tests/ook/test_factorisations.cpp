@@ -8,8 +8,8 @@
 #include <random>
 #include <string>
 
-#include <boost/timer.hpp>
 #include <boost/mpl/list.hpp>
+#include <boost/timer.hpp>
 
 #include "ook.hpp"
 
@@ -53,7 +53,7 @@ int
 scaled_identity_matrix_check()
 {
     const int n = 5;
-    std::mt19937 rng(std::time(0));
+    std::mt19937 rng(std::time(nullptr));
     auto rnorm = std::bind(std::normal_distribution<>(0, 1), std::ref(rng));
     const double d = exp(rnorm());
     matrix A = d * eye(n);
@@ -73,7 +73,7 @@ int
 factorisation_equivalence_test()
 {
     // Make factorisations agree on positive definite matrices.
-    std::mt19937 rng(std::time(0));
+    std::mt19937 rng(std::time(nullptr));
     const int n = 5;
     matrix A = sympd(n, rng);
     matrix cholL(A);

@@ -75,7 +75,7 @@ paraboloid(const ook::vector& x, ook::vector& g, ook::matrix& H)
     {
         for (size_t j = 0; j < H.columns(); ++j)
         {
-            H(i, j) = 2.0 * (i == j);
+            H(i, j) = 2.0 * static_cast<double>(i == j);
         }
     }
     return std::pow(ook::norm_2(x), 2);
