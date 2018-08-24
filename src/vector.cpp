@@ -2,6 +2,7 @@
 #include "ook/matrix.hpp"
 
 #include <fstream>
+#include <functional>
 
 namespace ook
 {
@@ -30,9 +31,10 @@ double
 norm_1(const vector& x)
 {
     double nx = 0.0;
-    for (const auto& xi : x) {
+    for (const auto& xi : x)
+    {
         nx += fabs(xi);
-}
+    }
     return nx;
 }
 
@@ -41,9 +43,10 @@ double
 norm_2(const vector& x)
 {
     double nx = 0.0;
-    for (const auto& xi : x) {
+    for (const auto& xi : x)
+    {
         nx += xi * xi;
-}
+    }
     return sqrt(nx);
 }
 
@@ -53,9 +56,10 @@ norm_p(const vector& x, int p)
 {
     assert(p > 0);
     double nx = 0.0;
-    for (const auto& xi : x) {
+    for (const auto& xi : x)
+    {
         nx += std::pow(xi, p);
-}
+    }
     return exp(log(nx) / p);
 }
 
@@ -67,9 +71,10 @@ norm_inf(const vector& x)
     for (const auto& xi : x)
     {
         const double fxi = fabs(xi);
-        if (fxi > nx) {
+        if (fxi > nx)
+        {
             nx = fxi;
-}
+        }
     }
     return nx;
 }
@@ -101,5 +106,5 @@ write(const vector& x, const std::string& file)
         out << xi << " ";
     }
 }
-}  // namespace v1
-}  // namespace ook
+} // namespace v1
+} // namespace ook
